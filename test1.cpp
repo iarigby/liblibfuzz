@@ -1,4 +1,6 @@
 #include <iostream>
+#include <unordered_map>
+
 
 class TestInterface {
     public:
@@ -6,9 +8,10 @@ class TestInterface {
             return 1;
         }
 };
-
+    
 int main() {
     TestInterface ts = TestInterface();
-    std::cout << ts.function1() << std::endl;
+    int (TestInterface::*fptr) (void) = &TestInterface::function1;
+    std::cout << (ts.*fptr)() << std::endl;
     return 0;
 }
