@@ -13,8 +13,8 @@ public:
   int function5() { return function1(); }
 };
 
-typedef int (TestInterface::*FunctionPointer)(void);
-typedef std::unordered_map<int, FunctionPointer> Function_map;
+using FunctionPointer = int (TestInterface::*)();
+using Function_map = std::unordered_map<int, FunctionPointer> ;
 
 int test(TestInterface ts, Function_map m) {
   for (int i = 0; i < 2; i++) {
@@ -28,7 +28,7 @@ int test(TestInterface ts, Function_map m) {
 
 bool isValidCallSequence(std::vector<int> vec) {
   for (auto i : vec) {
-    if (i < 0 || i > numFunctions)
+    if (i < 0 || (i > numFunctions))
       return false;
   }
   return true;
