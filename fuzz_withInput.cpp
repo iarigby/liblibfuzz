@@ -16,9 +16,9 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size) {
   Function_map m;
   InterfaceWithInput ts = InterfaceWithInput();
   m.emplace(0, (&InterfaceWithInput::function1));
-//   m.emplace(1, (&InterfaceWithInput::function2));
-//   m.emplace(2, (&InterfaceWithInput::function3));
-//   m.emplace(3, (&InterfaceWithInput::function5));
+  m.emplace(1, (&InterfaceWithInput::function2));
+  m.emplace(2, (&InterfaceWithInput::function3));
+  m.emplace(3, (&InterfaceWithInput::function5));
   std::string str;
   str.reserve(Size);
   for (std::size_t i = 0; i < Size; i += 2) {
