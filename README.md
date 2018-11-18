@@ -2,6 +2,7 @@
 
 ## TODO
 - try having integer input for functions and calling other ones based on mod or something
+- next step: [providing dictionaries](https://chromium.googlesource.com/chromium/src/+/master/testing/libfuzzer/efficient_fuzzer.md)
 
 ## questions
 - creating a map of pointers to functions that have different type signatures
