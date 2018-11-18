@@ -1,5 +1,5 @@
-#ifndef InterfaceWithInput_H
-#define InterfaceWithInput_H
+#ifndef INTERFACEWITHINPUT_H
+#define INTERFACEWITHINPUT_H
 
 class InterfaceWithInput {
 public:
@@ -12,4 +12,4 @@ private:
   int function4(int d);
 };
 
-#endif
+#endif // INTERFACEWITHINPUT_H
