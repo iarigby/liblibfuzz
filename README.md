@@ -11,5 +11,6 @@
 - maybe coverage is not very accurate now because of optimization
 
 ## commands
+- run with fuzzer: `clang++ $linked-files -fsanitize=address,fuzzer $filename`
 - format: `clang-format -i $filename`
 - check: `clang-tidy $filename -checks=*,clang-analyzer=*`
