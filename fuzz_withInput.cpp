@@ -1,4 +1,4 @@
-#include "INTERFACEWITHINPUT.h"
+#include "interfaceWithInput.cpp"
 #include "stringToVector.cpp"
 #include <iostream>
 #include <string>
@@ -22,7 +22,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size) {
   std::string str;
   str.reserve(Size);
   for (std::size_t i = 0; i < Size; i += 2) {
-    str += std::to_string(Data[i]) + ' ';
+    str += (char) +Data[i] + ' ';
   }
   std::vector<int> vec = stringToVector(str);
 //   std::cout << str << std::endl;
