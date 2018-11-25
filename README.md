@@ -13,7 +13,7 @@
 - getting the input summary from libfuzz to see patterns in interesting cases
 
 ## notes
-- maybe coverage is not very accurate now because of compiler optimization for small functions
+- cpp files (not headers) need to be in fuzz file
 
 ## thoughts
 - functions could be independently tested for inputs
@@ -23,3 +23,12 @@
 - run with fuzzer: `clang++ $linked-files -fsanitize=address,fuzzer $filename`
 - format: `clang-format -i $filename`
 - check: `clang-tidy $filename -checks=*,clang-analyzer=*`
+
+## fuzzer options
+- `-print_pcs` logs when new function is discovered
+<br>subsequent code coverage in the function is not reported
+- `-runs=`number of inputs tested
+- `-max_total_time=` duration of testing
+- `-print_final_stats` show summary in the end
+<br> right now don't understand what they mean
+- `-only_ascii` self explanatory
