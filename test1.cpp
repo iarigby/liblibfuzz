@@ -35,15 +35,15 @@ bool isValidCallSequence(std::vector<int> vec) {
 }
 
 void callFunctions(std::vector<int> vec, TestInterface ts, Function_map m) {
-  std::cout << "got it: ";
+  // std::cout << "got it: ";
   for (auto i : vec) {
     auto iter = m.find(i);
     if (iter != m.end()) {
-      std::cout << (ts.*iter->second)() << " > ";
+      // std::cout << (ts.*iter->second)() << " > ";
       (ts.*iter->second)();
     }
   }
-  std::cout << std::endl;
+  // std::cout << std::endl;
 }
 
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size) {
@@ -60,7 +60,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size) {
     str += std::to_string(Data[i]) + ' ';
   }
   std::vector<int> vec = stringToVector(str);
-  std::cout << str << std::endl;
+  // std::cout << str << std::endl;
   if (isValidCallSequence(vec)) {
     // std::cout << str << std::endl;
     callFunctions(vec, ts, m);

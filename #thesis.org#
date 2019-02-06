@@ -1,0 +1,137 @@
+#+TODO: TODO UPNEXT DOING REVIEW DONE
+* About this document / setup
+* TODO tasks (for tmr)
+** move README
+** set up org page
+** work more on IR
+** think of ways to generate all the files for input
+before understanding how to do it using clang/llvm
+
+* Inbox
+** DONE thesis declaration
+CLOSED: [2019-01-28 Mon 21:11]
+ added on [2018-12-26 Wed 13:42]
+** function interaction 
+Most challenging part of the process is communicating the result of thousands of different tests to the user. It's better to give results in terms of function behavior, and group functions with common characteristics and give guidelines of writing tests for each group.
+*** possible groups
+It should be obvious to determine getters and setters of the same member, and then decide how others interact
+**** does not affect other functions
+mostly getters. There has to be some spectrum of how much the function mutates the structure. But these ones will be affected by others.
+**** affects other functions
+***** how many?
+***** what is the change in behavior
+***** maybe the affected ones form the group themselves?
+**** behavior on repeated calls
+**** input dependent
+how different inputs change function behavior and interaction with other functions
+*** how to measure 
+each test will contain a group of functions. Get a set and update results for each. But each will have a different context in that particular sequence. And maybe it appears several times and each one gives us new information that is not connected to others -> will need another sequence result to find out. 
+**** types of information gathered
+***** during the execution
+***** after the execution (connecting the dots)
+*** challenges
+Will need to examine existing codebases to detect patterns
+** questions
+- 
+** trivial questions
+- how do I view the documentation offline? (the .rst files don't work completely as on the webpage)
+* meetings
+** <2018-11-12 Tue 13:39>
+*** summary 
+After going through
+** <2018-11-26 Mon 13:40>
+*** summary
+First draft
+** <2018-12-13 Thu 13:40>
+*** summary
+created the declaration of thesis
+*** decisions
+**** will use clang code coverage instead of libfuzz
+My arguments:
+***** don't need randomized input
+is that for combinations, there is a finite amount of sets we could test, which will be a subset of a much larger input set that libfuzz might provide us with (ie useless filtering of garbage)
+***** better coverage info
+libfuzz will filter out code coverage information that is irrelevant for APIs but might be crucial in terms of function combinations 
+****** TODO examples
+***** extracting information
+More control over combination hierarchy, no need to go through trouble of extracting it manually from libfuzz corpus (don't even know if it's possible in full form)
+
+
+
+* Project outline
+** Motivation
+** About fuzzing
+** What can't be covered with fuzzing
+*** Does not consider the interaction of different functions
+If you write a TDD application, there is a well defined interface of functions.
+*** APIs should be tolerable
+(reference cppcon 17 video)
+Any kind of crash/abort/assert failure/timeout is considered a bug in an API, whereas for libraries it could be expected behavior that should be covered in tests
+
+* Research / Learning
+** DOING general c++
+general knowledge of language since I don't have a lot of experience currently
+*** compilation
+https://www.toptal.com/c-plus-plus/c-plus-plus-understanding-compilation
+https://medium.com/@julienjorge/an-overview-of-build-systems-mostly-for-c-projects-ac9931494444
+https://medium.com/coding-blocks/make-and-cmake-automating-c-build-process-900f569a75db
+*** 
+** clang
+*** DOING understand code coverage library
+*** DOING get familiar with libfuzz source code
+understand how libfuzz works since a lot of mechanisms are similar
+*** DOING understand how plugins work
+*** TODO AST
+**** https://clang.llvm.org/docs/ClangPlugins.html
+will be needed for extracting type information
+*** clang
+https://cppdepend.com/blog/?p=321
+*** llvm
+**** resources
+https://eli.thegreenplace.net/2013/02/25/a-deeper-look-into-the-llvm-code-generator-part-1
+https://eli.thegreenplace.net/2012/11/24/life-of-an-instruction-in-llvm
+https://blog.regehr.org/archives/1453
+
+**** the design of the llvm http://www.drdobbs.com/architecture-and-design/the-design-of-llvm/240001128?pgno=1
+ The intermediate representation of a compiler is interesting because it can be a "perfect world" for the compiler optimizer: unlike the front end and back end of the compiler, the optimizer isn't constrained by either a specific source language or a specific target machine. On the other hand, it has to serve both well: it has to be designed to be easy for a front end to generate and be expressive enough to allow important optimizations to be performed for real targets.
+***** differences between RISC and LLVM IR
+****** strongly typed with a simple type system
+****** some details of the machine are abstracted away'
+or example, the calling convention is abstracted through call and ret instructions and explicit arguments.
+****** doesn't use a fixed set of named registers
+it uses an infinite set of temporaries named with a % character.
+** other tools
+- doxygen
+* Process description
+** Analyze the library
+*** TODO what information can be inferred automatically?
+What will be the manual tasks that the programmer will need to do and specify for the library to work
+**** Type information
+should be able to do with clang
+** Generate 
+
+** Run coverage tests
+*** TODO how will the function inputs be handled?
+- my idea is to test each of the functions using libfuzz (would need to somehow get the output still)
+- it might be best for the programmer to provide 
+** Analyze and communicate the results
+*** TODO give the smallest possible subset of function combinations
+*** TODO extra information
+- What else does the interaction of functions tell us?
+- Can we predict possible problems with the function based on code coverage
+* commands and stuff
+** llvm-cov
+https://clang.llvm.org/docs/SourceBasedCodeCoverage.html
+
+#+BEGIN-EXAMPLE
+clang++ -fprofile-instr-generate -fcoverage-mapping stack.cpp -o stack
+LLVM_PROFILE_FILE="stack.profraw" ./stack
+llvm-profdata merge -sparse stack.profraw -o stack.profdata
+llvm-cov show ./stack -instr-profile=stack.profdata
+llvm-cov report ./stack -instr-profile=stack.profdata
+llvm-cov export ./stack -instr-profile=stack.profdata > export.json
+#+END-EXAMPLE
+*** flags
+**** sparse
+The -sparse flag is optional but can result in dramatically smaller indexed profiles. This option should not be used if the indexed profile will be reused for PGO.
+
