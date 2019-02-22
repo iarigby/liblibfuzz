@@ -19,7 +19,15 @@ T FunctionPointerMap<A>::searchAndCall(A a, std::string s1, Args &&... args) {
   auto mapIter = m1.find(s1);
   auto mapVal = mapIter->second;
   auto typeCastedFun = (T(A::*)(Args...))(mapVal.first);
-  assert(mapVal.second == std::type_index(typeid(typeCastedFun)));
+  // assert(mapVal.second == std::type_index(typeid(typeCastedFun)));
   return (a.*typeCastedFun)(std::forward<Args>(args)...);
 }
 
+
+/*std::vector<std::string> getKeys() {
+	std::vector<std::string> v;
+	for(auto iter = m1.begin(); iter != m1.end(); ++iter) {
+		v.push(iter-> first);
+	}
+	return v;
+}*/

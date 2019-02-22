@@ -6,6 +6,7 @@
 #include <typeinfo>
 #include <typeindex>
 #include <cassert>
+#include <vector>
 
 template <typename A>
 using voidFunctionType = void (A::*)(void);
@@ -17,6 +18,7 @@ public:
     void insert(std::string s1, T f1);
     template<typename T,typename... Args>
     T searchAndCall(A a, std::string s1, Args&&... args);
+    // std::vector<std::string> getKeys();
 private:
     std::map<std::string,std::pair<voidFunctionType<A>,std::type_index>> m1;
 };
