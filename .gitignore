@@ -2,3 +2,5 @@
 *.gch
 a.out
 /CORPUS
+/docs
+Doxyfile
