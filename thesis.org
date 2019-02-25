@@ -25,6 +25,7 @@ each test will contain a group of functions. Get a set and update results for ea
 ***** after the execution (connecting the dots)
 *** challenges
 Will need to examine existing codebases to detect patterns
+** https://mcss.mosra.cz/doxygen/
 * meetings
 ** <2018-11-12 Tue 13:39>
 *** summary 
