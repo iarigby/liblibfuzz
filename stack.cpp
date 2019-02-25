@@ -14,10 +14,10 @@ class stack
         T *arr;
         int top;
         int capacity;
-
+        bool outPutMessages = false;
     public:
         stack(int size = SIZE);		// constructor
-
+        void toggleOutput(bool newValue);
         void push(T);
         T pop();
         T peek();
@@ -36,19 +36,29 @@ stack<T>::stack(int size)
     top = -1;
 }
 
+// helper function to communicate results since 
+// can't get return types :D
+template <typename T>
+void stack<T>::toggleOutput(bool outPutMessages) {
+    this->outPutMessages = outPutMessages;
+}
+
 // Utility function to add an element x in the stack
 template <typename T>
 void stack<T>::push(T x)
 {
     if (isFull())
     {
-        std::cout << "OverFlow\nProgram Terminated\n";
+        if (this->outPutMessages) {
+            std::cout << "OverFlow\nProgram Terminated\n";
+        }
         exit(EXIT_FAILURE);
     }
 
-    std::cout << "Inserting " << x << std::endl;
+    if (this->outPutMessages) {
+        std::cout << "Inserting " << x << std::endl;
+    }
     arr[++top] = x;
-    // std::cout << capacity << top << arr[top] << "\n";
 }
 
 // Utility function to pop top element from the stack
@@ -58,11 +68,15 @@ T stack<T>::pop()
     // check for stack underflow
     if (isEmpty())
     {
-        std::cout << "UnderFlow\nProgram Terminated\n";
+        if (this->outPutMessages) {
+            std::cout << "UnderFlow\nProgram Terminated\n";
+        }
         exit(EXIT_FAILURE);
     }
 
-    std::cout << "Removing " << peek() << std::endl;
+    if (this->outPutMessages) {
+        std::cout << "pop: Removing " << peek() << std::endl;
+}
 
     // decrease stack size by 1 and (optionally) return the popped element
     return arr[top--];
@@ -72,8 +86,12 @@ T stack<T>::pop()
 template <typename T>
 T stack<T>::peek()
 {
-    if (!isEmpty())
+    if (!isEmpty()) {
+        if (this->outPutMessages) {
+            std::cout << "peek: returning " << arr[top] << std::endl; 
+        }
         return arr[top];
+    }
     else
         exit(EXIT_FAILURE);
 }
