@@ -4,10 +4,10 @@
 #include <string>
 #include "stack.cpp"
 
-// std::map<std::vector<std::string>, std::vector<char> v> pcCalls;
+std::map<std::vector<std::string>, std::vector<std::string>> pcCalls;
+std::vector<std::string> currentPermutation;
 // trace-pc-guard-example.cc
 using permutations = std::vector<std::vector<std::string>>;
-
 permutations getAllPossibleSequences(std::vector<std::string> v, int maxSize);
 permutations getSubsets(std::vector<std::string> v);
 
@@ -23,6 +23,7 @@ int main(int argc, char **argv) {
 	permutations p = getAllPossibleSequences(v, 4);
 	std::cout << "here" << std::endl;
 	for (auto const perm : p) {
+		currentPermutation = perm;
 		stack<int> s(5);
 		// s.push(1);
 		// s.push(2);
@@ -38,6 +39,7 @@ int main(int argc, char **argv) {
 	}
 }
 
+// ATTRIBUTE_NO_SANITIZE_ADDRESS
 permutations getSubsets(std::vector<std::string> v) {
 	permutations allSubsets;
 	for (auto const iter : v) {
@@ -59,6 +61,7 @@ permutations getSubsets(std::vector<std::string> v) {
 	return allSubsets;
 }
 
+// ATTRIBUTE_NO_SANITIZE_ADDRESS
 permutations getAllPossibleSequences(std::vector<std::string> v, int maxSize) {
 	permutations p; 
 	// get all subsets

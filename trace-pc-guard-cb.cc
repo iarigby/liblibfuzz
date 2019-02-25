@@ -3,8 +3,10 @@
 #include <stdio.h>
 #include <sanitizer/coverage_interface.h>
 #include <vector>
+#include <map>
 
-std::map<std::vector<std::string>, std::vector<char> v> pcCalls;
+extern std::map<std::vector<std::string>, std::vector<std::string>> pcCalls;
+extern std::vector<std::string> currentPermutation;
 
 // This callback is inserted by the compiler as a module constructor
 // into every DSO. 'start' and 'stop' correspond to the
@@ -42,6 +44,7 @@ extern "C" void __sanitizer_cov_trace_pc_guard(uint32_t *guard) {
   // This function is a part of the sanitizer run-time.
   // To use it, link with AddressSanitizer or other sanitizer.
   __sanitizer_symbolize_pc(PC, "%p %F %L", PcDescr, sizeof(PcDescr));
+  (pcCalls.find(currentPermutation)->second).push_back(PcDescr);
   printf("guard: %p %x PC %s\n", guard, *guard, PcDescr);
 }
 

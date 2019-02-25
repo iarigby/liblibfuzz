@@ -1,0 +1,3 @@
+src:*string*
+stc:*map*
+stc:*functionPointerMap*
