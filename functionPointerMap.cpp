@@ -14,7 +14,7 @@ void FunctionPointerMap<A>::insert(std::string s1, T f1) {
 
 template <typename A>
 template <typename T, typename... Args>
-T FunctionPointerMap<A>::searchAndCall(A a, std::string s1, Args &&... args) {
+T FunctionPointerMap<A>::searchAndCall(A &a, std::string s1, Args &&... args) {
   std::cout << "calling " << s1 << "\n";
   auto mapIter = m1.find(s1);
   auto mapVal = mapIter->second;
@@ -22,12 +22,3 @@ T FunctionPointerMap<A>::searchAndCall(A a, std::string s1, Args &&... args) {
   // assert(mapVal.second == std::type_index(typeid(typeCastedFun)));
   return (a.*typeCastedFun)(std::forward<Args>(args)...);
 }
-
-
-/*std::vector<std::string> getKeys() {
-	std::vector<std::string> v;
-	for(auto iter = m1.begin(); iter != m1.end(); ++iter) {
-		v.push(iter-> first);
-	}
-	return v;
-}*/

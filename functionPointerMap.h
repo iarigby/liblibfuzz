@@ -17,8 +17,7 @@ public:
     template <typename T>
     void insert(std::string s1, T f1);
     template<typename T,typename... Args>
-    T searchAndCall(A a, std::string s1, Args&&... args);
-    // std::vector<std::string> getKeys();
+    T searchAndCall(A &a, std::string s1, Args&&... args);
 private:
     std::map<std::string,std::pair<voidFunctionType<A>,std::type_index>> m1;
 };
