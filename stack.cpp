@@ -1,31 +1,10 @@
 #include <iostream>
 #include <cstdlib>
-
+#include "stack.h"
 // from https://www.techiedelight.com/stack-implementation-in-cpp/
 
 // define default capacity of the stack
-#define SIZE 10
 
-// Class for stack
-
-template <typename T>
-class stack
-    {
-        T *arr;
-        int top;
-        int capacity;
-        bool outPutMessages = false;
-    public:
-        stack(int size = SIZE);		// constructor
-        void toggleOutput(bool newValue);
-        void push(T);
-        T pop();
-        T peek();
-
-        int size();
-        bool isEmpty();
-        bool isFull();
-    };
 // Constructor to initialize stack
 
 template <typename T>
@@ -117,4 +96,9 @@ bool stack<T>::isFull()
     return top == capacity - 1;	// or return size() == capacity;
 }
 
+void TemporaryFunction ()
+{
+    stack<int> TempObj(1);
+}
 
+TemporaryFunction();
