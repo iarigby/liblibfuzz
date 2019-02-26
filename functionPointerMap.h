@@ -20,6 +20,7 @@ public:
     T searchAndCall(A &a, std::string s1, Args&&... args);
 private:
     std::map<std::string,std::pair<voidFunctionType<A>,std::type_index>> m1;
+    bool outputMessages = false;
 };
 
 
