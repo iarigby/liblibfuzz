@@ -28,7 +28,7 @@ std::vector<T> CombinationGenerator<T>::nextCombination() {
         }
     }
     std::vector<T> res;
-    for (int index : this->combinations) {
+    for (const int& index : this->combinations) {
         if (index > -1)
             res.push_back(this->initialSet[index]);
     }
@@ -37,7 +37,7 @@ std::vector<T> CombinationGenerator<T>::nextCombination() {
 
 template <typename T>
 bool CombinationGenerator<T>::isDone() {
-    for (auto index: this->combinations) {
+    for (auto const& index : this->combinations) {
         if (index < this->setSize - 1) {
             return false;
         }
