@@ -15,6 +15,10 @@ stack<T>::stack(int size)
     top = -1;
 }
 
+template <typename T>
+stack<T>::~stack() {
+    delete[] arr;
+}
 // helper function to communicate results since 
 // can't get return types :D
 template <typename T>
@@ -96,9 +100,7 @@ bool stack<T>::isFull()
     return top == capacity - 1;	// or return size() == capacity;
 }
 
-void TemporaryFunction ()
-{
-    stack<int> TempObj(1);
-}
+template class stack<int>;
 
-TemporaryFunction();
+
+

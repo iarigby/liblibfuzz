@@ -12,6 +12,7 @@ class stack
         bool outPutMessages = false;
     public:
         stack(int size = SIZE);		// constructor
+        ~stack();
         void toggleOutput(bool newValue);
         void push(T);
         T pop();
