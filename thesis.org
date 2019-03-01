@@ -5,7 +5,7 @@
 ** DONE thesis declaration
 CLOSED: [2019-01-28 Mon 21:11]
  added on [2018-12-26 Wed 13:42]
-** function interaction
+** function interaction 
 Most challenging part of the process is communicating the result of thousands of different tests to the user. It's better to give results in terms of function behavior, and group functions with common characteristics and give guidelines of writing tests for each group.
 *** possible groups
 It should be obvious to determine getters and setters of the same member, and then decide how others interact
@@ -46,9 +46,37 @@ libfuzz will filter out code coverage information that is irrelevant for APIs bu
 ****** TODO examples
 ***** extracting information
 More control over combination hierarchy, no need to go through trouble of extracting it manually from libfuzz corpus (don't even know if it's possible in full form)
-
-
-
+** <2019-02-26 Tue 15:08> 
+*** report
+**** tried llvm-cov and then found sanitizerCoverage
+exactly what we needed and also what libfuzzer uses
+**** fixed functionPointerMap
+was forgetting to pass the class instance, then forgetting to pass by reference
+**** created CombinationGenerator
+doesn't store all combinations, insted just indexes
+would be suitable for multithreading too
+*** discussion topics
+**** current issues
+***** storing function arguments
+since functions are cast to void, I can't use decltype anywhere. everything has to be excplicitly specified. Right now I'm just ignoring the return value (technically do we need it?)
+should I use boost::any?
+std::any in c++17 or std::variant (better) also http://gsd.web.elte.hu/gyak/cpp17util.pdf
+***** coverage_pc does not work for template files
+pc_guards are inserted when creating the object file, otherwise it inserts the guards aaaall over the place. 
+**** design decisions
+***** what information to extract during processing
+right now it's recorded by function call (simple bool started) maybe I should record guards by each function in the sequence and see how calling other functions affects its guards 
+***** [[function interaction][how to analyze coverage]]
+**** what's next
+***** start implementing [[design decisions]]
+***** start learning clang AST
+***** try to use threads
+for 5 most primitive functions and 8 combinations, it takes 5 seconds already 
+**** misc tasks
+***** start documentation
+***** makefile
+***** gdb
+***** more tests
 * Project outline
 ** Motivation
 ** About fuzzing
@@ -58,7 +86,9 @@ If you write a TDD application, there is a well defined interface of functions.
 *** APIs should be tolerable
 (reference cppcon 17 video)
 Any kind of crash/abort/assert failure/timeout is considered a bug in an API, whereas for libraries it could be expected behavior that should be covered in tests
-
+** ..
+*** why we're considering every possible input
+there might be new code coverage anywhere, and since it is a finite set...
 * Research / Learning
 ** DOING c++ tutorials
 general knowledge of language since I don't have a lot of experience currently
