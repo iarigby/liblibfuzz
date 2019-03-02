@@ -1,4 +1,5 @@
 // trace-pc-guard-cb.cc
+// https://clang.llvm.org/docs/SanitizerCoverage.html
 #include <stdint.h>
 #include <stdio.h>
 #include <sanitizer/coverage_interface.h>
