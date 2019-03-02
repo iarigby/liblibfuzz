@@ -8,23 +8,26 @@
 #include "combinationGenerator.cpp"
 #include <map>
 
+#include <variant>
+#include <tuple>
+
 std::map<std::vector<std::string>, std::vector<std::string>> pcCalls;
 std::vector<std::string> currentPermutation;
 bool started;
 
-// trace-pc-guard-example.cc
+using Arguments = std::variant<int>;
 
 int main(int argc, char **argv) {
-	FunctionPointerMap<stack<int>> a1;
-	// a1.insert("push", &stack<int>::push);
-	a1.insert("pop", &stack<int>::pop);
-	a1.insert("peek", &stack<int>::peek);
-	a1.insert("size", &stack<int>::size);
-	a1.insert("isEmpty", &stack<int>::isEmpty);
-	a1.insert("isFull", &stack<int>::isFull);
+	FunctionPointerMap<stack<int>, Arguments> a1;
+	a1.insert("push", &stack<int>::push, std::make_tuple(2));
+	// a1.insert("pop", &stack<int>::pop);
+	// a1.insert("peek", &stack<int>::peek);
+	// a1.insert("size", &stack<int>::size);
+	// a1.insert("isEmpty", &stack<int>::isEmpty);
+	// a1.insert("isFull", &stack<int>::isFull);
 
 	// FunctionPointerMap<stack> a1;
-	// a1.insert("push", &stack::push);
+	// a1.insert("push", &stack::push, std::make_tuple(2));
 	// a1.insert("pop", &stack::pop);
 	// a1.insert("peek", &stack::peek);
 	// a1.insert("size", &stack::size);

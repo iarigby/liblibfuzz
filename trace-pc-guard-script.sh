@@ -9,5 +9,5 @@
 # /usr/bin/clang++ -g trace-pc-guard-cb.cc trace-pc-guard-test.cpp stack-nontemplate.o -fsanitize=address $blacklist
 
 /usr/bin/clang++ -g -fsanitize-coverage=trace-pc-guard stack.cpp -c
-/usr/bin/clang++ -g trace-pc-guard-cb.cc trace-pc-guard-test.cpp stack.o -fsanitize=address $blacklist
+/usr/bin/clang++ -std=c++17 -g trace-pc-guard-cb.cc trace-pc-guard-test.cpp stack.o -fsanitize=address $blacklist
 ASAN_OPTIONS=strip_path_prefix=`pwd`/ ./a.out $2 $3
