@@ -99,6 +99,15 @@ understand how libfuzz works since a lot of mechanisms are similar
 
 *** TODO AST
 will be needed for extracting type information
+** c++ reference
+*** typeinfo
+**** typeid
+Used where the dynamic type of a polymorphic object must be known and for static type identification. The typeid expression is an lvalue expression which refers to an object with static storage duration, of the polymorphic type const std::type_info or of some type derived from it.
+result refers to [[type_info]]
+**** type_info
+The class type_info holds implementation-specific information about a type, including the name of the type and means to compare two types for equality or collating order. This is the class returned by the [[typeid]] operator.
+**** type_index 
+The type_index class is a wrapper class around a std::type_info object, that can be used as index in associative and unordered associative containers. The relationship with type_info object is maintained through a pointer
 * Process description
 ** Analyze the library
 *** TODO what information can be inferred automatically?
