@@ -8,6 +8,7 @@
 #include "combinationGenerator.cpp"
 #include <map>
 
+#include <any>
 #include <variant>
 #include <tuple>
 
@@ -15,10 +16,8 @@ std::map<std::vector<std::string>, std::vector<std::string>> pcCalls;
 std::vector<std::string> currentPermutation;
 bool started;
 
-using Arguments = std::variant<int>;
-
 int main(int argc, char **argv) {
-	FunctionPointerMap<stack<int>, Arguments> a1;
+	FunctionPointerMap<stack<int>> a1;
 	a1.insert("push", &stack<int>::push, std::make_tuple(2));
 	// a1.insert("pop", &stack<int>::pop);
 	// a1.insert("peek", &stack<int>::peek);
