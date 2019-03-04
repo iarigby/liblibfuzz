@@ -42,6 +42,6 @@ bool CombinationGenerator<T>::isDone() {
             return false;
         }
     }
-    return true;
+    return true; 
 }
 // std::vector<T> CombinationGenerator<T>::getCombination()
