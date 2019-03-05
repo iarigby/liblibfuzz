@@ -55,7 +55,19 @@ int main(int argc, char **argv) {
     }
     started = true;
     for (auto const &elem : perm) {
-      a1.searchAndCall<void>(s, elem);
+      try {
+	a1.searchAndCall<void>(s, elem);
+      } catch (const char* c) {
+	if (outputMessages) {
+	  std::cout << ">> exception " << c << std::endl;
+	 }
+	// log somewhere
+      } catch (int exit_status) {
+	// program terminated with status _
+      } catch (...) {
+	//
+	std::cout << ">> exception ";
+      }
     }
     started = false;
   }
