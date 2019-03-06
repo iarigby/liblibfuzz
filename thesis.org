@@ -88,7 +88,6 @@ for 5 most primitive functions and 8 combinations, it takes 5 seconds already
 summarizes the intire run, so if I call three different combinations of functions they results will be mixed in together. But it has some nice visualization data and maybe that could be used to display the results
 looked into libfuzzer source code to find out what they where using to collect the coverage, since they were doing multiple "isolated" runs to analyze
 ***** sanitizercoverage
- 
 ****** how it works
 guards are inserted at function entrance points, if/else block starts, etc. You can implement the functions that get called when the guard is initialized and then when it's called
 ****** how I use it
@@ -99,6 +98,21 @@ there is one main function that has the map with all the functions
 ***** 
 ** next steps
 *** 
+** ...
+*** having an additional argument
+make some measurements
+**** take std::vector
+and ignore some of the functions, for example insert, erase etc, and just use push_back, pop_back;
+**** maybe deck too
+compare what was the behavior of the stuff
+**** user manual, developer manual, test cases
+** ...
+*** grammar induction
+exhaustive search on relatively small input to infer the grammar. 
+*** generational algorithm
+the way it overcomes the gaps 
+mutations like appending to random sequences together 
+*** contact libfuzzer developers
 ** some differences from fuzzing
 *** coverage info
 libfuzzer is created with different intent in mind and extracting the coverage information which is already filtered according to the library's priority might not be what we want
@@ -110,6 +124,7 @@ since it's more feasible to keep exploring different paths (for example calling 
 fuzzer will hault on first exception it finds, because the design philosophy is that the consumer is an API. In case of libraries, exceptions might be expected so here each function (or combination?) call will be wrapped in a try catch so all the different call sequences that result in various exceptions
 * Project outline
 ** Motivation
+start with linear number of test cases but at some point it explodes. Hard to determine which test cases are meaningful. 
 ** About fuzzing
 ** What can't be covered with fuzzing
 *** Does not consider the interaction of different functions
