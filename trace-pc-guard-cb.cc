@@ -9,6 +9,7 @@
 extern std::map<std::vector<std::string>, std::vector<std::string>> pcCalls;
 extern std::vector<std::string> currentPermutation;
 extern bool started;
+extern bool outputMessages;
 // This callback is inserted by the compiler as a module constructor
 // into every DSO. 'start' and 'stop' correspond to the
 // beginning and end of the section with the guards for the entire
@@ -48,7 +49,7 @@ extern "C" void __sanitizer_cov_trace_pc_guard(uint32_t *guard) {
   __sanitizer_symbolize_pc(PC, "%p %F %L", PcDescr, sizeof(PcDescr));
   if (started) {
     (pcCalls.find(currentPermutation)->second).push_back(std::string(PcDescr));
-    printf("adding to the list: ");
+    if(outputMessages) printf("adding to the list: ");
   }
-  printf("guard: %p %x PC %s\n", guard, *guard, PcDescr);
+  if (outputMessages) printf("guard: %p %x PC %s\n", guard, *guard, PcDescr);
 }

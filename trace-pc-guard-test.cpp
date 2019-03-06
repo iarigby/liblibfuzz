@@ -10,9 +10,12 @@
 
 std::map<std::vector<std::string>, std::vector<std::string>> pcCalls;
 std::vector<std::string> currentPermutation;
+
 bool started;
 
 // trace-pc-guard-example.cc
+
+bool outputMessages = false;
 
 int main(int argc, char **argv) {
   FunctionPointerMap<stack<int>> a1;
@@ -32,8 +35,7 @@ int main(int argc, char **argv) {
   // a1.insert("isEmpty", &stack::isEmpty);
   // a1.insert("isFull", &stack::isFull);
   std::vector<std::string> v = {"push", "pop", "peek", "size", "isEmpty", "isFull"};
-  const int combinationSize = 2;
-  const bool outputMessages = true;
+  const int combinationSize = 6;
   CombinationGenerator<std::string> cb(v, combinationSize);
   while (!cb.isDone()) {
     auto perm = cb.nextCombination();
@@ -41,6 +43,7 @@ int main(int argc, char **argv) {
     std::vector<std::string> calls;
     pcCalls.insert(std::make_pair(perm, calls));
     stack<int> s(combinationSize);
+    s.toggleOutput(false);
     // doing this now because so stack doesn't exit after under/overflow
     // stack s(combinationSize);
     //for (int i = 0; i < combinationSize; ++i) {
