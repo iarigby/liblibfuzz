@@ -15,12 +15,12 @@ bool started;
 
 // trace-pc-guard-example.cc
 
-bool outputMessages = false;
+bool outputMessages = true;
 
 int main(int argc, char **argv) {
   FunctionPointerMap<stack<int>> a1;
   // a1.insert("push", &stack<int>::push);
-  a1.insertNonVoid("push", [](stack<int> &a) {a.push(1);});
+  a1.insertNonVoid("push", [](stack<int> &a) { a.push(1); });
   a1.insert("pop", &stack<int>::pop);
   a1.insert("peek", &stack<int>::peek);
   a1.insert("size", &stack<int>::size);
@@ -34,7 +34,8 @@ int main(int argc, char **argv) {
   // a1.insert("size", &stack::size);
   // a1.insert("isEmpty", &stack::isEmpty);
   // a1.insert("isFull", &stack::isFull);
-  std::vector<std::string> v = {"push", "pop", "peek", "size", "isEmpty", "isFull"};
+  std::vector<std::string> v = {"push", "pop",     "peek",
+                                "size", "isEmpty", "isFull"};
   const int combinationSize = 6;
   CombinationGenerator<std::string> cb(v, combinationSize);
   while (!cb.isDone()) {
@@ -46,7 +47,7 @@ int main(int argc, char **argv) {
     s.toggleOutput(false);
     // doing this now because so stack doesn't exit after under/overflow
     // stack s(combinationSize);
-    //for (int i = 0; i < combinationSize; ++i) {
+    // for (int i = 0; i < combinationSize; ++i) {
     //  s.push(i);
     //}
     if (outputMessages) {
@@ -57,22 +58,22 @@ int main(int argc, char **argv) {
       std::cout << "\n";
     }
     started = true;
-    for (auto const &elem : perm) {
-      try {
-	a1.searchAndCall<void>(s, elem);
-      } catch (const char* c) {
-	if (outputMessages) {
-	  std::cout << ">> exception " << c << std::endl;
-	 }
-	// log somewhere
-      } catch (int exit_status) {
-	// program terminated with status _
-      } catch (...) {
-	//
-	std::cout << ">> exception ";
+    try {
+      for (auto const &elem : perm) {
+        a1.searchAndCall<void>(s, elem);
       }
+    } catch (const char *c) {
+      if (outputMessages) {
+        std::cout << ">> exception " << c << std::endl;
+      }
+      // log somewhere
+    } catch (int exit_status) {
+      // program terminated with status _
+    } catch (...) {
+      //
+      std::cout << ">> exception ";
     }
-    started = false;
-  }
-  std::cout << "done\n";
+  started = false;
+}
+std::cout << "done\n";
 }
