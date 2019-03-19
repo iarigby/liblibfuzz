@@ -1,31 +1,56 @@
 #include "coverageReporter.h"
 
+void CoverageReporter::startCoverage(std::vector<std::string> combination) {
+  currentCombination = combination;
+}
+
 void CoverageReporter::addPCForCombination(std::string pc) {
   currentPC.insert(pc);
 }
 
 void CoverageReporter::flush() {
+  if (currentCombination.empty()) {
+    throw "no combination provided";
+  }
   // go through the set and remove all that are smaller and
   // contain the same elments
+  // TODO this is trash, rewrite
   bool isNewCoverage = true;
-  for (auto it = coverage.begin(); it != coverage.end();) {
-    auto s = *it;
+  auto p = coverageSequences.find(currentPC);
+  if (p != coverageSequences.end()) {
+    isNewCoverage = false;
+    auto sequence = p->second;
+    if (sequence.size() > currentCombination.size()) {
+      p->second = currentCombination;
+    }
+  }
+
+  for (auto it = coverageSequences.begin();
+       it != coverageSequences.end() && isNewCoverage;) {
+    auto s = it->first;
     if (isSubsetOf(currentPC, s)) {
       isNewCoverage = false;
-      break;
     }
     if (isSubsetOf(s, currentPC)) {
-      isNewCoverage = true;
-      it = coverage.erase(it);
+      it = coverageSequences.erase(it);
     } else {
       ++it;
     }
   }
   // insert the current set
   if (isNewCoverage) {
-    coverage.insert(currentPC);
+    coverageSequences.insert(std::make_pair(currentPC, currentCombination));
   }
+  currentCombination.clear();
   currentPC.clear();
+}
+
+auto CoverageReporter::coverage() {
+  std::set<std::set<std::string>> s;
+  for (auto const &elem : coverageSequences) {
+    s.insert(elem.first);
+  }
+  return s;
 }
 
 bool CoverageReporter::isSubsetOf(std::set<std::string> &s1,
