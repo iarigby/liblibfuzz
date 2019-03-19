@@ -35,7 +35,7 @@ void stack<T>::push(T x)
         if (this->outPutMessages) {
             std::cout << "OverFlow\nProgram Terminated\n";
         }
-        exit(EXIT_FAILURE);
+	throw "OverFlow";
     }
 
     if (this->outPutMessages) {
@@ -54,7 +54,7 @@ T stack<T>::pop()
         if (this->outPutMessages) {
             std::cout << "UnderFlow\nProgram Terminated\n";
         }
-        exit(EXIT_FAILURE);
+        throw "Underflow";
     }
 
     if (this->outPutMessages) {
@@ -76,7 +76,7 @@ T stack<T>::peek()
         return arr[top];
     }
     else
-        exit(EXIT_FAILURE);
+        throw "empty stack";
 }
 
 // Utility function to return the size of the stack

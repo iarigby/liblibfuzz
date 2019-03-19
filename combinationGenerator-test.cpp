@@ -5,7 +5,7 @@
 #include <string>
 #include <iostream>
 
-TEST_CASE("init", "[combinationgenerator]") {
+TEST_CASE("combination generation test", "[combinationgenerator]") {
     std::vector<std::string> vec = {"a", "b"};
     CombinationGenerator<std::string> cb(vec, 3);
     std::vector<std::vector<std::string>> allCombinations;

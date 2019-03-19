@@ -3,20 +3,20 @@
 
 #include <vector>
 
-template <typename T>
-class CombinationGenerator {
+template <typename T> class CombinationGenerator {
 public:
-    CombinationGenerator(std::vector<T> is, int maxLength);
-    std::vector<T> nextCombination();
-    bool isDone();
+  CombinationGenerator(std::vector<T> is, int maxLength);
+  std::vector<T> nextCombination();
+  bool isDone();
+
 private:
-    std::vector<T> initialSet;
-    std::vector<int> combinations;
-    int setSize;
-    int maxLength;
-    int counter;
-    int numCombinations = 0;
-    int currentIndex = 0;
+  std::vector<T> initialSet;
+  std::vector<int> combinations;
+  int setSize;
+  int maxLength;
+  int counter;
+  int numCombinations = 0;
+  int currentIndex = 0;
 };
 
 #endif // COMBINATIONGENERATOR_H

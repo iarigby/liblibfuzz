@@ -1,4 +1,5 @@
 #+TODO: TODO UPNEXT DOING REVIEW DONE
+
 * About this document / setup
 
 * Inbox
@@ -77,8 +78,54 @@ for 5 most primitive functions and 8 combinations, it takes 5 seconds already
 ***** makefile
 ***** gdb
 ***** more tests
+* Presentation
+** process description
+*** store function pointers in a map
+*** collect coverage
+**** initially thought to use libfuzzer
+[[some differences from fuzzing]]
+**** explored other paths
+***** llvm-cov
+summarizes the intire run, so if I call three different combinations of functions they results will be mixed in together. But it has some nice visualization data and maybe that could be used to display the results
+looked into libfuzzer source code to find out what they where using to collect the coverage, since they were doing multiple "isolated" runs to analyze
+***** sanitizercoverage
+****** how it works
+guards are inserted at function entrance points, if/else block starts, etc. You can implement the functions that get called when the guard is initialized and then when it's called
+****** how I use it
+there is one main function that has the map with all the functions
+*** analyze coverage
+**** base assumptions
+***** order of calls does not matter
+***** 
+** next steps
+*** 
+** ...
+*** having an additional argument
+make some measurements
+**** take std::vector
+and ignore some of the functions, for example insert, erase etc, and just use push_back, pop_back;
+**** maybe deck too
+compare what was the behavior of the stuff
+**** user manual, developer manual, test cases
+** ...
+*** grammar induction
+exhaustive search on relatively small input to infer the grammar. 
+*** generational algorithm
+the way it overcomes the gaps 
+mutations like appending to random sequences together 
+*** contact libfuzzer developers
+** some differences from fuzzing
+*** coverage info
+libfuzzer is created with different intent in mind and extracting the coverage information which is already filtered according to the library's priority might not be what we want
+*** possible input space
+much larger in fuzzing, more limited (and deterministic) here
+*** path exploration
+since it's more feasible to keep exploring different paths (for example calling the same function 17th time will unlock a new pc block) 
+*** handling exceptions
+fuzzer will hault on first exception it finds, because the design philosophy is that the consumer is an API. In case of libraries, exceptions might be expected so here each function (or combination?) call will be wrapped in a try catch so all the different call sequences that result in various exceptions
 * Project outline
 ** Motivation
+start with linear number of test cases but at some point it explodes. Hard to determine which test cases are meaningful. 
 ** About fuzzing
 ** What can't be covered with fuzzing
 *** Does not consider the interaction of different functions
@@ -143,6 +190,7 @@ llvm-cov export ./stack -instr-profile=stack.profdata > export.json
 **** sparse
 The -sparse flag is optional but can result in dramatically smaller indexed profiles. This option should not be used if the indexed profile will be reused for PGO.
 
+
 * content
 ** introduction
 *** software verification tools
@@ -178,3 +226,22 @@ ease of implementing
 in usual cases, member function combinations
 - getting meaningful combination
 - 
+
+* related work
+** klee 
+http://klee.github.io
+papers
+*** KLEE: Unassisted and Automatic Generation of High-CoverageTests for Complex Systems Programs
+http://www.doc.ic.ac.uk/~cristic/papers/klee-osdi-08.pdf
+*** Abstract
+We  present a new symbolic execution tool, KLEE, capable of automatically generating tests that achieve high coverage on a diverse set of complex and environmentally-intensive programs. We used KLEE to thoroughly check all 89 stand-alone programs in the GNU COREUTILS utility suite, which form the core user-level environment installed on millions of Unix systems, and arguably are the single most heavily tested set of open-source programs in existence. KLEE-generated tests achieve high line coverage — on average over 90 %per tool (median: over 94%) — and significantly beat the coverage of the developers’ own hand-written testsuite. When we did the same for 75 equivalent tools inthe BUSYBOX embedded system suite, results were evenbetter, including 100% coverage on 31 of them.
+We also used KLEE as a bug finding tool, applying it to 452 applications (over 430K total lines of code), where it found 56 serious bugs, including three in COREUTILS that had been missed for over 15 years. Finally, we used KLEE to crosscheck purportedly identical BUSYBOX and COREUTILS utilities, finding functional correctness errors and a myriad of inconsistencies.
+*** difference
+operates on bytecode instead of c++, which means the results cannot be easily implemented in ci or sth
+** KLOVER: A Symbolic Execution and AutomaticTest Generation Tool for C++ Programs
+http://www.cs.utah.edu/~ligd/publications/KLOVER-CAV11.pdf
+*** abstract
+We present the first symbolic execution and automatic testgeneration tool for C++ programs. First we describe our effortin extend-ing an existing symbolic execution tool for C programs to handleC++programs. We then show how we made this tool generic, efficientandusable to handle real-life industrial applications. Novelfeatures includeextended symbolic virtual machine, library optimization for Cand C++,object-level execution and reasoning, interfacing with specific type of ef-ficient solvers, and semi-automatic unit and component testing. This toolis being used to assist the validation and testing of industrial softwareas well as publicly available programs written using the C++ language
+*** notes
+As shown in Fig. 1, the tool’s flow is similar to KLEE’s. A C++ program is compiled into LLVM bytecode, which is interpreted by KLOVER for symbolic execution
+

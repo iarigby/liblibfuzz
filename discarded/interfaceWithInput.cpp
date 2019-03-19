@@ -1,5 +1,5 @@
 #include "interfaceWithInput.h"
-#include "iostream"
+#include <iostream>
 
 int InterfaceWithInput::function1(int a) { return a; }
 int InterfaceWithInput::function2(int b) { return function3(b); }

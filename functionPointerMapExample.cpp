@@ -1,7 +1,8 @@
 #include "functionPointerMap.cpp"
-#include "someclass.cpp"
+#include "discarded/someclass.cpp"
 #include "stack.cpp"
 
+/*
 void testSomeClass() {
 	FunctionPointerMap<someclass> a1;
 	a1.insert("fun3", &someclass::fun3);
@@ -26,9 +27,10 @@ void testStack() {
 	retVal = a1.searchAndCall<int>(s, "pop");
 	std::cout << retVal << "\n";
 }
-
+*/
 int main() {
-	testStack();
-	std::cout << "end\n";
-	return 0;
+  // testStack();
+  std::cout << "end\n";
+  return 0;
 }
+
