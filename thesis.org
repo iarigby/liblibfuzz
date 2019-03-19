@@ -139,6 +139,8 @@ there might be new code coverage anywhere, and since it is a finite set...
 * Research / Learning
 ** DOING c++ tutorials
 general knowledge of language since I don't have a lot of experience currently
+*** std::forward http://cpptruths.blogspot.com/2012/06/perfect-forwarding-of-parameter-groups.html
+*** 
 ** clang
 *** DOING understand code coverage library
 *** DOING get familiar with libfuzz source code
@@ -187,6 +189,44 @@ llvm-cov export ./stack -instr-profile=stack.profdata > export.json
 *** flags
 **** sparse
 The -sparse flag is optional but can result in dramatically smaller indexed profiles. This option should not be used if the indexed profile will be reused for PGO.
+
+
+* content
+** introduction
+*** software verification tools
+**** testing
+# what to write here
+***** aims
+****** define expected outcomes of ...
+# code coverage
+***** drawbacks
+****** relies on the developer
+****** does not anticipate bugs that are not trivial
+****** 
+to adress these, other methods are more and more frequently used
+**** static analysis
+***** usual code checking tools
+- good for finding bugs, but does not touch code coverage
+# have only short overview and  
+***** symbolic execution
+- works on bitcode / bytecode
+- resource heavy
+  - ? cannot substitute unit tests
+  - ? not practical in a lot of cases where unit tests would suffice
+- sometimes not realistic because of path explosion
+**** dynamic analysis
+***** fuzzing (with the example of llvm's libfuzzer)
+ease of implementing 
+******* aims
+
+******* conditions assumed:
+*** challenges in unit testing
+# with the example of deck
+# should this be in the part where unit testing is introduced?
+in usual cases, member function combinations
+- getting meaningful combination
+- 
+
 * related work
 ** klee 
 http://klee.github.io
@@ -204,3 +244,4 @@ http://www.cs.utah.edu/~ligd/publications/KLOVER-CAV11.pdf
 We present the first symbolic execution and automatic testgeneration tool for C++ programs. First we describe our effortin extend-ing an existing symbolic execution tool for C programs to handleC++programs. We then show how we made this tool generic, efficientandusable to handle real-life industrial applications. Novelfeatures includeextended symbolic virtual machine, library optimization for Cand C++,object-level execution and reasoning, interfacing with specific type of ef-ficient solvers, and semi-automatic unit and component testing. This toolis being used to assist the validation and testing of industrial softwareas well as publicly available programs written using the C++ language
 *** notes
 As shown in Fig. 1, the tool’s flow is similar to KLEE’s. A C++ program is compiled into LLVM bytecode, which is interpreted by KLOVER for symbolic execution
+

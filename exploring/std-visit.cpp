@@ -1,3 +1,5 @@
+// source http://gsd.web.elte.hu/gyak/cpp17util.pdf
+
 #include <iostream>
 #include <string>
 #include <vector>
