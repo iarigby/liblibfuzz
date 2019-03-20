@@ -24,10 +24,10 @@ int main(int argc, char **argv) {
   a1.insert("isFull", &stack<int>::isFull);
   InstanceFunctionPointer<stack<int>> getStackInstance = [](int size) {
     stack<int> s(size);
-    s.toggleOutput(true);
+    // s.toggleOutput(true);
     return s;
   };
-  CombinationTester<stack<int>> ct(5, a1, getStackInstance);
+  CombinationTester<stack<int>> ct(3, a1, getStackInstance, &cr);
   ct.run();
   std::cout << "done\n";
 }

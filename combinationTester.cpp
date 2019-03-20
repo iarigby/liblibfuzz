@@ -2,12 +2,17 @@
 
 // template <typename T> using InstanceFunctionPointer = T (*)(int);
 
+// TODO
+extern bool started;
+
 template <typename T>
 CombinationTester<T>::CombinationTester(int combinationSize,
                                         FunctionPointerMap<T> fpm,
-                                        InstanceFunctionPointer<T> ifp)
+                                        InstanceFunctionPointer<T> ifp,
+                                        CoverageReporter *cr)
     : functionPointerMap{fpm}, combinationSize{combinationSize},
-      getNewInstance{ifp} {
+      getNewInstance{ifp}, coverageReporter{cr} {
+  // TODO
   std::vector<std::string> v{"push", "pop",     "peek",
                              "size", "isEmpty", "isFull"};
   combinationGenerator = CombinationGenerator<std::string>(v, combinationSize);
@@ -17,8 +22,8 @@ template <typename T> void CombinationTester<T>::run() {
   while (!combinationGenerator.isDone()) {
     auto combination = combinationGenerator.nextCombination();
     T instance = getNewInstance(combinationSize);
-    // started = true;
-    coverageReporter.startCoverage(combination);
+    started = true;
+    coverageReporter->startCoverage(combination);
     try {
       for (auto const &functionName : combination) {
         // ha?
@@ -28,7 +33,7 @@ template <typename T> void CombinationTester<T>::run() {
     } catch (...) {
       // blacklist path
     }
-    coverageReporter.flush();
-    // started = false;
+    coverageReporter->flush();
+    started = false;
   }
 }

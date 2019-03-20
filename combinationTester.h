@@ -12,13 +12,13 @@ template <typename T> using InstanceFunctionPointer = T (*)(int);
 template <typename T> class CombinationTester {
 public:
   CombinationTester(int combinationSize, FunctionPointerMap<T> fpm,
-                    InstanceFunctionPointer<T> ifp);
+                    InstanceFunctionPointer<T> ifp, CoverageReporter* cr);
   void run();
 
 private:
   int combinationSize;
   InstanceFunctionPointer<T> getNewInstance;
-  CoverageReporter coverageReporter;
+  CoverageReporter* coverageReporter;
   FunctionPointerMap<T> functionPointerMap;
   CombinationGenerator<std::string> combinationGenerator;
 };
