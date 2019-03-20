@@ -1,7 +1,7 @@
 #ifndef COMBINATIONTESTER_H
 #define COMBINATIONTESTER_H
 
-#include "combinationGenerator.cpp"
+#include "combinationGenerator.h"
 #include "coverageReporter.h"
 #include "functionPointerMap.cpp"
 

@@ -1,4 +1,5 @@
 #include "combinationGenerator.h"
+#include <string>
 
 template <typename T>
 CombinationGenerator<T>::CombinationGenerator() {}
@@ -47,3 +48,5 @@ template <typename T> bool CombinationGenerator<T>::isDone() {
   return true;
 }
 // std::vector<T> CombinationGenerator<T>::getCombination()
+
+template class CombinationGenerator<std::string>;

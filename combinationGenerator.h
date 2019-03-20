@@ -9,7 +9,7 @@ public:
   CombinationGenerator();
   std::vector<T> nextCombination();
   bool isDone();
-
+  // TODO blacklist path
 private:
   std::vector<T> initialSet;
   std::vector<int> combinations;

@@ -1,15 +1,12 @@
 #include "combinationTester.cpp"
+// TODO functionPointerMap.cpp is included in combinationTester and that is the
+// only reason it compiles... need to find a better way
 #include "functionPointerMap.h"
 #include "stack.h"
 #include <iostream>
-#include <map>
-#include <string>
-#include <vector>
 
 CoverageReporter cr;
 bool started;
-
-// trace-pc-guard-example.cc
 
 bool outputMessages = true;
 

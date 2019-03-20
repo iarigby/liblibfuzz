@@ -3,7 +3,6 @@
 #include "combinationGenerator.cpp"
 #include <vector>
 #include <string>
-#include <iostream>
 
 TEST_CASE("combination generation test", "[combinationgenerator]") {
     std::vector<std::string> vec = {"a", "b"};
@@ -26,4 +25,3 @@ TEST_CASE("combination generation test", "[combinationgenerator]") {
     };
     REQUIRE(allCombinations == ans);
 }
-

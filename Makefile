@@ -1,18 +1,29 @@
-simple: trace-pc-guard-test.cpp stack.cpp
-	clang++ trace-pc-guard-test.cpp stack.o
+compile_object=clang++ -c -o ./build
 
-insert-guards: trace-pc-guard-test.cpp trace-pc-guard-cb.cc stack.cpp
-	clang++ -o inserted-guards.o- -g -fsanitize-coverage=trace-pc-guard stack.cpp -c
-guards: insert-guards
-	clang++ -o guards trace-pc-guard-cb.cc trace-pc-guard-test.cpp coverageReporter.cpp inserted-guards.o -fsanitize=address 
+simple: main.cpp stack.cpp
+	clang++ -c stack.cpp
+	clang++ main.cpp stack.o
+
+coverage-reporter: coverageReporter.cpp
+	${compile_object}/coverageReporter.o coverageReporter.cpp
+
+combination-generator: combinationGenerator.cpp
+	${compile_object}/combinationGenerator.o combinationGenerator.cpp
+
+insert-guards: stack.cpp
+	${compile_object}/inserted-guards.o -g stack.cpp -fsanitize-coverage=trace-pc-guard 
+
+guards: insert-guards coverage-reporter combination-generator
+	clang++ -fsanitize=address trace-pc-guard-cb.cc main.cpp ./build/coverageReporter.o build/combinationGenerator.o ./build/inserted-guards.o  
+
 run: guards
-	./guards
+	./a.out
 
 debug: insert-guards
-	clang++ -g -o guards trace-pc-guard-cb.cc trace-pc-guard-test.cpp coverageReporter.cpp inserted-guards.o -fsanitize=address
+	clang++ -g -o guards.o -fsanitize=address trace-pc-guard-cb.cc main.cpp coverageReporter.o combinationGenerator.o inserted-guards.o 
 
-
-.PHONY: test
-test: combinationGenerator.cpp combinationGenerator-test.cpp functionPointerMap.cpp functionPointerMap-test.cpp
-	clang++ -o tests combinationGenerator-test.cpp functionPointerMap-test.cpp && ./test
+# TODO have main test file included in all tests
+# .PHONY: test
+# test: combinationGenerator.cpp combinationGenerator-test.cpp functionPointerMap.cpp functionPointerMap-test.cpp
+# 	clang++ -o tests combinationGenerator-test.cpp functionPointerMap-test.cpp && ./test
 
