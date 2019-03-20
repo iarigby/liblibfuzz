@@ -1,16 +1,13 @@
+#include "combinationGenerator.cpp"
+#include "coverageReporter.h"
 #include "functionPointerMap.cpp"
 #include "stack.h"
 #include <iostream>
+#include <map>
 #include <string>
 #include <vector>
-// #include "stack.cpp"
-// #include "stack-nontemplate.h"
-#include "combinationGenerator.cpp"
-#include <map>
 
-std::map<std::vector<std::string>, std::vector<std::string>> pcCalls;
-std::vector<std::string> currentPermutation;
-
+CoverageReporter cr;
 bool started;
 
 // trace-pc-guard-example.cc
@@ -36,20 +33,12 @@ int main(int argc, char **argv) {
   // a1.insert("isFull", &stack::isFull);
   std::vector<std::string> v = {"push", "pop",     "peek",
                                 "size", "isEmpty", "isFull"};
-  const int combinationSize = 6;
+  const int combinationSize = 3;
   CombinationGenerator<std::string> cb(v, combinationSize);
   while (!cb.isDone()) {
     auto perm = cb.nextCombination();
-    currentPermutation = perm;
-    std::vector<std::string> calls;
-    pcCalls.insert(std::make_pair(perm, calls));
     stack<int> s(combinationSize);
     s.toggleOutput(false);
-    // doing this now because so stack doesn't exit after under/overflow
-    // stack s(combinationSize);
-    // for (int i = 0; i < combinationSize; ++i) {
-    //  s.push(i);
-    //}
     if (outputMessages) {
       std::cout << "***** perm";
       for (auto const &elem : perm) {
@@ -58,6 +47,7 @@ int main(int argc, char **argv) {
       std::cout << "\n";
     }
     started = true;
+    cr.startCoverage(perm);
     try {
       for (auto const &elem : perm) {
         a1.searchAndCall<void>(s, elem);
@@ -73,7 +63,8 @@ int main(int argc, char **argv) {
       //
       std::cout << ">> exception ";
     }
-  started = false;
-}
-std::cout << "done\n";
+    cr.flush();
+    started = false;
+  }
+  std::cout << "done\n";
 }

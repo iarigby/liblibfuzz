@@ -5,9 +5,9 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <vector>
+#include "coverageReporter.h"
 
-extern std::map<std::vector<std::string>, std::vector<std::string>> pcCalls;
-extern std::vector<std::string> currentPermutation;
+extern CoverageReporter cr;
 extern bool started;
 extern bool outputMessages;
 // This callback is inserted by the compiler as a module constructor
@@ -48,7 +48,7 @@ extern "C" void __sanitizer_cov_trace_pc_guard(uint32_t *guard) {
   // To use it, link with AddressSanitizer or other sanitizer.
   __sanitizer_symbolize_pc(PC, "%p %F %L", PcDescr, sizeof(PcDescr));
   if (started) {
-    (pcCalls.find(currentPermutation)->second).push_back(std::string(PcDescr));
+    cr.addPCForCombination(std::string(PcDescr));
     if(outputMessages) printf("adding to the list: ");
   }
   if (outputMessages) printf("guard: %p %x PC %s\n", guard, *guard, PcDescr);
