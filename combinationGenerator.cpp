@@ -1,6 +1,9 @@
 #include "combinationGenerator.h"
 
 template <typename T>
+CombinationGenerator<T>::CombinationGenerator() {}
+
+template <typename T>
 CombinationGenerator<T>::CombinationGenerator(std::vector<T> is, int ml)
     : initialSet(is), maxLength(ml) {
   for (int i = 0; i < ml; ++i) {

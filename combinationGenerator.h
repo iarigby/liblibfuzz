@@ -6,6 +6,7 @@
 template <typename T> class CombinationGenerator {
 public:
   CombinationGenerator(std::vector<T> is, int maxLength);
+  CombinationGenerator();
   std::vector<T> nextCombination();
   bool isDone();
 
