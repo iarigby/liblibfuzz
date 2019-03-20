@@ -13,11 +13,11 @@ struct TestData {
 using pc_set = std::set<std::string>;
 SCENARIO("coverage reporting", "[coveragereporter]") {
   TestData testData;
-  GIVEN("coverage reporter with existing coverage") {
-    CoverageReporter cr;
+  CoverageReporter cr;
+  const pc_set smallCoverage = {"pc1"};
+  const pc_set largeCoverage = {"pc1", "pc2"};
+  GIVEN("coverage reporter with no coverage") {
     cr.startCoverage(testData.combination1);
-    pc_set smallCoverage = {"pc1"};
-    pc_set largeCoverage = {"pc1", "pc2"};
     WHEN("flush is called") {
       cr.addPCForCombination("pc1");
       REQUIRE(cr.currentPC == smallCoverage);
@@ -28,19 +28,25 @@ SCENARIO("coverage reporting", "[coveragereporter]") {
         REQUIRE(cr.currentPC.empty());
       }
     }
-
-    WHEN("set in coverage is a subset of new reporting") {
+  }
+  
+  GIVEN("new coverage") {
+    cr.startCoverage(testData.combination1);
+    WHEN("exists coverage that is a subset of new reporting") {
       cr.addPCForCombination("pc1");
+      cr.flush();
+      cr.startCoverage(testData.shortCombination);
+      cr.addPCForCombination("pc2");
       cr.flush();
       cr.startCoverage(testData.combination2);
       cr.addPCForCombination("pc1");
       cr.addPCForCombination("pc2");
       REQUIRE(cr.currentPC == largeCoverage);
       cr.flush();
-      THEN("it should be removed") {
+      THEN("all of them should be removed") {
         std::set<pc_set> expectedCoverage{largeCoverage};
-
         REQUIRE(cr.coverage() == expectedCoverage);
+	REQUIRE(cr.coverageSequences.size() == 1);
       }
     }
 

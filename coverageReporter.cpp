@@ -1,13 +1,23 @@
 #include "coverageReporter.h"
 
 void CoverageReporter::startCoverage(std::vector<std::string> combination) {
+  // TODO should I check whether the combination has been covered already?
   currentCombination = combination;
 }
 
-void CoverageReporter::addPCForCombination(std::string pc) {
+void CoverageReporter::addPCForCombination(const std::string &pc) {
   currentPC.insert(pc);
 }
 
+/**
+ * clears current combination and recorded coverage
+ * if exact same coverage has been found with same or shorter sequence,
+ * the coverageSequences won't be updated, if longer one, the sequence for 
+ * coverage will be replaced.
+ * otherwise, the function will check if new coverage contains any 
+ * of the existing ones as a subset, in which case the old coverage will
+ * be removed and replaced with the larger set.
+ */
 void CoverageReporter::flush() {
   if (currentCombination.empty()) {
     throw "no combination provided";
