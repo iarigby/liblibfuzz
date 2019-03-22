@@ -1,17 +1,17 @@
 #define CATCH_CONFIG_MAIN
 #include <catch2/catch.hpp>
-#include "combinationGenerator.cpp"
+#include "permutationGenerator.cpp"
 #include <vector>
 #include <string>
 
-TEST_CASE("combination generation test", "[combinationgenerator]") {
+TEST_CASE("permutation generation test", "[permutationgenerator]") {
     std::vector<std::string> vec = {"a", "b"};
-    CombinationGenerator<std::string> cb(vec, 3);
-    std::vector<std::vector<std::string>> allCombinations;
+    PermutationGenerator<std::string> cb(vec, 3);
+    std::vector<std::vector<std::string>> allPermutations;
     int i = 0;
     while (!cb.isDone() && i<100) {
         i++;
-        allCombinations.push_back(cb.nextCombination());
+        allPermutations.push_back(cb.nextPermutation());
     }
     std::vector<std::vector<std::string>> ans = {
         {"a"}, {"a", "a"}, 
@@ -23,5 +23,5 @@ TEST_CASE("combination generation test", "[combinationgenerator]") {
         {"b","b"}, 
         {"b","b","a"},{"b", "b", "b"},
     };
-    REQUIRE(allCombinations == ans);
+    REQUIRE(allPermutations == ans);
 }
