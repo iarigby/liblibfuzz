@@ -22,15 +22,28 @@ TEST_CASE("permutation generation test", "[permutationgenerator]") {
 
 SCENARIO("path blacklisting", "[permutationgenerator]") {
   std::vector<std::string> vec = {"a", "b"};
-  PermutationGenerator<std::string> cb(vec, 3);
   GIVEN("permuataion generator") {
-    cb.nextPermutation(); // returns a
-    cb.nextPermutation(); // returns a a
+    PermutationGenerator<std::string> cb(vec, 3);
     WHEN("path is blacklisted") {
-      cb.blacklistPermutation(); //
-      THEN("no more permutations should be generated") {
+      cb.nextPermutation();      // returns a
+      cb.nextPermutation();      // returns a a
+      cb.blacklistPermutation(); // skip {a, a, a} and {a, a, b}
+      THEN("no more permutations starting with it should be generated") {
         std::vector<std::string> expected{"a", "b"};
         REQUIRE(cb.nextPermutation() == expected);
+        cb.blacklistPermutation();
+        expected = {"b"};
+        REQUIRE(cb.nextPermutation() == expected);
+      }
+    }
+    WHEN("path starting with last element is blacklisted") {
+      cb.nextPermutation(); // a
+      cb.blacklistPermutation(); // jump to b
+      std::vector<std::string> expected{"b"};
+      REQUIRE(cb.nextPermutation() == expected);
+      cb.blacklistPermutation();
+      THEN("generator should finish generating more") {
+	REQUIRE(cb.isDone());
       }
     }
   }
