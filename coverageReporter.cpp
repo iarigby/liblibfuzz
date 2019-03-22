@@ -1,26 +1,17 @@
 #include "coverageReporter.h"
 
-void CoverageReporter::startCoverage(std::vector<std::string> combination) {
-  // TODO should I check whether the combination has been covered already?
-  currentCombination = combination;
+void CoverageReporter::startCoverage(std::vector<std::string> functionSequence) {
+  // TODO should I check whether the functionSequence has been covered already?
+  currentSequence = functionSequence;
 }
 
 void CoverageReporter::addPCForCombination(const std::string &pc) {
   currentPC.insert(pc);
 }
 
-/**
- * clears current combination and recorded coverage
- * if exact same coverage has been found with same or shorter sequence,
- * the coverageSequences won't be updated, if longer one, the sequence for 
- * coverage will be replaced.
- * otherwise, the function will check if new coverage contains any 
- * of the existing ones as a subset, in which case the old coverage will
- * be removed and replaced with the larger set.
- */
 void CoverageReporter::flush() {
-  if (currentCombination.empty()) {
-    throw "no combination provided";
+  if (currentSequence.empty()) {
+    throw "no function sequence provided";
   }
   // go through the set and remove all that are smaller and
   // contain the same elments
@@ -30,8 +21,8 @@ void CoverageReporter::flush() {
   if (p != coverageSequences.end()) {
     isNewCoverage = false;
     auto sequence = p->second;
-    if (sequence.size() > currentCombination.size()) {
-      p->second = currentCombination;
+    if (sequence.size() > currentSequence.size()) {
+      p->second = currentSequence;
     }
   }
 
@@ -49,9 +40,9 @@ void CoverageReporter::flush() {
   }
   // insert the current set
   if (isNewCoverage) {
-    coverageSequences.insert(std::make_pair(currentPC, currentCombination));
+    coverageSequences.insert(std::make_pair(currentPC, currentSequence));
   }
-  currentCombination.clear();
+  currentSequence.clear();
   currentPC.clear();
 }
 
