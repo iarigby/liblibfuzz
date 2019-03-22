@@ -1,1 +1,8 @@
-interfaceWithInput.o
+*.o
+*.gch
+a.out
+/CORPUS
+/docs
+Doxyfile
+settings.json
+.cquery_cached_index/
