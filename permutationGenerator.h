@@ -3,7 +3,8 @@
 
 #include <vector>
 
-/** responsible for generating all possible length sequence permutations.
+/**
+ * responsible for generating all possible length sequence permutations.
  * Example:  for a set for {"a", "b"}, it will generate {"a"}, {"a", "a"} ..
  * {"b"}, {"b", "a"} .. {"b", "b"}, etc
  */
@@ -30,19 +31,31 @@ public:
    */
   bool isDone(); // TODO maybe better if this class will be a container (using
                  // iterator with ++ and end() makes sense)
-  // TODO member to blacklist path
+  /**
+   * will blacklist all sequences that start with the sequence last generated.
+   * Ie stop exploring the path
+   */
+  void blacklistPermutation();
+
 private:
-  /// elements of the sequences that will be returned
+  /**
+   * elements of the sequences that will be returned */
   std::vector<T> initialSet;
-  /// this is the vector that is actually permuted. Stored elements are indices
-  /// of the initialSet
+  /**
+   * this is the vector that is actually permuted. Stored elements are indices
+   * of the initialSet */
   std::vector<int> permutations;
-  /// maximum value that element in permutations can take
+  /**
+   * maximum value that element in permutations can take */
   int setSize;
   int maxLength;
   int counter;
-  /// which element in permutations should be incremented next
+  /**
+   * which element in permutations should be incremented next */
   int currentIndex = 0;
+  /**
+   * saves last index so it can blacklist the last generated path */
+  int lastIndex = 0;
 };
 
 #endif // PERMUTATIONGENERATOR_H

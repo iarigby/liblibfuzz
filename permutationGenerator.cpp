@@ -1,8 +1,7 @@
 #include "permutationGenerator.h"
 #include <string>
 
-template <typename T>
-PermutationGenerator<T>::PermutationGenerator() {}
+template <typename T> PermutationGenerator<T>::PermutationGenerator() {}
 
 template <typename T>
 PermutationGenerator<T>::PermutationGenerator(std::vector<T> is, int ml)
@@ -19,6 +18,7 @@ PermutationGenerator<T>::PermutationGenerator(std::vector<T> is, int ml)
 
 template <typename T>
 std::vector<T> PermutationGenerator<T>::nextPermutation() {
+  lastIndex = currentIndex;
   int &elem = permutations[currentIndex];
   if (elem == setSize - 1) {
     elem = -1;
@@ -36,6 +36,16 @@ std::vector<T> PermutationGenerator<T>::nextPermutation() {
       res.push_back(initialSet[index]);
   }
   return res;
+}
+
+template <typename T> void PermutationGenerator<T>::blacklistPermutation() {
+  for (int i = lastIndex + 1; i < maxLength; i++) {
+    permutations[i] = setSize - 1;
+  }
+  currentIndex = maxLength - 1;
+  // start at the end next time and reset. I could also set them to -1 but
+  // isDone() will not work properly for the case when path starting with last
+  // element is blacklisted
 }
 
 template <typename T> bool PermutationGenerator<T>::isDone() {

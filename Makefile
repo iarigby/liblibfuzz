@@ -1,9 +1,5 @@
 compile_object=clang++ -c -o ./build
 
-simple: main.cpp stack.cpp
-	clang++ -c stack.cpp
-	clang++ main.cpp stack.o
-
 coverage-reporter: coverageReporter.cpp
 	${compile_object}/coverageReporter.o coverageReporter.cpp
 
@@ -15,6 +11,9 @@ insert-guards: stack.cpp
 
 guards: insert-guards coverage-reporter permutation-generator
 	clang++ -fsanitize=address trace-pc-guard-cb.cc main.cpp ./build/coverageReporter.o build/permutationGenerator.o ./build/inserted-guards.o  
+
+simple: coverage-reporter permutation-generator
+	clang++ main.cpp stack.cpp ./build/coverageReporter.o build/permutationGenerator.o
 
 run: guards
 	./a.out
