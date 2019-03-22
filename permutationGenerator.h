@@ -30,7 +30,11 @@ public:
    */
   bool isDone(); // TODO maybe better if this class will be a container (using
                  // iterator with ++ and end() makes sense)
-  // TODO member to blacklist path
+  /**
+   * will blacklist all sequences that start with the sequence last generated.
+   * Ie stop exploring the path
+   */
+  void blacklistPermutation();
 private:
   /// elements of the sequences that will be returned
   std::vector<T> initialSet;

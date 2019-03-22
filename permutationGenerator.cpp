@@ -38,6 +38,11 @@ std::vector<T> PermutationGenerator<T>::nextPermutation() {
   return res;
 }
 
+template <typename T>
+void PermutationGenerator<T>::blacklistPermutation() {
+
+}
+
 template <typename T> bool PermutationGenerator<T>::isDone() {
   for (auto const &index : permutations) {
     if (index < setSize - 1) {
