@@ -6,26 +6,26 @@
 extern bool started;
 
 template <typename T>
-CombinationTester<T>::CombinationTester(int combinationSize,
+CombinationTester<T>::CombinationTester(int permutationSize,
                                         FunctionPointerMap<T> fpm,
                                         InstanceFunctionPointer<T> ifp,
                                         CoverageReporter *cr)
-    : functionPointerMap{fpm}, combinationSize{combinationSize},
+    : functionPointerMap{fpm}, permutationSize{permutationSize},
       getNewInstance{ifp}, coverageReporter{cr} {
   // TODO
   std::vector<std::string> v{"push", "pop",     "peek",
                              "size", "isEmpty", "isFull"};
-  combinationGenerator = CombinationGenerator<std::string>(v, combinationSize);
+  permutationGenerator = PermutationGenerator<std::string>(v, permutationSize);
 }
 
 template <typename T> void CombinationTester<T>::run() {
-  while (!combinationGenerator.isDone()) {
-    auto combination = combinationGenerator.nextCombination();
-    T instance = getNewInstance(combinationSize);
+  while (!permutationGenerator.isDone()) {
+    auto permutation = permutationGenerator.nextPermutation();
+    T instance = getNewInstance(permutationSize);
     started = true;
-    coverageReporter->startCoverage(combination);
+    coverageReporter->startCoverage(permutation);
     try {
-      for (auto const &functionName : combination) {
+      for (auto const &functionName : permutation) {
         // ha?
         // https://stackoverflow.com/questions/3786360/confusing-template-error
         functionPointerMap.template searchAndCall<void>(instance, functionName);

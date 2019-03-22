@@ -1,7 +1,7 @@
 #ifndef COMBINATIONTESTER_H
 #define COMBINATIONTESTER_H
 
-#include "combinationGenerator.h"
+#include "permutationGenerator.h"
 #include "coverageReporter.h"
 #include "functionPointerMap.cpp"
 
@@ -16,11 +16,11 @@ public:
   void run();
 
 private:
-  int combinationSize;
+  int permutationSize;
   InstanceFunctionPointer<T> getNewInstance;
   CoverageReporter* coverageReporter;
   FunctionPointerMap<T> functionPointerMap;
-  CombinationGenerator<std::string> combinationGenerator;
+  PermutationGenerator<std::string> permutationGenerator;
 };
 
 #endif // COMBINATIONTESTER_H

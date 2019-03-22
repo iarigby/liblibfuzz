@@ -7,23 +7,23 @@ simple: main.cpp stack.cpp
 coverage-reporter: coverageReporter.cpp
 	${compile_object}/coverageReporter.o coverageReporter.cpp
 
-combination-generator: combinationGenerator.cpp
-	${compile_object}/combinationGenerator.o combinationGenerator.cpp
+permutation-generator: permutationGenerator.cpp
+	${compile_object}/permutationGenerator.o permutationGenerator.cpp
 
 insert-guards: stack.cpp
 	${compile_object}/inserted-guards.o -g stack.cpp -fsanitize-coverage=trace-pc-guard 
 
-guards: insert-guards coverage-reporter combination-generator
-	clang++ -fsanitize=address trace-pc-guard-cb.cc main.cpp ./build/coverageReporter.o build/combinationGenerator.o ./build/inserted-guards.o  
+guards: insert-guards coverage-reporter permutation-generator
+	clang++ -fsanitize=address trace-pc-guard-cb.cc main.cpp ./build/coverageReporter.o build/permutationGenerator.o ./build/inserted-guards.o  
 
 run: guards
 	./a.out
 
 debug: insert-guards
-	clang++ -g -o guards.o -fsanitize=address trace-pc-guard-cb.cc main.cpp coverageReporter.o combinationGenerator.o inserted-guards.o 
+	clang++ -g -o guards.o -fsanitize=address trace-pc-guard-cb.cc main.cpp coverageReporter.o permutationGenerator.o inserted-guards.o 
 
 # TODO have main test file included in all tests
 # .PHONY: test
-# test: combinationGenerator.cpp combinationGenerator-test.cpp functionPointerMap.cpp functionPointerMap-test.cpp
+# test: permutationGenerator.cpp permutationGenerator-test.cpp functionPointerMap.cpp functionPointerMap-test.cpp
 # 	clang++ -o tests combinationGenerator-test.cpp functionPointerMap-test.cpp && ./test
 
