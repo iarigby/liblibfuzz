@@ -1,7 +1,7 @@
 // #ifndef CATCH_CONFIG_MAIN
 #define CATCH_CONFIG_MAIN
 // #endif
-#include "functionPointerMap.cpp"
+#include "../include/functionPointerMap.cpp"
 #include <catch/catch.hpp>
 
 class MyClass {

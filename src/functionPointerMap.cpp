@@ -1,4 +1,4 @@
-#include "functionPointerMap.h"
+#include "../include/functionPointerMap.h"
 #include <iostream>
 
 template <typename A> using voidFunctionType = void (A::*)(void);

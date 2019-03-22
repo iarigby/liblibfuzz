@@ -1,5 +1,5 @@
 #define CATCH_CONFIG_MAIN
-#include "permutationGenerator.cpp"
+#include "../include/permutationGenerator.h"
 #include <catch2/catch.hpp>
 #include <string>
 #include <vector>
