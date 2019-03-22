@@ -31,7 +31,7 @@ template <typename T> void CombinationTester<T>::run() {
         functionPointerMap.template searchAndCall<void>(instance, functionName);
       }
     } catch (...) {
-      // blacklist path
+      permutationGenerator.blacklistPermutation();
     }
     coverageReporter->flush();
     started = false;
