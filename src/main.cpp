@@ -1,8 +1,8 @@
 #include "combinationTester.cpp"
 // TODO functionPointerMap.cpp is included in combinationTester and that is the
 // only reason it compiles... need to find a better way
-#include "../include/functionPointerMap.h"
-#include "stack.h"
+#include "functionPointerMap.h"
+#include "../examples/stack.h"
 #include <iostream>
 
 CoverageReporter cr;

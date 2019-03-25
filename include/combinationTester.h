@@ -3,7 +3,7 @@
 
 #include "permutationGenerator.h"
 #include "coverageReporter.h"
-#include "functionPointerMap.cpp"
+#include "../src/functionPointerMap.cpp"
 
 #include <string>
 

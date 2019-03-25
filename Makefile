@@ -9,16 +9,25 @@ SRCEXT := cpp
 SOURCES := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
 OBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.o))
 CFLAGS := -g # -Wall
-# LIB := -pthread -lmongoclient -L lib -lboost_thread-mt -lboost_filesystem-mt -lboost_system-mt
+LIB := examples/stack.cpp
 INC := -I include
+
+$(TARGET): $(OBJECTS)
+	echo " Linking..."
+	@echo " $(CC) $^ -o $(TARGET) $(LIB)"; $(CC) $^ -o $(TARGET) $(LIB)
+
+$(BUILDDIR)/%.o: $(SRCDIR)/%.$(SRCEXT)
+	@mkdir -p $(BUILDDIR)
+	@echo " $(CC) $(CFLAGS) $(INC) -c -o $@ $<"; $(CC) $(CFLAGS) $(INC) -c -o $@ $<
 
 tester:
 	$(CC) $(CFLAGS) test/tester.cpp $(INC) $(LIB) -o bin/tester
 
+
 test: tester
 	./bin/tester
 clean:
-	@echo " Cleaning..."; 
+	@echo " Cleaning..."
 	@echo " $(RM) -r $(BUILDDIR) $(TARGET)"; $(RM) -r $(BUILDDIR) $(TARGET)
 
 .PHONY: clean
@@ -32,7 +41,7 @@ coverage-reporter: coverageReporter.cpp
 permutation-generator: permutationGenerator.cpp
 	${compile_object}/permutationGenerator.o permutationGenerator.cpp
 
-insert-guards: stack.cpp
+insert-guards: 
 	${compile_object}/inserted-guards.o -g stack.cpp -fsanitize-coverage=trace-pc-guard 
 
 guards: insert-guards coverage-reporter permutation-generator

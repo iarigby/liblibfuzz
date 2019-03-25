@@ -1,4 +1,4 @@
-#include "../include/permutationGenerator.h"
+#include "permutationGenerator.h"
 #include <string>
 
 template <typename T> PermutationGenerator<T>::PermutationGenerator() {}

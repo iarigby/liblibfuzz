@@ -1,4 +1,4 @@
-#include "../include/coverageReporter.h"
+#include "coverageReporter.h"
 
 void CoverageReporter::startCoverage(std::vector<std::string> functionSequence) {
   // TODO should I check whether the functionSequence has been covered already?
