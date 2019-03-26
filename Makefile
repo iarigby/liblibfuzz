@@ -1,3 +1,52 @@
+#using https://hiltmon.com/blog/2013/07/03/a-simple-c-plus-plus-project-structure/
+
+CC := clang++
+# CC := clang++ --analyze
+SRCDIR := src
+BUILDDIR := build
+TARGET := bin/runner
+TEST_OBJECT := stack
+SRCEXT := cpp
+SOURCES := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
+OBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.o))
+CFLAGS := -g # -Wall
+LIB := examples/$(TEST_OBJECT).cpp
+INC := -I include
+INSERTED_GUARDS := bin/inserted-guards.o
+SANITIZERFLAGS := -fsanitize=address ./src/trace-pc-guard-cb.cc
+
+
+$(TARGET): $(OBJECTS)
+	@echo " Linking..."
+	@echo " $(CC) $^ -o $(TARGET) $(LIB)"; $(CC) $^ -o $(TARGET) $(LIB)
+
+
+$(BUILDDIR)/%.o: $(SRCDIR)/%.$(SRCEXT)
+	@mkdir -p $(BUILDDIR)
+	@echo " $(CC) $(CFLAGS) $(INC) -c -o $@ $<"; $(CC) $(CFLAGS) $(INC) -c -o $@ $<
+
+$(INSERTED_GUARDS): examples/$(TEST_OBJECT).cpp
+	clang++ -c -g -o $(INSERTED_GUARDS) examples/$(TEST_OBJECT).cpp -fsanitize-coverage=trace-pc-guard 
+
+guards: $(OBJECTS) $(INSERTED_GUARDS)
+	@echo " Linking..."
+	@echo " $(CC) $(SANITIZERFLAGS) $(INSERTED_GUARDS) $^ -o bin/guards"; $(CC) $(SANITIZERFLAGS) $(INSERTED_GUARDS) $^ -o bin/guards
+
+
+#TODO does not work
+tester:
+	$(CC) $(CFLAGS) test/tester.cpp $(INC) $(LIB) -o bin/tester
+
+
+test: tester
+	./bin/tester
+clean:
+	@echo " Cleaning..."
+	@echo " $(RM) -r $(BUILDDIR) $(TARGET)"; $(RM) -r $(BUILDDIR) $(TARGET)
+
+.PHONY: clean
+
+
 compile_object=clang++ -c -o ./build
 
 coverage-reporter: coverageReporter.cpp
@@ -5,12 +54,12 @@ coverage-reporter: coverageReporter.cpp
 
 permutation-generator: permutationGenerator.cpp
 	${compile_object}/permutationGenerator.o permutationGenerator.cpp
+ 
+# insert-guards: 
+#	${compile_object}/inserted-guards.o -g stack.cpp -fsanitize-coverage=trace-pc-guard 
 
-insert-guards: stack.cpp
-	${compile_object}/inserted-guards.o -g stack.cpp -fsanitize-coverage=trace-pc-guard 
-
-guards: insert-guards coverage-reporter permutation-generator
-	clang++ -fsanitize=address trace-pc-guard-cb.cc main.cpp ./build/coverageReporter.o build/permutationGenerator.o ./build/inserted-guards.o  
+# guards: insert-guards coverage-reporter permutation-generator
+#	clang++ -fsanitize=address trace-pc-guard-cb.cc main.cpp ./build/coverageReporter.o build/permutationGenerator.o ./build/inserted-guards.o  
 
 simple: coverage-reporter permutation-generator
 	clang++ main.cpp stack.cpp ./build/coverageReporter.o build/permutationGenerator.o

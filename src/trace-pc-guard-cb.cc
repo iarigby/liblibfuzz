@@ -5,7 +5,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <vector>
-#include "coverageReporter.h"
+#include "../include/coverageReporter.h"
 
 extern CoverageReporter cr;
 extern bool started;

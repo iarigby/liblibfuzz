@@ -39,7 +39,7 @@ public:
    * get all sets coverered so far
    * \return keys of coverageSequences, set of sets
    */
-  auto coverage();
+  std::set<pc_set> coverage();
   /**
    *  set of all coverage points collected for current permutation
    */

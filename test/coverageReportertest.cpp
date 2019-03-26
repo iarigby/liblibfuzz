@@ -1,6 +1,6 @@
 #define CATCH_CONFIG_MAIN
 
-#include "coverageReporter.cpp"
+#include "coverageReporter.h"
 #include <catch2/catch.hpp>
 
 struct TestData {

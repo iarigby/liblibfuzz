@@ -46,7 +46,7 @@ void CoverageReporter::flush() {
   currentPC.clear();
 }
 
-auto CoverageReporter::coverage() {
+std::set<pc_set> CoverageReporter::coverage() {
   std::set<std::set<std::string>> s;
   for (auto const &elem : coverageSequences) {
     s.insert(elem.first);

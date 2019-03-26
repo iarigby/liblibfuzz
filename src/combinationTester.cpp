@@ -1,5 +1,6 @@
 #include "combinationTester.h"
 
+
 // template <typename T> using InstanceFunctionPointer = T (*)(int);
 
 // TODO
