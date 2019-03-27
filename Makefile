@@ -1,10 +1,13 @@
 #using https://hiltmon.com/blog/2013/07/03/a-simple-c-plus-plus-project-structure/
+#made some modifications
+#added my own guards and test scripts
 
 CC := clang++
 # CC := clang++ --analyze
 SRCDIR := src
 BUILDDIR := build
-TARGET := bin/runner
+MAINFILE := src/main.cc
+TARGET := bin/main
 TEST_OBJECT := stack
 SRCEXT := cpp
 SOURCES := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
@@ -15,63 +18,41 @@ INC := -I include
 INSERTED_GUARDS := bin/inserted-guards.o
 SANITIZERFLAGS := -fsanitize=address ./src/trace-pc-guard-cb.cc
 
+TEST_SOURCES := $(shell find test -type f -name *test.$(SRCEXT))
+TEST_OBJECTS := $(patsubst test/%,$(BUILDDIR)/%,$(TEST_SOURCES:.$(SRCEXT)=.o))
+TEST_TARGET := bin/test
+TEST_LIB := catch2/tests-main.o
 
-$(TARGET): $(OBJECTS)
+$(TARGET): $(OBJECTS) $(MAINFILE)
 	@echo " Linking..."
-	@echo " $(CC) $^ -o $(TARGET) $(LIB)"; $(CC) $^ -o $(TARGET) $(LIB)
-
+	$(CC) $(INC) $^ -o $(TARGET) $(LIB)
 
 $(BUILDDIR)/%.o: $(SRCDIR)/%.$(SRCEXT)
 	@mkdir -p $(BUILDDIR)
-	@echo " $(CC) $(CFLAGS) $(INC) -c -o $@ $<"; $(CC) $(CFLAGS) $(INC) -c -o $@ $<
+	$(CC) $(CFLAGS) $(INC) -c -o $@ $<
 
 $(INSERTED_GUARDS): examples/$(TEST_OBJECT).cpp
 	clang++ -c -g -o $(INSERTED_GUARDS) examples/$(TEST_OBJECT).cpp -fsanitize-coverage=trace-pc-guard 
 
 guards: $(OBJECTS) $(INSERTED_GUARDS)
 	@echo " Linking..."
-	@echo " $(CC) $(SANITIZERFLAGS) $(INSERTED_GUARDS) $^ -o bin/guards"; $(CC) $(SANITIZERFLAGS) $(INSERTED_GUARDS) $^ -o bin/guards
+	$(CC) $(SANITIZERFLAGS) $^ -o bin/guards
 
+tests-main: test/tests-main.cpp
+	$(CC) -c test/tests-main.cpp -o $(TEST_LIB)
 
-#TODO does not work
-tester:
-	$(CC) $(CFLAGS) test/tester.cpp $(INC) $(LIB) -o bin/tester
+$(TEST_TARGET): $(TEST_OBJECTS) $(OBJECTS)
+	@echo " Linking tests..."
+	$(CC) $^  $(TEST_LIB) -o $(TEST_TARGET) $(LIB)
 
+$(BUILDDIR)/%test.o: test/%test.$(SRCEXT)
+	@mkdir -p $(BUILDDIR)
+	$(CC) $(CFLAGS) $(INC) -c -o $@ $<
 
-test: tester
-	./bin/tester
+test: $(TEST_TARGET)
+	./$(TEST_TARGET)
 clean:
 	@echo " Cleaning..."
-	@echo " $(RM) -r $(BUILDDIR) $(TARGET)"; $(RM) -r $(BUILDDIR) $(TARGET)
+	@echo " $(RM) -r $(INSERTED_GUARDS) $(BUILDDIR) $(TARGET)"; $(RM) -r $(INSERTED_GUARDS) $(BUILDDIR) $(TARGET)
 
-.PHONY: clean
-
-
-compile_object=clang++ -c -o ./build
-
-coverage-reporter: coverageReporter.cpp
-	${compile_object}/coverageReporter.o coverageReporter.cpp
-
-permutation-generator: permutationGenerator.cpp
-	${compile_object}/permutationGenerator.o permutationGenerator.cpp
- 
-# insert-guards: 
-#	${compile_object}/inserted-guards.o -g stack.cpp -fsanitize-coverage=trace-pc-guard 
-
-# guards: insert-guards coverage-reporter permutation-generator
-#	clang++ -fsanitize=address trace-pc-guard-cb.cc main.cpp ./build/coverageReporter.o build/permutationGenerator.o ./build/inserted-guards.o  
-
-simple: coverage-reporter permutation-generator
-	clang++ main.cpp stack.cpp ./build/coverageReporter.o build/permutationGenerator.o
-
-run: guards
-	./a.out
-
-debug: insert-guards
-	clang++ -g -o guards.o -fsanitize=address trace-pc-guard-cb.cc main.cpp coverageReporter.o permutationGenerator.o inserted-guards.o 
-
-# TODO have main test file included in all tests
-# .PHONY: test
-# test: permutationGenerator.cpp permutationGenerator-test.cpp functionPointerMap.cpp functionPointerMap-test.cpp
-# 	clang++ -o tests combinationGenerator-test.cpp functionPointerMap-test.cpp && ./test
-
+.PHONY: clean inserted_guards
