@@ -1,7 +1,5 @@
 #include "combinationTester.cpp"
-// TODO functionPointerMap.cpp is included in combinationTester and that is the
-// only reason it compiles... need to find a better way
-#include "functionPointerMap.h"
+#include "functionPointerMap.hpp"
 #include "../examples/stack.h"
 #include <iostream>
 

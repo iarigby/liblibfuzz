@@ -1,7 +1,7 @@
 #define CATCH_CONFIG_MAIN
 
-#include "../src/functionPointerMap.cpp"
-#include <catch/catch.hpp>
+#include "functionPointerMap.hpp"
+#include <catch2/catch.hpp>
 
 class MyClass {
 public:
