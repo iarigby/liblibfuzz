@@ -1,6 +1,10 @@
 *.o
 *.gch
 a.out
+/bin
+/catch2
+commitmessage
+.dir-locals.el
 /CORPUS
 /docs
 Doxyfile
