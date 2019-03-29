@@ -34,9 +34,9 @@ $(BUILDDIR)/%.o: $(SRCDIR)/%.$(SRCEXT)
 $(INSERTED_GUARDS): examples/$(TEST_OBJECT).cpp
 	clang++ -c -g -o $(INSERTED_GUARDS) examples/$(TEST_OBJECT).cpp -fsanitize-coverage=trace-pc-guard 
 
-guards: $(OBJECTS) $(INSERTED_GUARDS)
+guards: $(OBJECTS) $(INSERTED_GUARDS) $(MAINFILE)
 	@echo " Linking..."
-	$(CC) $(SANITIZERFLAGS) $^ -o bin/guards
+	$(CC) $(INC) $(SANITIZERFLAGS) $^ -o bin/guards
 
 tests-main: test/tests-main.cpp
 	$(CC) -c test/tests-main.cpp -o $(TEST_LIB)
