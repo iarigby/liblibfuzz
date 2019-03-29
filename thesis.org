@@ -109,6 +109,7 @@ since it's more feasible to keep exploring different paths (for example calling 
 **** handling exceptions
 fuzzer will hault on first exception it finds, because the design philosophy is that the consumer is an API. In case of libraries, exceptions might be expected so here each function (or combination?) call will be wrapped in a try catch so all the different call sequences that result in various exceptions
 ** <2019-03-29> 
+*** 
 * other
 ** Project outline
 *** Motivation
@@ -228,6 +229,7 @@ ease of implementing
 in usual cases, member function combinations
 - getting meaningful combination
 ** possible implementations
+in developers manual
 **** libfuzzer
 ***** Implementing
 # Q should I provide sample code that I tried?

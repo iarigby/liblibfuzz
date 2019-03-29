@@ -56,9 +56,10 @@ std::set<pc_set> CoverageReporter::coverage() {
 
 bool CoverageReporter::isSubsetOf(std::set<std::string> &s1,
                                   std::set<std::string> &s2) {
+  // TODO 
   return s1.size() < s2.size() &&
-         // The includes() algorithm compares two sorted sequences
+         std::includes(s2.begin(), s2.end(), s1.begin(), s1.end());
+  // The includes() algorithm compares two sorted sequences
          // returns true if every element in the range [start2, finish2) is
          // contained in the range [start1, finish1)
-         std::includes(s2.begin(), s2.end(), s1.begin(), s1.end());
 }

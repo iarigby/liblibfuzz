@@ -5,9 +5,10 @@
 
 /**
  * responsible for generating all possible length sequence permutations.
- * Example:  for a set for {"a", "b"}, it will generate {"a"}, {"a", "a"} ..
+ * Example:  for a set for {"a", "b"}, with maxLength 2 it will generate {"a"}, {"a", "a"} ..
  * {"b"}, {"b", "a"} .. {"b", "b"}, etc
  */
+// TODO explain differences from std permutation
 template <typename T> class PermutationGenerator {
 public:
   /**
@@ -15,7 +16,7 @@ public:
    * \param is will be used to select elements for sequence permutations
    * \param maxLenght is a limit for maximum sequence length
    */
-  // TODO change vector to a set
+  // TODO change vector to a set (and explain why it is used)
   PermutationGenerator(std::vector<T> is, int maxLength);
   PermutationGenerator();
   /**

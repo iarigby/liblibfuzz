@@ -11,6 +11,7 @@ bool outputMessages = true;
 int main(int argc, char **argv) {
   FunctionPointerMap<stack<int>> a1;
   // a1.insert("push", &stack<int>::push);
+  // TODO explain the design decisions in more detail
   a1.insertNonVoid("push", [](stack<int> &a) { a.push(1); });
   a1.insert("pop", &stack<int>::pop);
   a1.insert("peek", &stack<int>::peek);
