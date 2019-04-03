@@ -277,4 +277,30 @@ no straightforward way exists to isolate coverage on different sequences. need m
 **** sanitizercoverage
 ***** how it works
 guards are inserted at function entrance points, if/else block starts, etc. You can implement the functions that get called when the guard is initialized and then when it's called
+** user manual
+*** create a makefile that only has
+** developer manual
+*** system requirements
+**** clang 7+
+*** conventions
+**** using clang-format llvm 
+# TODO actually include it
+you can run make format, or alternatively use clang-format plugin for IDE of your choice. 
+*** documentation
+Doxygen is used with javadoc style. All classes are thoroughly documented.
+run doxygen Doxyfile to generate documentation in html and latex. Latex needs additional compiling.
+If you'd like to change doxygen settings, you can copy the Doxyfile and run doxygen my-Doxyfile.
+ Settings that are changed from default:
+**** src/, include/ directories are parsed
+# TODO maybe add testdir?
+*** structure of the source folder
 
+this makes it easier to create a comprehensive but concise makefile which scans the source folder for .cpp files and 
+.cc is used for main and 
+*** testing
+**** the project is tested using the catch2 framework. A header file is provided in the lib
+**** steps
+1. run make test-main
+This compiles the test-main.cpp which defines the main function of catch. Since it needs to be defined just once and used for any test case, it is more efficient to compile it to an object which is later included in tests.
+2. run make test
+ 
