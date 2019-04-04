@@ -1,0 +1,5 @@
+* dependencies
+** catch2
+** sanitizercoverage
+# insert explanations from  documentation
+currently, only ... is used, but additional modifications could be made later
