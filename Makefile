@@ -33,7 +33,8 @@ $(BUILDDIR)/%.o: $(SRCDIR)/%.$(SRCEXT)
 	$(CC) $(CFLAGS) $(INC) -c -o $@ $<
 
 $(INSERTED_GUARDS): examples/$(TEST_OBJECT).cpp
-	clang++ -c -g -o $(INSERTED_GUARDS) examples/$(TEST_OBJECT).cpp -fsanitize-coverage=trace-pc-guard 
+	clang++ -c -g -o $(INSERTED_GUARDS) examples/$(TEST_OBJECT).cpp \
+		-fsanitize-coverage=trace-pc-guard 
 
 guards: $(OBJECTS) $(INSERTED_GUARDS) $(MAINFILE)
 	@echo " Linking..."
@@ -57,6 +58,6 @@ test: $(TEST_TARGET)
 	./$(TEST_TARGET)
 clean:
 	@echo " Cleaning..."
-	@echo " $(RM) -r $(INSERTED_GUARDS) $(BUILDDIR) $(TARGET)"; $(RM) -r $(INSERTED_GUARDS) $(BUILDDIR) $(TARGET)
+	$(RM) -r $(INSERTED_GUARDS) $(BUILDDIR) $(TARGET)
 
 .PHONY: clean inserted_guards

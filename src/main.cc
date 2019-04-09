@@ -7,7 +7,7 @@ CoverageReporter coverageReporter;
 bool started;
 
 bool outputMessages = false;
-
+extern int i;
 int main(int argc, char **argv) {
   FunctionPointerMap<stack<int>> a1;
   // a1.insert("push", &stack<int>::push);
@@ -28,6 +28,8 @@ int main(int argc, char **argv) {
   combinationTester.run();
   coverageReporter.printResults();
   // cr.printResultsToFile();
+  // comment this line if not compiling with guards
+  std::cout << i;
   std::cout << "done\n";
   return 0;
 }
