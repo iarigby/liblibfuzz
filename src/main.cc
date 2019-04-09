@@ -1,12 +1,12 @@
+#include "../examples/stack.h"
 #include "combinationTester.cpp"
 #include "functionPointerMap.hpp"
-#include "../examples/stack.h"
 #include <iostream>
 
-CoverageReporter cr;
+CoverageReporter coverageReporter;
 bool started;
 
-bool outputMessages = true;
+bool outputMessages = false;
 
 int main(int argc, char **argv) {
   FunctionPointerMap<stack<int>> a1;
@@ -23,9 +23,11 @@ int main(int argc, char **argv) {
     // s.toggleOutput(true);
     return s;
   };
-  CombinationTester<stack<int>> ct(3, a1, getStackInstance, &cr);
-  ct.run();
-  // TODO
-  //  std::cout << cr.coverage() << std::endl;
+  CombinationTester<stack<int>> combinationTester(3, a1, getStackInstance,
+                                                  &coverageReporter);
+  combinationTester.run();
+  coverageReporter.printResults();
+  // cr.printResultsToFile();
   std::cout << "done\n";
+  return 0;
 }

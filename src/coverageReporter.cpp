@@ -63,3 +63,31 @@ bool CoverageReporter::isSubsetOf(std::set<std::string> &s1,
          // returns true if every element in the range [start2, finish2) is
          // contained in the range [start1, finish1)
 }
+
+void CoverageReporter::writeResults(std::ostream& outstream) {
+  for (const auto &coverage : coverageSequences) {
+    outstream << "combination: ";
+    for (const auto &func : coverage.second) {
+      outstream << func << " ";
+    }
+    outstream << "\n";
+    for (const auto &pc : coverage.first) {
+      outstream << "\t" << pc << "\n";
+    }
+  }
+}
+
+void CoverageReporter::printResults() {
+  writeResults(std::cout);
+}
+
+void CoverageReporter::printResultsToFile() {
+  printResultsToFile("results.txt");
+}
+
+void CoverageReporter::printResultsToFile(std::string fileName) {
+  std::ofstream outputFile;
+  outputFile.open(fileName);
+  writeResults(outputFile);
+  outputFile.close();
+}

@@ -6,6 +6,8 @@
 #include <set>
 #include <string>
 #include <vector>
+#include <iostream>
+#include <fstream>
 
 using pc_set = std::set<std::string>;
 
@@ -57,6 +59,13 @@ public:
    *  which sequence the current coverage will be mapped to
    */
   std::vector<std::string> currentSequence;
+  /**
+   * prints the coverageSequence member
+   */
+  void writeResults(std::ostream& outstream);
+  void printResults();
+  void printResultsToFile();
+  void printResultsToFile(std::string fileName);
 };
 
 #endif // COVERAGEREPORTER_H

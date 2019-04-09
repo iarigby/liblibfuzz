@@ -8,6 +8,7 @@ SRCDIR := src
 BUILDDIR := build
 MAINFILE := src/main.cc
 TARGET := bin/main
+GUARDS_TARGET := bin/guards
 TEST_OBJECT := stack
 SRCEXT := cpp
 SOURCES := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
@@ -36,7 +37,10 @@ $(INSERTED_GUARDS): examples/$(TEST_OBJECT).cpp
 
 guards: $(OBJECTS) $(INSERTED_GUARDS) $(MAINFILE)
 	@echo " Linking..."
-	$(CC) $(INC) $(SANITIZERFLAGS) $^ -o bin/guards
+	$(CC) $(INC) $(SANITIZERFLAGS) $^ -o $(GUARDS_TARGET)
+
+run-guards: guards
+	ASAN_OPTIONS=strip_path_prefix=`pwd`/ ./$(GUARDS_TARGET)
 
 tests-main: test/tests-main.cpp
 	$(CC) -c test/tests-main.cpp -o $(TEST_LIB)
