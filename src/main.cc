@@ -25,5 +25,7 @@ int main(int argc, char **argv) {
   };
   CombinationTester<stack<int>> ct(3, a1, getStackInstance, &cr);
   ct.run();
+  // TODO
+  //  std::cout << cr.coverage() << std::endl;
   std::cout << "done\n";
 }

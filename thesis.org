@@ -10,6 +10,10 @@ added on [2018-12-26 Wed 13:42]
 **** components
 ***** generate reports
 ***** use a separate class in the extern functions
+***** move the sanitizercoverage flag to coveragereported
+don't forget to update docs
+**** fuzzing
+***** add a few simple fuzzmutate functions
 *** Thesis
 * meetings
 ** <2018-11-12 Tue 13:39>
@@ -279,6 +283,9 @@ no straightforward way exists to isolate coverage on different sequences. need m
 guards are inserted at function entrance points, if/else block starts, etc. You can implement the functions that get called when the guard is initialized and then when it's called
 ** user manual
 *** create a makefile that only has
+*** troubleshooting
+*** create a script that generates the main file
+and also replaces the test target name in Makefile
 ** developer manual
 *** system requirements
 **** clang 7+
