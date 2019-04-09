@@ -282,7 +282,17 @@ no straightforward way exists to isolate coverage on different sequences. need m
 ***** how it works
 guards are inserted at function entrance points, if/else block starts, etc. You can implement the functions that get called when the guard is initialized and then when it's called
 ** user manual
+*** intended audience
+this software is intended for c++ developers who would like to ....
+Therefore, at least basic knowledge of c++ is assumed, and the user will need to pass several functions to the class
 *** create a makefile that only has
+*** class requirements
+The program is intended to test a single unit. 
+It needs to be compiled separately
+*** output
+**** memory leaks
+any memory leaks will be discovered. For more info visit AddressSanitizer z
+==32362==ERROR: LeakSanitizer: detected memory leaks
 *** troubleshooting
 *** create a script that generates the main file
 and also replaces the test target name in Makefile

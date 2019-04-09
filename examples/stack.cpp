@@ -1,12 +1,10 @@
 #include <iostream>
 #include <cstdlib>
 #include "stack.h"
-// from https://www.techiedelight.com/stack-implementation-in-cpp/
+// modified from https://www.techiedelight.com/stack-implementation-in-cpp/
 
-// define default capacity of the stack
 
 // Constructor to initialize stack
-
 template <typename T>
 stack<T>::stack(int size)
 {

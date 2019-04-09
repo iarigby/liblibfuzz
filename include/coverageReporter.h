@@ -2,12 +2,12 @@
 #define COVERAGEREPORTER_H
 
 #include <algorithm> // for includes()
+#include <fstream>
+#include <iostream>
 #include <map>
 #include <set>
 #include <string>
 #include <vector>
-#include <iostream>
-#include <fstream>
 
 using pc_set = std::set<std::string>;
 
@@ -50,7 +50,11 @@ public:
    * stores the shortest recorded function sequence for given coverage
    */
   std::map<pc_set, std::vector<std::string>> coverageSequences;
-  // private:
+  void printResults();
+  void printResultsToFile();
+  void printResultsToFile(std::string fileName);
+
+private:
   /**
    * \return if first set is subset of the second
    */
@@ -62,10 +66,7 @@ public:
   /**
    * prints the coverageSequence member
    */
-  void writeResults(std::ostream& outstream);
-  void printResults();
-  void printResultsToFile();
-  void printResultsToFile(std::string fileName);
+  void writeResults(std::ostream &outstream);
 };
 
 #endif // COVERAGEREPORTER_H
