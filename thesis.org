@@ -1,5 +1,8 @@
 #+TODO: TODO UPNEXT DOING REVIEW DONE
- 
+#+TITLE: Automated Coverage-Based Test Case Generation in C++
+#+OPTIONS: \n:t H:5 toc:nil title:nil date:nil
+#+LATEX_CLASS: book 
+
 * Inbox
 ** DONE thesis declaration
 CLOSED: [2019-01-28 Mon 21:11]
@@ -199,7 +202,43 @@ llvm-cov export ./stack -instr-profile=stack.profdata > export.json
 The -sparse flag is optional but can result in dramatically smaller indexed profiles. This option should not be used if the indexed profile will be reused for PGO.
 
 * content
-** introduction
+:PROPERTIES:
+:EXPORT_TITLE: Test case generation based on fuzzing for C++
+:END:
+
+#+LATEX_HEADER: \date{2019}
+
+#+LATEX_HEADER: \degree{Computer Science BSc}
+
+#+LATEX_HEADER: \supervisor{Zoltan Porkolab}
+#+LATEX_HEADER: \affiliation{Associate Professor}
+
+
+#+LATEX_HEADER: \university{Eötvös Loránd Tudományegyetem}
+#+LATEX_HEADER: \faculty{Faculty of Informatics}
+#+LATEX_HEADER: \department{Department of Programming Languages}
+# TODO and compilers 
+#+LATEX_HEADER: \city{Budapest}
+#+LATEX_HEADER: \logo{elte_cimer_szines}
+#+LATEX_HEADER: \documentlang{english}
+#+BEGIN_EXPORT latex
+\begin{document}
+\begin{titlepage}
+\end{titlepage}
+#+END_EXPORT
+
+\vspace*{\fill}
+Test based development is a favorable development method for modern software. We create all the necessary test cases to test the software under development and then we implement the functionality. This is a widely accepted method for library development, when the test cases try to cover all meaningful combinations of API calls. However, in real software systems, the possible combinations can grow exponentially. It is very hard to determine the minimun necessary set of meaningful API call sequences. In this thesis we try to apply fuzzy testing methods for automatically generate API call sequences for testing C++ libraries. We will use the LLVM toolset to exploit the existing code coverage and test input mutation methods. However, our target is not to gereate a random input sequence but a meaningful sequence of API calls. It is also in our plans to analyse the result to create a minimal classification set.
+
+\vspace*{\fill}
+\cleardoublepage
+#+TOC: headlines 0
+
+** inbox                                                          :noexport:
+*** fuzzing
+Generation based fuzzing
+This step could be extended with g
+** Introduction
 *** software verification tools
 **** testing
 # what to write here
@@ -232,60 +271,27 @@ ease of implementing
 # should this be in the part where unit testing is introduced?
 in usual cases, member function combinations
 - getting meaningful combination
-** possible implementations
-in developers manual
-**** libfuzzer
-***** Implementing
-# Q should I provide sample code that I tried?
-with libfuzzer, the user defines the callback that consumes data and is executed on each iteration.
-***** 1. create a map of function pointers
-****** talks about functionPointerMap class
-In order to be able to dynamically call functions, I created a template class that is able to store member function pointers in a map and call them using keys. Storing functions with different types of return value and argument types is made possible by casting it to a void functiontype and saving it paired with the typeid. When calling the function using a key, user would specify the return type and pass any arguments needed for the call, which are then forwarded. Initially, I was discarding the return value and
- ommiting functions that needed arguments.
-******* handling arguments
-will be discussed later. Had short tries and decided to not include in this scope
-# Q how should this be written?
-******** std::variant
-******** std::apply
-***** 2. handling the LLVMFUZZINPUT content
-****** how to map the data to map keys
-One way would be to parse it for exact sequence of function names. Instead, I decided to extract chars and match it with digits 
-***** 3. callback content 
-******* validate input data'
-We could try parsing the data for numbers and see if they satisfy the conditions ....  
-******* create the instance
-******* call all the functions
-***** issues with the approach
-****** challenges that arise in libraries but not in interfaces
-******* handling exceptions
-fuzzer will hault on first exception it finds, because the design philosophy is that the consumer is an API. In case of libraries, exceptions might be expected so here each function (or combination?) call will be wrapped in a try catch so all the different call sequences that result in various exceptions
-******* mutations and path exploration
-Library fuzzing might need different mutation techniques. For starters, function call is a sequence, and there are ways to create interesting inputs by being aware of it.
-
-is that for combinations, there is a finite amount of sets we could test, which will be a subset of a much larger input set that libfuzz might provide us with (ie useless filtering of garbage)
-
-For example, since it's more feasible to keep exploring different paths (for example calling the same function 17th time will unlock a new pc block). This is discussed in more detail later in . 
-****** features of libfuzz unnecessary for our case
-Even though libfuzzer will converge to the valid sequence calls very quickly, it will keep generating 'garbage' input which has no meaning in context of calling the function. 
-******* possible input space
-much larger in fuzzing, more limited (and deterministic) here
-****** additional needs not accomplishable without changing libfuzzer implementation
-******* coverage info
-libfuzzer is created with different intent in mind and extracting the coverage information which is already filtered according to the library's priority might not be what we want. Would need to change implementation if we wanted to somehow define the way coverage is collected
-**** llvm-cov
-summarizes the intire run, so if I call three different combinations of functions they results will be mixed in together. But it has some nice visualization data and maybe that could be used to display the results
-looked into libfuzzer source code to find out what they where using to collect the coverage, since they were doing multiple "isolated" runs to analyze
-**** sancov
-***** issues with the approach
-no straightforward way exists to isolate coverage on different sequences. need multiple commands, and would 
-**** sanitizercoverage
-***** how it works
-guards are inserted at function entrance points, if/else block starts, etc. You can implement the functions that get called when the guard is initialized and then when it's called
-** user manual
+*** description of the results
+I've created a program which will ... Clang's SanitizerCoverage library (explained in ) is 
+** User Documentation
 *** intended audience
 this software is intended for c++ developers who would like to ....
 Therefore, at least basic knowledge of c++ is assumed, and the user will need to pass several functions to the class
-*** create a makefile that only has
+*** dependencies
+**** clang with addressSanitizer
+# insert explanations from  documentation
+currently, only ... is used, but additional modifications could be made later
+*** installation instructions
+run these commands from the directory where you want to install the project
+#+ATTR_LATEX: :float nil
+#+BEGIN_SRC sh
+git clone  # download the contents in any way you want
+cd <dir>
+make test-main
+make test # to make sure that everything works
+#TODO create test-main which will compile catch, run unit tests, run integration test
+#+END_SRC
+After tests pass successfully, you can move on to next step and set up the  
 *** class requirements
 The program is intended to test a single unit. 
 It needs to be compiled separately
@@ -296,7 +302,58 @@ any memory leaks will be discovered. For more info visit AddressSanitizer z
 *** troubleshooting
 *** create a script that generates the main file
 and also replaces the test target name in Makefile
-** developer manual
+** Developer Documentation
+*** Explored Implementations
+***** libfuzzer
+****** Implementing
+# Q should I provide sample code that I tried?
+with libfuzzer, the user defines the callback that consumes data and is executed on each iteration.
+****** 1. create a map of function pointers
+******* talks about functionPointerMap class
+In order to be able to dynamically call functions, I created a template class that is able to store member function pointers in a map and call them using keys. Storing functions with different types of return value and argument types is made possible by casting it to a void functiontype and saving it paired with the typeid. When calling the function using a key, user would specify the return type and pass any arguments needed for the call, which are then forwarded. Initially, I was discarding the return value and
+ ommiting functions that needed arguments.
+******** handling arguments
+will be discussed later. Had short tries and decided to not include in this scope
+# Q how should this be written?
+********* std::variant
+********* std::apply
+****** 2. handling the LLVMFUZZINPUT content
+******* how to map the data to map keys
+One way would be to parse it for exact sequence of function names. Instead, I decided to extract chars and match it with digits 
+****** 3. callback content 
+******** validate input data'
+We could try parsing the data for numbers and see if they satisfy the conditions ....  
+******** create the instance
+******** call all the functions
+****** issues with the approach
+******* challenges that arise in libraries but not in interfaces
+******** handling exceptions
+fuzzer will hault on first exception it finds, because the design philosophy is that the consumer is an API. In case of libraries, exceptions might be expected so here each function (or combination?) call will be wrapped in a try catch so all the different call sequences that result in various exceptions
+******** mutations and path exploration
+Library fuzzing might need different mutation techniques. For starters, function call is a sequence, and there are ways to create interesting inputs by being aware of it.
+
+is that for combinations, there is a finite amount of sets we could test, which will be a subset of a much larger input set that libfuzz might provide us with (ie useless filtering of garbage)
+
+For example, since it's more feasible to keep exploring different paths (for example calling the same function 17th time will unlock a new pc block). This is discussed in more detail later in . 
+******* features of libfuzz unnecessary for our case
+Even though libfuzzer will converge to the valid sequence calls very quickly, it will keep generating 'garbage' input which has no meaning in context of calling the function. 
+******** possible input space
+much larger in fuzzing, more limited (and deterministic) here
+******* additional needs not accomplishable without changing libfuzzer implementation
+******** coverage info
+libfuzzer is created with different intent in mind and extracting the coverage information which is already filtered according to the library's priority might not be what we want. Would need to change implementation if we wanted to somehow define the way coverage is collected
+***** llvm-cov
+summarizes the intire run, so if I call three different combinations of functions they results will be mixed in together. But it has some nice visualization data and maybe that could be used to display the results
+looked into libfuzzer source code to find out what they where using to collect the coverage, since they were doing multiple "isolated" runs to analyze
+***** sancov
+****** issues with the approach
+no straightforward way exists to isolate coverage on different sequences. need multiple commands, and would 
+***** sanitizercoverage
+****** how it works
+guards are inserted at function entrance points, if/else block starts, etc. You can implement the functions that get called when the guard is initialized and then when it's called
+*** how sanitizer coverage works
+The program relies primarily on ... to measure coverage of different function cal sequences. Basic understanding of how these functions work 
+# documentation
 *** system requirements
 **** clang 7+
 *** conventions
