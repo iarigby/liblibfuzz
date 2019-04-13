@@ -1,5 +1,4 @@
 #+TODO: TODO UPNEXT DOING REVIEW DONE
-#+TITLE: Automated Coverage-Based Test Case Generation in C++
 #+OPTIONS: \n:t H:5 toc:nil title:nil date:nil
 #+LATEX_CLASS: book 
 
@@ -18,6 +17,8 @@ don't forget to update docs
 **** fuzzing
 ***** add a few simple fuzzmutate functions
 *** Thesis
+** TODO in functionPointerMap talk about all the cool features I'm using
+ added on [2019-04-13 szo 13:23]
 * meetings
 ** <2018-11-12 Tue 13:39>
 *** summary 
@@ -238,12 +239,13 @@ Test based development is a favorable development method for modern software. We
 *** fuzzing
 Generation based fuzzing
 This step could be extended with g
-** Introduction
+** Looking for home :P                                            :noexport:
 *** software verification tools
 **** testing
 # what to write here
 ***** aims
 ****** define expected outcomes of ...
+- generate unit test cases that achieve the  most code coverage with least function calls
 # code coverage
 ***** drawbacks
 ****** relies on the developer
@@ -266,21 +268,30 @@ ease of implementing
 ******* aims
 
 ******* conditions assumed:
-*** challenges in unit testing
-# with the example of deck
-# should this be in the part where unit testing is introduced?
-in usual cases, member function combinations
-- getting meaningful combination
-*** description of the results
-I've created a program which will ... Clang's SanitizerCoverage library (explained in ) is 
+** Introduction
+Most software heavily relies on unit tests as its primary source for logic and _fault tolerance_ verification. This approach has been largely considered as _აუცილებელი_, but it has some inherent difficulties associated with it. Although testing single member functions is trivial, most of the time the user will call various combinations of them. It is impossible to write unit tests with all possible function call sequences since such space is infinite. Therefore, the need arises for the developer to personally determine which function call sequences are most meaningful. 
+
+Other than that, a lot of times the behavior of the function will depend on internal state of the instance, which is in itself reached after certain function calls.
+*** Background on fuzzing
+Fuzz testing has reached astonishing results in exposing interface vulnerabilities in very short amount of time. 
+_TODO copy paste some info from somewhere_.
+There are two ways for fuzzing, generation and mutation based. _few words about those_
+*** _using fuzz testing for .._
+Although fuzz testing has been mostly defined to be for exploiting the vulnerabilities of the program, _we decided_ to apply its coverage based philosophy to explore the possible function call sequences of the member and pinpoint ones which might be most interesting for the developer. 
+*** Program description
+To acheive the intended results, I created a program that uses LLVM's _sanitizer coverage_ library and generation based fuzzing to explore different member function call sequences of a member. The test case needs almost minimal setup which consists of the user specifying all the member functions it wants to use in testing, and passing a single function pointer for constructing an instance of the class. Modern c++ tools have aided greatly with this having a generic _..._. There are still difficulties with regards to determining and passing the function arguments, which is in scope of a larger _research / project_. In order for this issue to not interfere with the initial program implementation, I allow users to define void functions that call the specific member function with desired arguments, and pass pointers to those.
+
+The _sanitizer coverage_ library is able to communicate its results using a single global object. 
+*** Results
+Although the original intention was to discover new test cases, there were some surprising outcomes that could not have been anticipated. For example, the program is very good in minimizing the total number of test cases. For the sample stack class, it discovered that . This outcome would be crucial for reducing the size of test suites, which leads to reduced runtime and maintenance costs.   
 ** User Documentation
 *** intended audience
 this software is intended for c++ developers who would like to ....
 Therefore, at least basic knowledge of c++ is assumed, and the user will need to pass several functions to the class
+*test target should satisfy following:* 
+ - The program is intended to test a single unit. 
+ - It needs to be compiled separately
 *** dependencies
-**** clang with addressSanitizer
-# insert explanations from  documentation
-currently, only ... is used, but additional modifications could be made later
 *** installation instructions
 run these commands from the directory where you want to install the project
 #+ATTR_LATEX: :float nil
@@ -292,9 +303,7 @@ make test # to make sure that everything works
 #TODO create test-main which will compile catch, run unit tests, run integration test
 #+END_SRC
 After tests pass successfully, you can move on to next step and set up the  
-*** class requirements
-The program is intended to test a single unit. 
-It needs to be compiled separately
+*** setup and running
 *** output
 **** memory leaks
 any memory leaks will be discovered. For more info visit AddressSanitizer z
@@ -304,77 +313,77 @@ any memory leaks will be discovered. For more info visit AddressSanitizer z
 and also replaces the test target name in Makefile
 ** Developer Documentation
 *** Explored Implementations
-***** libfuzzer
-****** Implementing
+**** libfuzzer
+***** Implementing
 # Q should I provide sample code that I tried?
 with libfuzzer, the user defines the callback that consumes data and is executed on each iteration.
-****** 1. create a map of function pointers
-******* talks about functionPointerMap class
+***** 1. create a map of function pointers
+****** talks about functionPointerMap class
 In order to be able to dynamically call functions, I created a template class that is able to store member function pointers in a map and call them using keys. Storing functions with different types of return value and argument types is made possible by casting it to a void functiontype and saving it paired with the typeid. When calling the function using a key, user would specify the return type and pass any arguments needed for the call, which are then forwarded. Initially, I was discarding the return value and
  ommiting functions that needed arguments.
-******** handling arguments
+******* handling arguments
 will be discussed later. Had short tries and decided to not include in this scope
 # Q how should this be written?
-********* std::variant
-********* std::apply
-****** 2. handling the LLVMFUZZINPUT content
-******* how to map the data to map keys
+******** std::variant
+******** std::apply
+***** 2. handling the LLVMFUZZINPUT content
+****** how to map the data to map keys
 One way would be to parse it for exact sequence of function names. Instead, I decided to extract chars and match it with digits 
-****** 3. callback content 
-******** validate input data'
+***** 3. callback content 
+******* validate input data'
 We could try parsing the data for numbers and see if they satisfy the conditions ....  
-******** create the instance
-******** call all the functions
-****** issues with the approach
-******* challenges that arise in libraries but not in interfaces
-******** handling exceptions
+******* create the instance
+******* call all the functions
+***** issues with the approach
+****** challenges that arise in libraries but not in interfaces
+******* handling exceptions
 fuzzer will hault on first exception it finds, because the design philosophy is that the consumer is an API. In case of libraries, exceptions might be expected so here each function (or combination?) call will be wrapped in a try catch so all the different call sequences that result in various exceptions
-******** mutations and path exploration
+******* mutations and path exploration
 Library fuzzing might need different mutation techniques. For starters, function call is a sequence, and there are ways to create interesting inputs by being aware of it.
 
 is that for combinations, there is a finite amount of sets we could test, which will be a subset of a much larger input set that libfuzz might provide us with (ie useless filtering of garbage)
 
 For example, since it's more feasible to keep exploring different paths (for example calling the same function 17th time will unlock a new pc block). This is discussed in more detail later in . 
-******* features of libfuzz unnecessary for our case
+****** features of libfuzz unnecessary for our case
 Even though libfuzzer will converge to the valid sequence calls very quickly, it will keep generating 'garbage' input which has no meaning in context of calling the function. 
-******** possible input space
+******* possible input space
 much larger in fuzzing, more limited (and deterministic) here
-******* additional needs not accomplishable without changing libfuzzer implementation
-******** coverage info
+****** additional needs not accomplishable without changing libfuzzer implementation
+******* coverage info
 libfuzzer is created with different intent in mind and extracting the coverage information which is already filtered according to the library's priority might not be what we want. Would need to change implementation if we wanted to somehow define the way coverage is collected
-***** llvm-cov
+**** llvm-cov
 summarizes the intire run, so if I call three different combinations of functions they results will be mixed in together. But it has some nice visualization data and maybe that could be used to display the results
 looked into libfuzzer source code to find out what they where using to collect the coverage, since they were doing multiple "isolated" runs to analyze
-***** sancov
-****** issues with the approach
+**** sancov
+***** issues with the approach
 no straightforward way exists to isolate coverage on different sequences. need multiple commands, and would 
-***** sanitizercoverage
-****** how it works
+**** sanitizercoverage
+***** how it works
 guards are inserted at function entrance points, if/else block starts, etc. You can implement the functions that get called when the guard is initialized and then when it's called
-*** how sanitizer coverage works
+*** dependencies
+**** sanitizer coverage
 The program relies primarily on ... to measure coverage of different function cal sequences. Basic understanding of how these functions work 
+Sanitizer Coverage library offers numerous ways to observe the control flow of the program, including ones for. This could aid in refining the program for more complex applications.
 # documentation
-*** system requirements
-**** clang 7+
-*** conventions
-**** using clang-format llvm 
-# TODO actually include it
-you can run make format, or alternatively use clang-format plugin for IDE of your choice. 
-*** documentation
+**** catch2
+included in the project
+***** the project is tested using the catch2 framework. A header file is provided in the lib
+***** steps
+1. run make test-main
+This compiles the test-main.cpp which defines the main function of catch. Since it needs to be defined just once and used for any test case, it is more efficient to compile it to an object which is later included in tests.
+2. run make test
+**** documentation
 Doxygen is used with javadoc style. All classes are thoroughly documented.
 run doxygen Doxyfile to generate documentation in html and latex. Latex needs additional compiling.
 If you'd like to change doxygen settings, you can copy the Doxyfile and run doxygen my-Doxyfile.
  Settings that are changed from default:
-**** src/, include/ directories are parsed
+***** src/, include/ directories are parsed
 # TODO maybe add testdir?
-*** structure of the source folder
-
+*** conventions
+**** structure of the source folder
 this makes it easier to create a comprehensive but concise makefile which scans the source folder for .cpp files and 
 .cc is used for main and 
-*** testing
-**** the project is tested using the catch2 framework. A header file is provided in the lib
-**** steps
-1. run make test-main
-This compiles the test-main.cpp which defines the main function of catch. Since it needs to be defined just once and used for any test case, it is more efficient to compile it to an object which is later included in tests.
-2. run make test
+**** using clang-format llvm 
+# TODO actually include it
+you can run make format, or alternatively use clang-format plugin for IDE of your choice. 
  
