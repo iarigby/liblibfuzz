@@ -11,7 +11,14 @@ template <typename T> using InstanceFunctionPointer = T (*)(int);
 
 /**
  * This is the class that connects all others and achieves the main task of
-// TODO sample code would be the main.cpp file
+ * TODO sample code would be the main.cpp file
+ * Note:
+ * Although functionPointerMap is capable of forwarding passed arguments and
+ * returning the result, currently it is discarded. I could not find a
+ * straightforward way to store  pass variable length and type inputs. Explored
+ * options included storing it as std::pair and using std::apply, but that would
+ * not resolve variable type parameters. std::invariant could aid in solving
+ * this issue.
  */
 template <typename T> class CombinationTester {
 public:
@@ -42,7 +49,7 @@ public:
    * meaningful coverage.
    *   5. Finally, coverageReporter is flushed
    */
-  // TODO should this automatically start? what could be some actions that the
+  // TODO: should this automatically start? what could be some actions that the
   // user might want to take
   void run();
 

@@ -290,7 +290,8 @@ this software is intended for c++ developers who would like to ....
 Therefore, at least basic knowledge of c++ is assumed, and the user will need to pass several functions to the class
 *test target should satisfy following:* 
  - The program is intended to test a single unit. 
- - It needs to be compiled separately
+ - You need to be able to be compiled separately
+In order to analyze , the object file of the test target needs to be compiled with special flags separately of the rest of 
 *** dependencies
 *** installation instructions
 run these commands from the directory where you want to install the project
@@ -304,11 +305,16 @@ make test # to make sure that everything works
 #+END_SRC
 After tests pass successfully, you can move on to next step and set up the  
 *** setup and running
+**** structure of the main file
+
 *** output
 **** memory leaks
 any memory leaks will be discovered. For more info visit AddressSanitizer z
 ==32362==ERROR: LeakSanitizer: detected memory leaks
 *** troubleshooting
+In case of any errors
+**** test if clang build works correctly
+There might be problems with the addressSanitizer. To see if the program can run independently, use the make command, which will compile and run all the source files without the flag. The program will still work and call functions, but the coverage will not be reported. If this step is successful _describe how_ then please _check your compiler_
 *** create a script that generates the main file
 and also replaces the test target name in Makefile
 ** Developer Documentation
