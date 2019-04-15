@@ -229,7 +229,7 @@ The -sparse flag is optional but can result in dramatically smaller indexed prof
 #+END_EXPORT
 
 \vspace*{\fill}
-Test based development is a favorable development method for modern software. We create all the necessary test cases to test the software under development and then we implement the functionality. This is a widely accepted method for library development, when the test cases try to cover all meaningful combinations of API calls. However, in real software systems, the possible combinations can grow exponentially. It is very hard to determine the minimun necessary set of meaningful API call sequences. In this thesis we try to apply fuzzy testing methods for automatically generate API call sequences for testing C++ libraries. We will use the LLVM toolset to exploit the existing code coverage and test input mutation methods. However, our target is not to gereate a random input sequence but a meaningful sequence of API calls. It is also in our plans to analyse the result to create a minimal classification set.
+*Test based* development is a favorable development method for modern software. We create all the necessary test cases to test the software under development and then we implement the functionality. This is a widely accepted method for library development, when the test cases try to cover all meaningful combinations of API calls. However, in real software systems, the possible combinations can grow exponentially. It is very hard to determine the minimun necessary set of meaningful API call sequences. In this thesis we try to apply fuzzy testing methods for automatically generate API call sequences for testing C++ libraries. We will use the LLVM toolset to exploit the existing code coverage and test input mutation methods. However, our target is not to gereate a random input sequence but a meaningful sequence of API calls. It is also in our plans to analyse the result to create a minimal classification set.
 
 \vspace*{\fill}
 \cleardoublepage
@@ -269,7 +269,7 @@ ease of implementing
 
 ******* conditions assumed:
 ** Introduction
-Most software heavily relies on unit tests as its primary source for logic and _fault tolerance_ verification. This approach has been largely considered as _აუცილებელი_, but it has some inherent difficulties associated with it. Although testing single member functions is trivial, most of the time the user will call various combinations of them. It is impossible to write unit tests with all possible function call sequences since such space is infinite. Therefore, the need arises for the developer to personally determine which function call sequences are most meaningful. 
+Most software heavily relies on unit tests as its primary source for logic and _fault tolerance_ verification. This approach has been largely considered as essential, but it has some inherent difficulties associated with it. Although testing single member functions independently is more often than not trivial, most of the time the user will call various combinations of them. It is impossible to write unit tests with all possible function call sequences since such space is effectively infinite. Therefore, the need arises for the developer to personally determine which function call sequences are most meaningful. 
 
 Other than that, a lot of times the behavior of the function will depend on internal state of the instance, which is in itself reached after certain function calls.
 *** Background on fuzzing
@@ -283,7 +283,7 @@ To acheive the intended results, I created a program that uses LLVM's _sanitizer
 
 The _sanitizer coverage_ library is able to communicate its results using a single global object. 
 *** Results
-Although the original intention was to discover new test cases, there were some surprising outcomes that could not have been anticipated. For example, the program is very good in minimizing the total number of test cases. For the sample stack class, it discovered that . This outcome would be crucial for reducing the size of test suites, which leads to reduced runtime and maintenance costs.   
+Although the original intention was to discover new test cases, there were some surprising outcomes that could not have been anticipated. For example, the program is very good in minimizing the total number of test cases. For the sample stack class, it discovered that . This outcome would be crucial for reducing the size of test suites, which leads to reduced ru--ntime and maintenance cos
 ** User Documentation
 *** intended audience
 this software is intended for c++ developers who would like to ....
@@ -306,6 +306,12 @@ make test # to make sure that everything works
 After tests pass successfully, you can move on to next step and set up the  
 *** setup and running
 **** structure of the main file
+#+INCLUDE: src/main.cc example c++
+# src c++ also works
+# #+INCLUDE: "~/.emacs" :lines "5-10"   Include lines 5 to 10, 10 excluded
+# #+INCLUDE: "~/.emacs" :lines "-10"    Include lines 1 to 10, 10 excluded
+# #+INCLUDE: "~/.emacs" :lines "10-"    Include lines from 10 to EOF
+
 
 *** output
 **** memory leaks
