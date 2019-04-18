@@ -8,6 +8,7 @@ SRCDIR := src
 BUILDDIR := build
 MAINFILE := src/main.cc
 TARGET := bin/main
+GUARDS_TARGET := bin/guards
 TEST_OBJECT := stack
 SRCEXT := cpp
 SOURCES := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
@@ -32,11 +33,15 @@ $(BUILDDIR)/%.o: $(SRCDIR)/%.$(SRCEXT)
 	$(CC) $(CFLAGS) $(INC) -c -o $@ $<
 
 $(INSERTED_GUARDS): examples/$(TEST_OBJECT).cpp
-	clang++ -c -g -o $(INSERTED_GUARDS) examples/$(TEST_OBJECT).cpp -fsanitize-coverage=trace-pc-guard 
+	clang++ -c -g -o $(INSERTED_GUARDS) examples/$(TEST_OBJECT).cpp \
+		-fsanitize-coverage=trace-pc-guard 
 
 guards: $(OBJECTS) $(INSERTED_GUARDS) $(MAINFILE)
 	@echo " Linking..."
-	$(CC) $(INC) $(SANITIZERFLAGS) $^ -o bin/guards
+	$(CC) $(INC) $(SANITIZERFLAGS) $^ -o $(GUARDS_TARGET)
+
+run-guards: guards
+	ASAN_OPTIONS=strip_path_prefix=`pwd`/ ./$(GUARDS_TARGET)
 
 tests-main: test/tests-main.cpp
 	$(CC) -c test/tests-main.cpp -o $(TEST_LIB)
@@ -49,10 +54,10 @@ $(BUILDDIR)/%test.o: test/%test.$(SRCEXT)
 	@mkdir -p $(BUILDDIR)
 	$(CC) $(CFLAGS) $(INC) -c -o $@ $<
 
-test: $(TEST_TARGET)
+test: $(TEST_TARGET) tests-main
 	./$(TEST_TARGET)
 clean:
 	@echo " Cleaning..."
-	@echo " $(RM) -r $(INSERTED_GUARDS) $(BUILDDIR) $(TARGET)"; $(RM) -r $(INSERTED_GUARDS) $(BUILDDIR) $(TARGET)
+	$(RM) -r $(INSERTED_GUARDS) $(BUILDDIR) $(TARGET)
 
 .PHONY: clean inserted_guards
