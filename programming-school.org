@@ -1,0 +1,8 @@
+* fuzzing
+* sanitizer coverage
+* applying fuzzing to library member function call sequences
+* talk about differences
+** 
+** difficulties in implementing
+Since it is tied to the class, you can't create a shared library like in case of libfuzzer
+* using sanitizer coverage
