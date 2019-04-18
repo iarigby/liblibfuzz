@@ -17,6 +17,10 @@ don't forget to update docs
 **** fuzzing
 ***** add a few simple fuzzmutate functions
 *** Thesis
+**** figs
+! Don't forget to have captions and refer to them from the text
+***** code snippets
+***** figures
 ** TODO in functionPointerMap talk about all the cool features I'm using
  added on [2019-04-13 szo 13:23]
 * meetings
@@ -351,11 +355,13 @@ The _sanitizer coverage_ library is able to communicate its results using a sing
 *** Results
 Although the original intention was to discover new test cases, there were some surprising outcomes that could not have been anticipated. For example, the program is very good in minimizing the total number of test cases. For the sample stack class, it discovered that _(move results here)_. This outcome would be crucial for reducing the size of test suites, which leads to reduced runtime and maintenance cost
 ** User Documentation
+This section provides full information for users of the program. I am using a simple stack class implementation as an example. 
+_(class declaration will go here)_
 *** intended audience
 this software is intended for c++ developers who would like to increase 
 Therefore, at least basic knowledge of c++ is assumed, and the user will need to implement and pass pointers for several functions.
 **** Requirements
-test target should satisfy following:
+_(....)_ and test target should satisfy following:
 ***** The program is intended to test a single unit
 Current version can not analyze any of the dependencies of the class.
 ***** You need to be able to be compiled separately
@@ -369,39 +375,74 @@ git clone  # download the contents in any way you want
 cd <dir>
 make test-main
 make test # to make sure that everything works
-#TODO create test-main which will compile catch, run unit tests, run integration test
 #+END_SRC
 After tests pass successfully, you can move on to next step and set up the  
 *** setup and running
+After installation, and successful tests
 **** structure of the main file
 # #+INCLUDE: src/main.cc example c++
 # src c++ also works
 # #+INCLUDE: "~/.emacs" :lines "5-10"   Include lines 5 to 10, 10 excluded
 # #+INCLUDE: "~/.emacs" :lines "-10"    Include lines 1 to 10, 10 excluded
 # #+INCLUDE: "~/.emacs" :lines "10-"    Include lines from 10 to EOF
+# **** _maybe_ using the script
+
+**** compile and run
+using commands
+#+BEGIN_SRC bash
+make run-guards
+#+END_SRC
+This command will _(....relevant section from the makefile)_
+|
+|
 *** output
+_(TODO)_
 **** results
+|
+|
+|
 **** memory leaks
-any memory leaks will be discovered. For more info visit AddressSanitizer z
+After it's finished running
+#+BEGIN_EXAMPLE
 ==32362==ERROR: LeakSanitizer: detected memory leaks
+#+END_EXAMPLE
+Since the program will be compiled using the `-fsanitize=address` compiler flag, any existing memory leaks will be discovered. 
+_(example with a stack class but missing constructor)_
+For more info about interpreting and fixing these messages visit AddressSanitizer.
 *** troubleshooting
 There are few mistakes 
-**** test if clang build works correctly
+**** installation
+the tests are designed so that all of the underlying infrastructure will be checked. If you start having any problems:
+***** test if clang build works correctly
 There might be problems with the addressSanitizer. To see if the program can run independently, use the make command, which will compile and run all the source files without the flag. The program will still work and call functions, but the coverage will not be reported. If this step is successful _describe how_ then please _check your compiler_
-*** create a script that generates the main file
-and also replaces the test target name in Makefile
+**** running
+|
+_(TODO)_
+|
+***** Out of Memory error for AddressSanitizer
 ** Developer Documentation
-*** conventions
-**** structure of the source folder
+*** Information about the project
+**** TODO (remove noexport tag) structure of the source folder  :noexport:
 ***** file extensions
-this makes it easier to create a comprehensive but concise makefile which scans the source folder for .cpp files and 
-.cc is used for main and 
+this makes it easier to create a comprehensive but concise makefile which scans the source folder for .cpp files and .cc is used for main and 
+***** Makefile
 ***** src
 ***** test
 discussed later in [[catch2]]
 ***** lib
-**** using clang-format llvm 
-_(short paragraph about style)_ you add `make format` to your commit hook, or alternatively use clang-format plugin for IDE of your choice. 
+...
+**** structure of the source folder
+|
+|
+|
+_(talk about contents of each directory, how Makefile is organized, etc)_
+|
+|
+|
+|
+**** code conventions
+# TODO: make format
+Code is formatted according to LLVM standards. Clang-format is used  you add `make format` to your commit hook, or alternatively use clang-format plugin for IDE of your choice. 
 *** dependencies
 **** sanitizer coverage
 The program relies primarily on LLVM's built in coverage instrumentation to measure coverage of different function cal sequences. Basic understanding of how these functions work is necessary for development.
@@ -420,12 +461,12 @@ _(2-3 medium sized paragraphs about the internals of SanitizerCoverage)_
 Sanitizer Coverage library offers numerous ways to observe the control flow of the program, including ones for. This could aid in refining the program for more complex applications.
 # documentation
 **** catch2
-The project is thoroughly tested using the catch2 framework. 
+The project is thoroughly tested using the catch2 framework. Tests are represented with Given-When-Then style, and described scenarios carefully follow documentation. 
 |
 _(short paragraph about why it was chosen)_
 |
 The hpp file is included with the project, in lib/ directory 
-***** stBeps
+***** steps
 #+BEGIN_EXAMPLE bash
 make test-main
 #+END_EXAMPLE 
@@ -443,4 +484,9 @@ _(I will create an integration test along with guards test here)_
 Doxygen is used with javadoc style. All classes are thoroughly documented.
 run doxygen Doxyfile to generate documentation in html and latex source. Latex source needs additional compiling which can be done by running the command `make` in the latex/ directory.
 If you'd like to change doxygen settings, you can copy the Doxyfile and run doxygen my-Doxyfile.
- 
+*** class documentation
+|
+|
+_(this can be found in [[file:latex/refman.pdf][refman.pdf file]]. It has its own typesetting because contents are auto-generated in latex from documentation in the code. I'll look into transforming the typesetting to match ELTE requirements, or manually move it here. I'll add a few graphs and example as well)_
+|
+|

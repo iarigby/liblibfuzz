@@ -54,7 +54,7 @@ $(BUILDDIR)/%test.o: test/%test.$(SRCEXT)
 	@mkdir -p $(BUILDDIR)
 	$(CC) $(CFLAGS) $(INC) -c -o $@ $<
 
-test: $(TEST_TARGET)
+test: $(TEST_TARGET) tests-main
 	./$(TEST_TARGET)
 clean:
 	@echo " Cleaning..."
