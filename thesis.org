@@ -14,13 +14,19 @@ added on [2018-12-26 Wed 13:42]
 ***** use a separate class in the extern functions
 ***** move the sanitizercoverage flag to coveragereported
 don't forget to update docs
-**** fuzzing
-***** add a few simple fuzzmutate functions
+**** add an integration test
+**** results
+***** have the set of covered pc blocks and check when it reaches max, halt
+****** maybe when the block doesn't have any new covered pc, apply some different rules
+***** have some messages for the user
 *** Thesis
 **** figs
 ! Don't forget to have captions and refer to them from the text
 ***** code snippets
 ***** figures
+**** other notes
+***** you should aim for the shorter combination length
+***** determining when to insert a sequence that is a union of two sets is not trivial
 ** TODO in functionPointerMap talk about all the cool features I'm using
  added on [2019-04-13 szo 13:23]
 * meetings
@@ -328,32 +334,28 @@ guards are inserted at function entrance points, if/else block starts, etc. You 
 Most software heavily relies on unit tests as its primary source for logic and _fault tolerance_ verification. This approach has been largely considered as essential, but it has some inherent difficulties associated with it. Although testing single member functions independently is more often than not trivial, most of the time the user will call various combinations of them. It is impossible to write unit tests with all possible function call sequences since such space is effectively infinite. Therefore, the need arises for the developer to personally determine which function call sequences are most meaningful. 
 
 Other than that, a lot of times the behavior of the function will depend on internal state of the instance, which is in itself reached after certain function calls.
-*** Background on fuzzing
-Fuzz testing reaches _amazing/astonishing_ results in exposing interface vulnerabilities in very short amount of time. 
-|
-_(one or two short paragraphs about fuzzing)_.
-|
-|
-|
-|
-There are two ways for fuzzing, generation and mutation based. _(few words about those)_
-|
-|
-|
+*** Background
+**** Fuzzing
+Dynamic analysis, or fuzzing, is a popular and effective method of finding vulnerabilities in software. Fuzz testing reaches impressive results in exposing interface vulnerabilities in very short amount of time. 
+
+Fuzzing heavily relies on the concept of Fuzz target - a function that accepts an array of bytes and then uses it in user defined way against the API under test. This API usually has a single endpoint that consumes any kind data. Anything that causes an exception, abort, exit, crash, assert failure, timeout is considered a bug[1]. That means, discovery of the first instance of any one of them will cause the libfuzzer to halt and inform us about the input that caused the bug, along with some other information. 
+
+There are a number of tools available for fuzzing, including AFL and Radamsa. One of the most notable implementations is Libfuzzer, LLVM's tool for coverage guided, evolutionary fuzzing engine[2]. The code coverage information for libFuzzer is provided by LLVM’s SanitizerCoverage instrumentation, and I will discuss it in the next subsection.
+**** SanitizerCoverage library
+LLVM has an interface for its built-in code coverage instrumentation[3]. The user is able to gather information about the covereged regions of the program during runtime. There are severeal different levels of depth for coverage, and the library also offers rich ways to trace the data flow. This tool was crucial for the development of my program and in the developer's manual, I discuss the library in more detail.
+
 *** _using fuzz testing for .._
 Although fuzz testing has been mostly defined to be for exploiting the vulnerabilities of the program, _we decided_ to apply its coverage based philosophy to explore the possible member function call sequences and pinpoint ones which might be most interesting for the developer.
 This also required to change the overall approach with which fuzzing is used. 
-| 
-|
-_(talk about difference between classic interface fuzzing and our case)_
-|
-|
+
+In [[Fuzzing]] Background on Fuzzing, I talked about the classical assumptions about the fuzz target. In our scenario, we have different expectations - since we are testing an entire unit and not a single API endpoint, some kind of control flow disruptions might be expected. For example, assertions are common in member functions. Therefore, the previous approach of exiting on first such failure should be modified to allow the program to gather information about all possible combinations that result in things like exceptions, so the user will be informed about them and decide what constitues the normal behavior of their library and what is outside of specifications.
+
 *** Program description
 To acheive the intended results, I created a program that uses LLVM's _sanitizer coverage_ library and generation based fuzzing. The test case needs almost minimal setup which consists of the user specifying all the member functions it wants to use in testing, and passing a single function pointer for constructing an instance of the class. Modern c++ tools have aided greatly with this by giving the ability to store pointers to functions with different type signatures. There are still difficulties with regards to determining and passing the function arguments, which is in scope of a larger _research / project_. In order for this issue to not interfere with the initial program implementation, I allow users to additionally pass pointers to the functions that will in turn call the specific member function with desired arguments.
 
 The _sanitizer coverage_ library is able to communicate its results using a single global object. _(more about this)_ 
 *** Results
-Although the original intention was to discover new test cases, there were some surprising outcomes that could not have been anticipated. For example, the program is very good in minimizing the total number of test cases. For the sample stack class, it discovered that _(move results here)_. This outcome would be crucial for reducing the size of test suites, which leads to reduced runtime and maintenance cost
+Although the original intention was to discover new test cases, there were some surprising outcomes that could not have been anticipated. For example, the program is very good in minimizing the total number of test cases. For the sample stack class, it discovered that in . This outcome would be crucial for reducing the size of test suites, which leads to reduced runtime and maintenance cost
 ** User Documentation
 This section provides full information for users of the program. I am using a simple stack class implementation as an example. 
 _(class declaration will go here)_
@@ -422,30 +424,29 @@ _(TODO)_
 ***** Out of Memory error for AddressSanitizer
 ** Developer Documentation
 *** Information about the project
-**** TODO (remove noexport tag) structure of the source folder  :noexport:
-***** file extensions
-this makes it easier to create a comprehensive but concise makefile which scans the source folder for .cpp files and .cc is used for main and 
-***** Makefile
+**** structure and contents of the source folder
+***** include
+Header files. Definitions for 3 main classes of the project. It also contains definition of the template class along with its implementation.  
 ***** src
+Implementations of classes from /include directory (excluding functionPointerMap which is a template class) and a sample for the main file, which should be replaced by user for its own test target unit.
+***** source file extensions
+this makes it easier to create a comprehensive but concise makefile which scans the source folder for .cpp files and .cc is used for main and 
 ***** test
-discussed later in [[catch2]]
+Test directory. Tests are discussed later in [[catch2]]
 ***** lib
 ...
-**** structure of the source folder
-|
-|
-|
-_(talk about contents of each directory, how Makefile is organized, etc)_
-|
-|
-|
-|
+***** Makefile
+
+***** other directories
+there will be several other directories 
+# #+INCLUDE: Makefile
 **** code conventions
 # TODO: make format
 Code is formatted according to LLVM standards. Clang-format is used  you add `make format` to your commit hook, or alternatively use clang-format plugin for IDE of your choice. 
 *** dependencies
 **** sanitizer coverage
 The program relies primarily on LLVM's built in coverage instrumentation to measure coverage of different function cal sequences. Basic understanding of how these functions work is necessary for development.
+
 |
 |
 _(2-3 medium sized paragraphs about the internals of SanitizerCoverage)_
@@ -461,12 +462,13 @@ _(2-3 medium sized paragraphs about the internals of SanitizerCoverage)_
 Sanitizer Coverage library offers numerous ways to observe the control flow of the program, including ones for. This could aid in refining the program for more complex applications.
 # documentation
 **** catch2
-The project is thoroughly tested using the catch2 framework. Tests are represented with Given-When-Then style, and described scenarios carefully follow documentation. 
+The project is thoroughly tested using the catch2 framework. Tests are represented with Given-When-Then style, and described scenarios carefully follow documentation. This library was chosen for its minimalistic setup and ability to describe the test cases with full sentences. 
 |
-_(short paragraph about why it was chosen)_
+_(short paragraph about why it was chosen. maybe include a sample from tests)_
 |
-The hpp file is included with the project, in lib/ directory 
+
 ***** steps
+
 #+BEGIN_EXAMPLE bash
 make test-main
 #+END_EXAMPLE 
@@ -490,3 +492,10 @@ If you'd like to change doxygen settings, you can copy the Doxyfile and run doxy
 _(this can be found in [[file:latex/refman.pdf][refman.pdf file]]. It has its own typesetting because contents are auto-generated in latex from documentation in the code. I'll look into transforming the typesetting to match ELTE requirements, or manually move it here. I'll add a few graphs and example as well)_
 |
 |
+
+** references                                                     :noexport:
+[1] https://github.com/CppCon/CppCon2017/blob/master/Demos/Fuzz%20Or%20Lose/Fuzz%20Or%20Lose%20-%20Kostya%20Serebryany%20-%20CppCon%202017.pdf
+[2] https://llvm.org/docs/LibFuzzer.html
+[3] https://clang.llvm.org/docs/SanitizerCoverage.html
+
+
