@@ -53,7 +53,7 @@ int main(int argc, char **argv) {
   };
   /* main commands
    */
-  CombinationTester<stack<int>> combinationTester(3, a1, getStackInstance,
+  CombinationTester<stack<int>> combinationTester(4, a1, getStackInstance,
 						  &coverageReporter);
   combinationTester.run();
   coverageReporter.printResults();
