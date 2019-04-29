@@ -1,0 +1,297 @@
+% Created 2019-04-29 h 14:16
+\documentclass{elteikthesis}[2018/06/06]
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{fixltx2e}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{marvosym}
+\usepackage{wasysym}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\tolerance=1000
+\date{2019}
+\degree{Computer Science BSc}
+\supervisor{Zoltan Porkolab}
+\affiliation{Associate Professor}
+\university{Eötvös Loránd Tudományegyetem}
+\faculty{Faculty of Informatics}
+\department{Department of Programming Languages}
+\city{Budapest}
+\logo{elte_cimer_szines}
+\documentlang{english}
+\author{Ia Mgvdliashvili}
+\date{}
+\title{Test case generation based on fuzzing for C++}
+\hypersetup{
+  pdfkeywords={},
+  pdfsubject={},
+  pdfcreator={Emacs 25.2.2 (Org mode 8.2.10)}}
+\begin{document}
+
+\maketitle
+
+\begin{export}
+\begin{document} \\
+\begin{titlepage}
+\end{titlepage}
+\end{export}
+
+\vspace*{\fill} \\
+Test based development is a favorable development method for modern software. We create all the necessary test cases to test the software under development and then we implement the functionality. This is a widely accepted method for library development, when the test cases try to cover all meaningful combinations of API calls. However, in real software systems, the possible combinations can grow exponentially. It is very hard to determine the minimun necessary set of meaningful API call sequences. In this thesis we try to apply fuzzy testing methods for automatically generate API call sequences for testing C++ libraries. We will use the LLVM toolset to exploit the existing code coverage and test input mutation methods. However, our target is not to gereate a random input sequence but a meaningful sequence of API calls. It is also in our plans to analyse the result to create a minimal classification set. \\
+
+\vspace*{\fill} \\
+\cleardoublepage \\
+\setcounter{tocdepth}{0}
+\tableofcontents
+
+\chapter{Introduction}
+\label{sec-1}
+Most software heavily relies on unit tests as its primary source for logic and \uline{fault tolerance} verification. This approach has been largely considered as essential, but it has some inherent difficulties associated with it. Although testing single member functions independently is more often than not trivial, most of the time the user will call various combinations of them. It is impossible to write unit tests with all possible function call sequences since such space is effectively infinite. Therefore, the need arises for the developer to personally determine which function call sequences are most meaningful. \\
+
+Other than that, a lot of times the behavior of the function will depend on internal state of the instance, which is in itself reached after certain function calls. \\
+\section{Background}
+\label{sec-1-1}
+\subsection{Fuzzing}
+\label{sec-1-1-1}
+Dynamic analysis, or fuzzing, is a popular and effective method of finding vulnerabilities in software. Fuzz testing reaches impressive results in exposing interface vulnerabilities in very short amount of time. \\
+
+Fuzzing heavily relies on the concept of Fuzz target - a function that accepts an array of bytes and then uses it in user defined way against the API under test. This API usually has a single endpoint that consumes any kind data. Anything that causes an exception, abort, exit, crash, assert failure, timeout is considered a bug\footnote{\url{https://github.com/CppCon/CppCon2017/blob/master/Demos/Fuzz\%20Or\%20Lose/Fuzz\%20Or\%20Lose\%20-\%20Kostya\%20Serebryany\%20-\%20CppCon\%202017.pdf} \\}. That means, discovery of the first instance of any one of them will cause the libfuzzer to halt and inform us about the input that caused the bug, along with some other information. \\
+
+There are a number of tools available for fuzzing, including AFL and Radamsa. One of the most notable implementations is Libfuzzer, LLVM's tool for coverage guided, evolutionary fuzzing engine\footnote{\url{https://llvm.org/docs/LibFuzzer.html} \\}. The code coverage information for libFuzzer is provided by LLVM’s SanitizerCoverage instrumentation, and I will discuss it in the next subsection. \\
+\subsection{SanitizerCoverage library}
+\label{sec-1-1-2}
+LLVM has an interface for its built-in code coverage instrumentation\footnote{\url{https://clang.llvm.org/docs/SanitizerCoverage.html} \\}. The user is able to gather information about the covereged regions of the program during runtime. There are severeal different levels of depth for coverage, and the library also offers rich ways to trace the data flow. This tool was crucial for the development of my program and in the developer's manual, I discuss the library in more detail. \\
+
+\section{\underline{using fuzz testing for ..}}
+\label{sec-1-2}
+Although fuzz testing has been mostly defined to be for exploiting the vulnerabilities of the program, \uline{we decided} to apply its coverage based philosophy to explore the possible member function call sequences and pinpoint ones which might be most interesting for the developer. \\
+This also required to change the overall approach with which fuzzing is used. \\
+
+In \ref{sec-1-1-1} Background on Fuzzing, I talked about the classical assumptions about the fuzz target. In our scenario, we have different expectations - since we are testing an entire unit and not a single API endpoint, some kind of control flow disruptions might be expected. For example, assertions are common in member functions. Therefore, the previous approach of exiting on first such failure should be modified to allow the program to gather information about all possible combinations that result in things like exceptions, so the user will be informed about them and decide what constitues the normal behavior of their library and what is outside of specifications. \\
+
+\section{Program description}
+\label{sec-1-3}
+To acheive the intended results, I created a program that uses LLVM's \uline{sanitizer coverage} library and generation based fuzzing. The test case needs almost minimal setup which consists of the user specifying all the member functions it wants to use in testing, and passing a single function pointer for constructing an instance of the class. Modern c++ tools have aided greatly with this by giving the ability to store pointers to functions with different type signatures. There are still difficulties with regards to determining and passing the function arguments, which is in scope of a larger \uline{research / project}. In order for this issue to not interfere with the initial program implementation, I allow users to additionally pass pointers to the functions that will in turn call the specific member function with desired arguments. \\
+
+The \uline{sanitizer coverage} library is able to communicate its results using a single global object. \uline{(more about this)}  \\
+\section{Results}
+\label{sec-1-4}
+Although the original intention was to discover new test cases, there were some surprising outcomes that could not have been anticipated. For example, the program is very good in minimizing the total number of test cases. For the sample stack class, it discovered that in . This outcome would be crucial for reducing the size of test suites, which leads to reduced runtime and maintenance cost \\
+\chapter{User Documentation}
+\label{sec-2}
+This section provides full information for users of the program. I am using a simple stack class implementation as an example. \\
+\uline{(class declaration will go here)} \\
+\section{intended audience}
+\label{sec-2-1}
+this software is intended for c++ developers who would like to increase \\
+Therefore, at least basic knowledge of c++ is assumed, and the user will need to implement and pass pointers for several functions. \\
+\subsection{Requirements}
+\label{sec-2-1-1}
+\uline{(\ldots{}.)} and test target should satisfy following: \\
+\subsubsection{The program is intended to test a single unit}
+\label{sec-2-1-1-1}
+Current version can not analyze any of the dependencies of the class. \\
+\subsubsection{You need to be able to be compiled separately}
+\label{sec-2-1-1-2}
+In order to analyze , the object file of the test target needs to be compiled with special flags separately of the rest of \\
+\section{dependencies}
+\label{sec-2-2}
+\section{installation instructions}
+\label{sec-2-3}
+run these commands from the directory where you want to install the project \\
+\begin{verbatim}
+git clone  # download the contents in any way you want
+cd <dir>
+make test-main
+make test # to make sure that everything works
+\end{verbatim}
+After tests pass successfully, you can move on to next step and set up the \\
+\section{setup and running}
+\label{sec-2-4}
+After installation, and successful tests \\
+\subsection{structure of the main file}
+\label{sec-2-4-1}
+
+\subsection{compile and run}
+\label{sec-2-4-2}
+using commands \\
+\begin{verbatim}
+make run-guards
+\end{verbatim}
+This command will \uline{(\ldots{}.relevant section from the makefile)} \\
+\begin{center}
+\begin{tabular}{}
+\\
+\\
+\end{tabular}
+\end{center}
+\section{output}
+\label{sec-2-5}
+\uline{(TODO)} \\
+\subsection{results}
+\label{sec-2-5-1}
+\begin{center}
+\begin{tabular}{}
+\\
+\\
+\\
+\end{tabular}
+\end{center}
+\subsection{memory leaks}
+\label{sec-2-5-2}
+After it's finished running \\
+\begin{verbatim}
+==32362==ERROR: LeakSanitizer: detected memory leaks
+\end{verbatim}
+Since the program will be compiled using the `-fsanitize=address` compiler flag, any existing memory leaks will be discovered. \\
+\uline{(example with a stack class but missing constructor)} \\
+For more info about interpreting and fixing these messages visit AddressSanitizer. \\
+\section{troubleshooting}
+\label{sec-2-6}
+There are few mistakes \\
+\subsection{installation}
+\label{sec-2-6-1}
+the tests are designed so that all of the underlying infrastructure will be checked. If you start having any problems: \\
+\subsubsection{test if clang build works correctly}
+\label{sec-2-6-1-1}
+There might be problems with the addressSanitizer. To see if the program can run independently, use the make command, which will compile and run all the source files without the flag. The program will still work and call functions, but the coverage will not be reported. If this step is successful \uline{describe how} then please \uline{check your compiler} \\
+\subsection{running}
+\label{sec-2-6-2}
+\begin{center}
+\begin{tabular}{}
+\\
+\end{tabular}
+\end{center}
+\uline{(TODO)} \\
+\begin{center}
+\begin{tabular}{}
+\\
+\end{tabular}
+\end{center}
+\subsubsection{Out of Memory error for AddressSanitizer}
+\label{sec-2-6-2-1}
+\chapter{Developer Documentation}
+\label{sec-3}
+\section{Information about the project}
+\label{sec-3-1}
+\subsection{structure and contents of the source folder}
+\label{sec-3-1-1}
+\subsubsection{include}
+\label{sec-3-1-1-1}
+Header files. Definitions for 3 main classes of the project. It also contains definition of the template class along with its implementation. \\
+\subsubsection{src}
+\label{sec-3-1-1-2}
+Implementations of classes from /include directory (excluding functionPointerMap which is a template class) and a sample for the main file, which should be replaced by user for its own test target unit. \\
+\subsubsection{source file extensions}
+\label{sec-3-1-1-3}
+this makes it easier to create a comprehensive but concise makefile which scans the source folder for .cpp files and .cc is used for main and \\
+\subsubsection{test}
+\label{sec-3-1-1-4}
+Test directory. Tests are discussed later in \ref{sec-3-2-2} \\
+\subsubsection{lib}
+\label{sec-3-1-1-5}
+\ldots{} \\
+\subsubsection{Makefile}
+\label{sec-3-1-1-6}
+
+\subsubsection{other directories}
+\label{sec-3-1-1-7}
+there will be several other directories \\
+\subsection{code conventions}
+\label{sec-3-1-2}
+Code is formatted according to LLVM standards. Clang-format is used  you add `make format` to your commit hook, or alternatively use clang-format plugin for IDE of your choice. \\
+\section{dependencies}
+\label{sec-3-2}
+\subsection{sanitizer coverage}
+\label{sec-3-2-1}
+The program relies primarily on LLVM's built in coverage instrumentation to measure coverage of different function cal sequences. Basic understanding of how these functions work is necessary for development. \\
+
+\begin{center}
+\begin{tabular}{}
+\\
+\\
+\end{tabular}
+\end{center}
+\uline{(2-3 medium sized paragraphs about the internals of SanitizerCoverage)} \\
+\begin{center}
+\begin{tabular}{}
+\\
+\\
+\\
+\\
+\\
+\\
+\\
+\\
+\end{tabular}
+\end{center}
+
+Sanitizer Coverage library offers numerous ways to observe the control flow of the program, including ones for. This could aid in refining the program for more complex applications. \\
+\subsection{catch2}
+\label{sec-3-2-2}
+The project is thoroughly tested using the catch2 framework. Tests are represented with Given-When-Then style, and described scenarios carefully follow documentation. This library was chosen for its minimalistic setup and ability to describe the test cases with full sentences. \\
+\begin{center}
+\begin{tabular}{}
+\\
+\end{tabular}
+\end{center}
+\uline{(short paragraph about why it was chosen. maybe include a sample from tests)} \\
+\begin{center}
+\begin{tabular}{}
+\\
+\end{tabular}
+\end{center}
+
+\subsubsection{steps}
+\label{sec-3-2-2-1}
+
+\begin{verbatim}
+make test-main
+\end{verbatim}
+This compiles the test-main.cpp which defines the main function of catch. Since it needs to be defined just once and used for any test case, it is more efficient to compile it to an object which is later included in tests. \\
+\begin{verbatim}
+make test
+\end{verbatim}
+runs the tests for all units in the project, excluding the combination tester. \\
+\begin{center}
+\begin{tabular}{}
+\\
+\\
+\end{tabular}
+\end{center}
+\uline{(I will create an integration test along with guards test here)}  \\
+\begin{center}
+\begin{tabular}{}
+\\
+\\
+\end{tabular}
+\end{center}
+\subsection{documentation}
+\label{sec-3-2-3}
+Doxygen is used with javadoc style. All classes are thoroughly documented. \\
+run doxygen Doxyfile to generate documentation in html and latex source. Latex source needs additional compiling which can be done by running the command `make` in the latex/ directory. \\
+If you'd like to change doxygen settings, you can copy the Doxyfile and run doxygen my-Doxyfile. \\
+\section{class documentation}
+\label{sec-3-3}
+\begin{center}
+\begin{tabular}{}
+\\
+\\
+\end{tabular}
+\end{center}
+\uline{(this can be found in \href{latex/refman.pdf}{refman.pdf file}. It has its own typesetting because contents are auto-generated in latex from documentation in the code. I'll look into transforming the typesetting to match ELTE requirements, or manually move it here. I'll add a few graphs and example as well)} \\
+\begin{center}
+\begin{tabular}{}
+\\
+\\
+\end{tabular}
+\end{center}
+% Emacs 25.2.2 (Org mode 8.2.10)
+\end{document}

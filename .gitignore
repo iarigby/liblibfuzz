@@ -7,6 +7,17 @@ commitmessage
 .dir-locals.el
 /CORPUS
 /docs
-Doxyfile
 settings.json
 .cquery_cached_index/
+
+# output
+results.txt
+
+# latex files
+*.nlo
+*.idx
+*.log
+*.aux
+
+# cquery
+compile_commands.json

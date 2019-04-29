@@ -1,0 +1,64 @@
+\hypertarget{classFunctionPointerMap}{}\section{Function\+Pointer\+Map$<$ A $>$ Class Template Reference}
+\label{classFunctionPointerMap}\index{Function\+Pointer\+Map$<$ A $>$@{Function\+Pointer\+Map$<$ A $>$}}
+
+
+{\ttfamily \#include $<$function\+Pointer\+Map.\+hpp$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename T $>$ }\\void \hyperlink{classFunctionPointerMap_af750cbe11e423835a4d456aebc1af7e8}{insert} (std\+::string function\+Name, T function\+Pointer)
+\item 
+\mbox{\Hypertarget{classFunctionPointerMap_aac8051103a899531c2b5c1e38fc77d28}\label{classFunctionPointerMap_aac8051103a899531c2b5c1e38fc77d28}} 
+void {\bfseries insert\+Non\+Void} (std\+::string function\+Name, void\+Function$<$ A $>$ function\+Pointer)
+\item 
+{\footnotesize template$<$typename T , typename... Args$>$ }\\T \hyperlink{classFunctionPointerMap_ae750181faa3848ddbdb76b58ae54f041}{search\+And\+Call} (A \&instance, std\+::string function\+Name, Args \&\&... args)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$typename A$>$\newline
+class Function\+Pointer\+Map$<$ A $>$}
+
+
+\begin{DoxyParams}{Parameters}
+{\em A} & typename that the members will be stored for \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classFunctionPointerMap_af750cbe11e423835a4d456aebc1af7e8}\label{classFunctionPointerMap_af750cbe11e423835a4d456aebc1af7e8}} 
+\index{Function\+Pointer\+Map@{Function\+Pointer\+Map}!insert@{insert}}
+\index{insert@{insert}!Function\+Pointer\+Map@{Function\+Pointer\+Map}}
+\subsubsection{\texorpdfstring{insert()}{insert()}}
+{\footnotesize\ttfamily template$<$typename A $>$ \\
+template$<$typename T $>$ \\
+void \hyperlink{classFunctionPointerMap}{Function\+Pointer\+Map}$<$ A $>$\+::insert (\begin{DoxyParamCaption}\item[{std\+::string}]{function\+Name,  }\item[{T}]{function\+Pointer }\end{DoxyParamCaption})}
+
+insert new function to the map casts the function to void $\ast$(void) and stores the typeid to use for assertion later 
+\begin{DoxyParams}{Parameters}
+{\em function\+Name} & key used for looking up the function pointer in the map \\
+\hline
+{\em function\+Pointer} & pointer to the member function \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classFunctionPointerMap_ae750181faa3848ddbdb76b58ae54f041}\label{classFunctionPointerMap_ae750181faa3848ddbdb76b58ae54f041}} 
+\index{Function\+Pointer\+Map@{Function\+Pointer\+Map}!search\+And\+Call@{search\+And\+Call}}
+\index{search\+And\+Call@{search\+And\+Call}!Function\+Pointer\+Map@{Function\+Pointer\+Map}}
+\subsubsection{\texorpdfstring{search\+And\+Call()}{searchAndCall()}}
+{\footnotesize\ttfamily template$<$typename A$>$ \\
+template$<$typename T , typename... Args$>$ \\
+T \hyperlink{classFunctionPointerMap}{Function\+Pointer\+Map}$<$ A $>$\+::search\+And\+Call (\begin{DoxyParamCaption}\item[{A \&}]{instance,  }\item[{std\+::string}]{function\+Name,  }\item[{Args \&\&...}]{args }\end{DoxyParamCaption})}
+
+This function is capable of passing the arguments to the member function and returning the result of the type T specified in the parameter. Originally, type\+\_\+index is used to assert that T and Args conform to the function signature. Currently this feature is turned off because of reasons specified in ... T\+O\+DO\+: something about rvalue references 
+\begin{DoxyParams}{Parameters}
+{\em a} & reference to the instance which the function will be called on \\
+\hline
+{\em function\+Name} & key used for looking up the function pointer in the map \\
+\hline
+{\em T} & return type \\
+\hline
+{\em args} & arguments for function \\
+\hline
+\end{DoxyParams}

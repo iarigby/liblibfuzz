@@ -1,0 +1,58 @@
+\hypertarget{classCombinationTester}{}\section{Combination\+Tester$<$ T $>$ Class Template Reference}
+\label{classCombinationTester}\index{Combination\+Tester$<$ T $>$@{Combination\+Tester$<$ T $>$}}
+
+
+{\ttfamily \#include $<$combination\+Tester.\+h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classCombinationTester_a9eef45cd51683748083a1148bff36f74}{Combination\+Tester} (int combination\+Size, \hyperlink{classFunctionPointerMap}{Function\+Pointer\+Map}$<$ T $>$ fpm, Instance\+Function\+Pointer$<$ T $>$ ifp, \hyperlink{classCoverageReporter}{Coverage\+Reporter} $\ast$cr)
+\item 
+void \hyperlink{classCombinationTester_ada3b5998973cb34e6343a971390b3a12}{run} ()
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$typename T$>$\newline
+class Combination\+Tester$<$ T $>$}
+
+This is the class that connects all others and achieves the main task of T\+O\+DO sample code would be the main.\+cpp file Note\+: Although function\+Pointer\+Map is capable of forwarding passed arguments and returning the result, currently it is discarded. I could not find a straightforward way to store pass variable length and type inputs. Explored options included storing it as std\+::pair and using std\+::apply, but that would not resolve variable type parameters. std\+::invariant could aid in solving this issue. 
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classCombinationTester_a9eef45cd51683748083a1148bff36f74}\label{classCombinationTester_a9eef45cd51683748083a1148bff36f74}} 
+\index{Combination\+Tester@{Combination\+Tester}!Combination\+Tester@{Combination\+Tester}}
+\index{Combination\+Tester@{Combination\+Tester}!Combination\+Tester@{Combination\+Tester}}
+\subsubsection{\texorpdfstring{Combination\+Tester()}{CombinationTester()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+\hyperlink{classCombinationTester}{Combination\+Tester}$<$ T $>$\+::\hyperlink{classCombinationTester}{Combination\+Tester} (\begin{DoxyParamCaption}\item[{int}]{combination\+Size,  }\item[{\hyperlink{classFunctionPointerMap}{Function\+Pointer\+Map}$<$ T $>$}]{fpm,  }\item[{Instance\+Function\+Pointer$<$ T $>$}]{ifp,  }\item[{\hyperlink{classCoverageReporter}{Coverage\+Reporter} $\ast$}]{cr }\end{DoxyParamCaption})}
+
+Collects all the necessary objects constructs a new permutation generator for this test run. 
+\begin{DoxyParams}{Parameters}
+{\em combination\+Size} & maximum length of function call sequences that user wants to test \\
+\hline
+{\em fpm} & see member Combination\+Tester\+::function\+Pointer\+Map \\
+\hline
+{\em ifp} & see member Combination\+Tester\+::get\+New\+Instance \\
+\hline
+{\em cr} & see member Combination\+Tester\+::coverage\+Reporter \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classCombinationTester_ada3b5998973cb34e6343a971390b3a12}\label{classCombinationTester_ada3b5998973cb34e6343a971390b3a12}} 
+\index{Combination\+Tester@{Combination\+Tester}!run@{run}}
+\index{run@{run}!Combination\+Tester@{Combination\+Tester}}
+\subsubsection{\texorpdfstring{run()}{run()}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+void \hyperlink{classCombinationTester}{Combination\+Tester}$<$ T $>$\+::run (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+This function will keep getting new function sequences from permutation generator until it has explored all paths. On each iteration\+:
+\begin{DoxyEnumerate}
+\item New permutation of function call sequences is retrieved.
+\item Instance of test class is constructed using the get\+New\+Instance function pointer
+\item Coverage reporting is initialized with the new permutation
+\item Each function in the sequence is called using the functionpointermap. During this step, sanitizer\+Coverage library functions will insert found pc guards to coverage\+Reporter. If \hyperlink{classCombinationTester}{Combination\+Tester} encounters an exception during this step, it blacklists the path, stops and doesn\textquotesingle{}t explore any further paths starting with that sequence, since all possible continuations would be interrupted with that exception and won\textquotesingle{}t provide any new meaningful coverage.
+\item Finally, coverage\+Reporter is flushed 
+\end{DoxyEnumerate}entire loop is wrapped in try catch so that no more functions are called after an exception T\+O\+DO\+: is this also better for performance? in this implementation this step is not essential since paths are explored in increasing order. So only last call could possibly cause an exception However, if the implementation of permutation\+Generator is changed later, this guarantee will no longer hold so having the entire loop wrapped in try catch will ensure that testing stops on first exception
