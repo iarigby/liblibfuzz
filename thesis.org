@@ -249,87 +249,106 @@ Test based development is a favorable development method for modern software. We
 \cleardoublepage
 #+TOC: headlines 0
 
-** inbox                                                          :noexport:
-*** fuzzing
+** other                                                           :noexport:
+
+*** inbox
+**** fuzzing
 Generation based fuzzing
 This step could be extended with g
-** Looking for home :P                                            :noexport:
-*** software verification tools
-**** testing
+*** Looking for home :P                                          :noexport:
+**** software verification tools
+***** testing
 # what to write here
-***** aims
-****** define expected outcomes of ...
+****** aims
+******* define expected outcomes of ...
 - generate unit test cases that achieve the  most code coverage with least function calls
 # code coverage
-***** drawbacks
-****** relies on the developer
-****** does not anticipate bugs that are not trivial
-****** 
+****** drawbacks
+******* relies on the developer
+******* does not anticipate bugs that are not trivial
+******* 
 to adress these, other methods are more and more frequently used
-**** static analysis
-***** usual code checking tools
+***** static analysis
+****** usual code checking tools
 - good for finding bugs, but does not touch code coverage
 # have only short overview and  
-***** symbolic execution
+****** symbolic execution
 - works on bitcode / bytecode
 - resource heavy
   - ? cannot substitute unit tests
   - ? not practical in a lot of cases where unit tests would suffice
 - sometimes not realistic because of path explosion
-**** dynamic analysis
-***** fuzzing (with the example of llvm's libfuzzer)
+***** dynamic analysis
+****** fuzzing (with the example of llvm's libfuzzer)
 ease of implementing 
-******* aims
+******** aims
 
-******* conditions assumed:
-*** Explored Implementations
-**** libfuzzer
-***** Implementing
+******** conditions assumed:
+**** Explored Implementations
+***** libfuzzer
+****** Implementing
 # Q should I provide sample code that I tried?
 with libfuzzer, the user defines the callback that consumes data and is executed on each iteration.
-***** 1. create a map of function pointers
-****** talks about functionPointerMap class
+****** 1. create a map of function pointers
+******* talks about functionPointerMap class
 In order to be able to dynamically call functions, I created a template class that is able to store member function pointers in a map and call them using keys. Storing functions with different types of return value and argument types is made possible by casting it to a void functiontype and saving it paired with the typeid. When calling the function using a key, user would specify the return type and pass any arguments needed for the call, which are then forwarded. Initially, I was discarding the return value and
  ommiting functions that needed arguments.
-******* handling arguments
+******** handling arguments
 will be discussed later. Had short tries and decided to not include in this scope
 # Q how should this be written?
-******** std::variant
-******** std::apply
-***** 2. handling the LLVMFUZZINPUT content
-****** how to map the data to map keys
+********* std::variant
+********* std::apply
+****** 2. handling the LLVMFUZZINPUT content
+******* how to map the data to map keys
 One way would be to parse it for exact sequence of function names. Instead, I decided to extract chars and match it with digits 
-***** 3. callback content 
-******* validate input data'
+****** 3. callback content 
+******** validate input data'
 We could try parsing the data for numbers and see if they satisfy the conditions ....  
-******* create the instance
-******* call all the functions
-***** issues with the approach
-****** challenges that arise in libraries but not in interfaces
-******* handling exceptions
+******** create the instance
+******** call all the functions
+****** issues with the approach
+******* challenges that arise in libraries but not in interfaces
+******** handling exceptions
 fuzzer will hault on first exception it finds, because the design philosophy is that the consumer is an API. In case of libraries, exceptions might be expected so here each function (or combination?) call will be wrapped in a try catch so all the different call sequences that result in various exceptions
-******* mutations and path exploration
+******** mutations and path exploration
 Library fuzzing might need different mutation techniques. For starters, function call is a sequence, and there are ways to create interesting inputs by being aware of it.
 
 is that for combinations, there is a finite amount of sets we could test, which will be a subset of a much larger input set that libfuzz might provide us with (ie useless filtering of garbage)
 
 For example, since it's more feasible to keep exploring different paths (for example calling the same function 17th time will unlock a new pc block). This is discussed in more detail later in . 
-****** features of libfuzz unnecessary for our case
+******* features of libfuzz unnecessary for our case
 Even though libfuzzer will converge to the valid sequence calls very quickly, it will keep generating 'garbage' input which has no meaning in context of calling the function. 
-******* possible input space
+******** possible input space
 much larger in fuzzing, more limited (and deterministic) here
-****** additional needs not accomplishable without changing libfuzzer implementation
-******* coverage info
+******* additional needs not accomplishable without changing libfuzzer implementation
+******** coverage info
 libfuzzer is created with different intent in mind and extracting the coverage information which is already filtered according to the library's priority might not be what we want. Would need to change implementation if we wanted to somehow define the way coverage is collected
-**** llvm-cov
+***** llvm-cov
 summarizes the intire run, so if I call three different combinations of functions they results will be mixed in together. But it has some nice visualization data and maybe that could be used to display the results
 looked into libfuzzer source code to find out what they where using to collect the coverage, since they were doing multiple "isolated" runs to analyze
-**** sancov
-***** issues with the approach
+***** sancov
+****** issues with the approach
 no straightforward way exists to isolate coverage on different sequences. need multiple commands, and would 
-**** sanitizercoverage
-***** how it works
-guards are inserted at function entrance points, if/else block starts, etc. You can implement the functions that get called when the guard is initialized and then when it's called
+***** sanitizercoverage
+****** how it works
+guards are inserted at function entrance points, if/else block starts, etc. You can implement the functions that get called when the guard is initialized and then when it's called*
+** discarded
+**** code
+***** combinationTester
+****** .h run
+// TODO: should this automatically start? what could be some actions that the
+// user might want to take
+****** .cpp run
+******* TODO: is this also better for performance?
+******* // TODO: remove this :D
+// ha?
+//  https://stackoverflow.com/questions/3786360/confusing-template-error
+***** coveragereporter
+****** .cpp flush
+  // TODO this is trash, rewrite
+***** permutationGenerator
+// TODO maybe better if this class will be a container (using
+                 // iterator with ++ and end() makes sense)
 ** Introduction
 Most software heavily relies on unit tests as its primary source for logic and _fault tolerance_ verification. This approach has been largely considered as essential, but it has some inherent difficulties associated with it. Although testing single member functions independently is more often than not trivial, most of the time the user will call various combinations of them. It is impossible to write unit tests with all possible function call sequences since such space is effectively infinite. Therefore, the need arises for the developer to personally determine which function call sequences are most meaningful. 
 
@@ -497,5 +516,6 @@ _(this can be found in [[file:latex/refman.pdf][refman.pdf file]]. It has its ow
 [1] https://github.com/CppCon/CppCon2017/blob/master/Demos/Fuzz%20Or%20Lose/Fuzz%20Or%20Lose%20-%20Kostya%20Serebryany%20-%20CppCon%202017.pdf
 [2] https://llvm.org/docs/LibFuzzer.html
 [3] https://clang.llvm.org/docs/SanitizerCoverage.html
+
 
 
