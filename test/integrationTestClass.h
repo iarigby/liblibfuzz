@@ -3,13 +3,15 @@
 
 class IntegrationTestClass {
 public:
-  void f1();
+  void increaseCounter();
+  void setToggle(bool);
   int f2();
 private:
-  bool toggle;
-  int counter;
-  bool f3();
+  bool toggle = false;
+  int counter = 1;
+  bool counterIs2();
   int f4();
+  int f5();
 };
 
 #endif //INTEGRATION_TEST_CLASS_H
