@@ -24,7 +24,8 @@ public:
    * \param functionName key used for looking up the function pointer in the map
    * \param functionPointer pointer to the member function
    */
-  template <typename T> void insert(std::string functionName, T functionPointer);
+  template <typename T>
+  void insert(std::string functionName, T functionPointer);
   void insertNonVoid(std::string functionName, voidFunction<A> functionPointer);
   /**
    * This function is capable of passing the arguments to the member function
@@ -41,6 +42,7 @@ public:
    */
   template <typename T, typename... Args>
   T searchAndCall(A &instance, std::string functionName, Args &&... args);
+  std::vector<std::string> getFunctions();
 
 private:
   /**
@@ -55,6 +57,7 @@ private:
   std::map<std::string, voidFunction<A>> map;
   // TODO: probably remove this
   bool outputMessages = false;
+  std::vector<std::string> functions;
 };
 
 template <typename A>
@@ -65,12 +68,13 @@ void FunctionPointerMap<A>::insert(std::string functionName,
   m1.insert(std::make_pair(
       functionName,
       std::make_pair((voidFunctionType<A>)functionPointer, typeIndex)));
+  functions.push_back(functionName);
 }
-
 template <typename A>
 void FunctionPointerMap<A>::insertNonVoid(std::string functionName,
                                           voidFunction<A> f2) {
   map.insert(std::make_pair(functionName, f2));
+  functions.push_back(functionName);
 }
 
 template <typename A>
@@ -84,14 +88,19 @@ T FunctionPointerMap<A>::searchAndCall(A &instance, std::string functionName,
   if (mapIter != m1.end()) {
     auto mapVal = mapIter->second;
     auto typeCastedFun = (T(A::*)(Args...))(mapVal.first);
-    // removed because right now it is cast back to void
-    // maybe mapVal.second can be used somewhere
-    // TODO research type_index usage
+    // currently the type is not checked, since right now all return values
+    // are discarded by casting to void, in order to allow calling all functions
+    // in a loop
     // assert(mapVal.second == std::type_index(typeid(typeCastedFun)));
     return (instance.*typeCastedFun)(std::forward<Args>(args)...);
   } else {
     return (map.find(functionName)->second)(instance);
   }
+}
+
+template <typename A>
+std::vector<std::string> FunctionPointerMap<A>::getFunctions() {
+  return functions;
 }
 
 #endif // FUNCTIONPOINTERMAP_H

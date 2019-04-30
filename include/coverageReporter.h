@@ -26,7 +26,6 @@ public:
    * \param pc will be added to the current set of collected pcs
    */
   void addPCForCombination(const std::string &pc);
-  // TODO is having a reference ok? revisit this when using
   /**
    * saves current permutation and associated coverage and empties both.
    * if exact same coverage has been found with same or shorter sequence,
@@ -67,6 +66,7 @@ private:
    * prints the coverageSequence member
    */
   void writeResults(std::ostream &outstream);
+  pc_set coveredBlocks;
 };
 
 #endif // COVERAGEREPORTER_H

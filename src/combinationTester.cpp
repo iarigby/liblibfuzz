@@ -12,9 +12,7 @@ CombinationTester<T>::CombinationTester(int permutationSize,
                                         CoverageReporter *cr)
     : functionPointerMap{fpm}, permutationSize{permutationSize},
       getNewInstance{ifp}, coverageReporter{cr} {
-  // TODO
-  std::vector<std::string> v{"push", "pop",     "peek",
-                             "size", "isEmpty", "isFull"};
+  std::vector<std::string> v{fpm.getFunctions()};
   permutationGenerator = PermutationGenerator<std::string>(v, permutationSize);
 }
 
@@ -27,19 +25,16 @@ template <typename T> void CombinationTester<T>::run() {
     /**
      * entire loop is wrapped in try catch so that no more functions are called
      * after an exception
-     * TODO: is this also better for performance?
-     * in this implementation this step is not essential since paths are explored
-     * in increasing order. So only last call could possibly cause an exception
-     * However, if the implementation of permutationGenerator is changed later,
-     * this guarantee will no longer hold so having the entire loop wrapped in try
-     * catch will ensure that testing stops on first exception
+     * in this implementation this step is not essential since paths are
+     * explored in increasing order. So only last call could possibly cause an
+     * exception However, if the implementation of permutationGenerator is
+     * changed later, this guarantee will no longer hold so having the entire
+     * loop wrapped in try catch will ensure that testing stops on first
+     * exception
      */
     // TODO go over this explanation again
     try {
       for (auto const &functionName : permutation) {
-	// TODO: remove this :D
-	// ha?
-        // https://stackoverflow.com/questions/3786360/confusing-template-error
         functionPointerMap.template searchAndCall<void>(instance, functionName);
       }
     } catch (...) {

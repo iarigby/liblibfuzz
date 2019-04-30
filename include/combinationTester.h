@@ -49,8 +49,6 @@ public:
    * meaningful coverage.
    *   5. Finally, coverageReporter is flushed
    */
-  // TODO: should this automatically start? what could be some actions that the
-  // user might want to take
   void run();
 
 private:
@@ -66,7 +64,6 @@ private:
    * be global so that when the sanitizer coverage functions are called, they
    * can access it
    */
-  // TODO fix this
   CoverageReporter *coverageReporter;
   /**
    * Map consisting of pointers to all the functions that will be tested. There

@@ -13,9 +13,16 @@ void CoverageReporter::flush() {
   if (currentSequence.empty()) {
     throw "no function sequence provided";
   }
+  // TODO:
+  // for each element, insert into coveredPCs
+  // if the size of the set increases, it means there is a new pc covered
+  // and it will be inserted anyways
+  // just, if it already contains some other blocks, they will be removed
+
+  // otherwise, the 'is subset of' will be checked both ways
+
   // go through the set and remove all that are smaller and
   // contain the same elments
-  // TODO this is trash, rewrite
   bool isNewCoverage = true;
   auto p = coverageSequences.find(currentPC);
   if (p != coverageSequences.end()) {
