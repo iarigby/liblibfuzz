@@ -55,7 +55,7 @@ run-guards: guards
 ### TEST ###
 TESTDIR := test
 # test files end with 'test' before the extension
-TESTEXT := Test.$(SRCEXT)
+TESTEXT := -test.$(SRCEXT)
 TEST_SOURCES := $(shell find $(TESTDIR) -type f -name *$(TESTEXT))
 TEST_OBJECTS := $(patsubst $(TESTDIR)/%,$(BUILDDIR)/%,$(TEST_SOURCES:.$(SRCEXT)=.o))
 
@@ -73,7 +73,7 @@ $(TEST_TARGET): $(TEST_OBJECTS) $(OBJECTS)
 	@echo " Linking tests..."
 	$(CC) $^  $(TEST_LIB) -o $(TEST_TARGET) $(LIB)
 
-$(BUILDDIR)/%Test.o: $(TESTDIR)/%$(TESTEXT)
+$(BUILDDIR)/%-test.o: $(TESTDIR)/%$(TESTEXT)
 	@mkdir -p $(BUILDDIR)
 	$(CC) $(CFLAGS) $(INC) -c -o $@ $<
 
