@@ -66,6 +66,7 @@ private:
    * prints the coverageSequence member
    */
   void writeResults(std::ostream &outstream);
+  bool newPcWasFound();
   pc_set coveredBlocks;
 };
 

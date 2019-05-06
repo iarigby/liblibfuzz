@@ -256,34 +256,6 @@ Test based development is a favorable development method for modern software. We
 Generation based fuzzing
 This step could be extended with g
 *** Looking for home :P                                          :noexport:
-**** software verification tools
-***** testing
-# what to write here
-****** aims
-******* define expected outcomes of ...
-- generate unit test cases that achieve the  most code coverage with least function calls
-# code coverage
-****** drawbacks
-******* relies on the developer
-******* does not anticipate bugs that are not trivial
-******* 
-to adress these, other methods are more and more frequently used
-***** static analysis
-****** usual code checking tools
-- good for finding bugs, but does not touch code coverage
-# have only short overview and  
-****** symbolic execution
-- works on bitcode / bytecode
-- resource heavy
-  - ? cannot substitute unit tests
-  - ? not practical in a lot of cases where unit tests would suffice
-- sometimes not realistic because of path explosion
-***** dynamic analysis
-****** fuzzing (with the example of llvm's libfuzzer)
-ease of implementing 
-******** aims
-
-******** conditions assumed:
 **** Explored Implementations
 ***** libfuzzer
 ****** Implementing
@@ -332,6 +304,34 @@ no straightforward way exists to isolate coverage on different sequences. need m
 ***** sanitizercoverage
 ****** how it works
 guards are inserted at function entrance points, if/else block starts, etc. You can implement the functions that get called when the guard is initialized and then when it's called*
+**** software verification tools
+***** testing
+# what to write here
+****** aims
+******* define expected outcomes of ...
+- generate unit test cases that achieve the  most code coverage with least function calls
+# code coverage
+****** drawbacks
+******* relies on the developer
+******* does not anticipate bugs that are not trivial
+******* 
+to adress these, other methods are more and more frequently used
+***** static analysis
+****** usual code checking tools
+- good for finding bugs, but does not touch code coverage
+# have only short overview and  
+****** symbolic execution
+- works on bitcode / bytecode
+- resource heavy
+  - ? cannot substitute unit tests
+  - ? not practical in a lot of cases where unit tests would suffice
+- sometimes not realistic because of path explosion
+***** dynamic analysis
+****** fuzzing (with the example of llvm's libfuzzer)
+ease of implementing 
+******** aims
+
+******** conditions assumed:
 ** discarded
 **** code
 ***** combinationTester
@@ -505,6 +505,12 @@ _(I will create an integration test along with guards test here)_
 Doxygen is used with javadoc style. All classes are thoroughly documented.
 run doxygen Doxyfile to generate documentation in html and latex source. Latex source needs additional compiling which can be done by running the command `make` in the latex/ directory.
 If you'd like to change doxygen settings, you can copy the Doxyfile and run doxygen my-Doxyfile.
+*** Example
+
+
+You will observe that tweaking the number of maximum sequence length _..._. However, it will never replace _..._, as observed when tweaking the number from 6 to 7 for IntegrationTestClass.
+Right now, it is recommended to start with smaller number of function calls. 
+Choosing the right combination of number of function calls with regards to number of covered blocks is for another project. 
 *** class documentation
 |
 |
