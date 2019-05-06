@@ -13,7 +13,7 @@
 // replace this line with the header of your own class
 #include "../examples/stack.h"
 // program
-#include "combinationTester.cpp"
+#include "combinationTester.hpp"
 #include "functionPointerMap.hpp"
 #include <iostream>
 
@@ -54,7 +54,7 @@ int main(int argc, char **argv) {
   /* main commands
    */
   CombinationTester<stack<int>> combinationTester(4, a1, getStackInstance,
-						  &coverageReporter);
+                                                  &coverageReporter);
   combinationTester.run();
   coverageReporter.printResults();
   // cr.printResultsToFile();

@@ -49,7 +49,7 @@ guards: $(OBJECTS) $(INSERTED_GUARDS) $(MAINFILE)
 	@echo " Linking..."
 	$(CC) $(INC) $(SANITIZERFLAGS) $^ -o $(GUARDS_TARGET)
 
-run-guards: guards
+guards-run: guards
 	ASAN_OPTIONS=strip_path_prefix=`pwd`/ ./$(GUARDS_TARGET)
 
 ### TEST ###
@@ -77,9 +77,10 @@ $(BUILDDIR)/%-test.o: $(TESTDIR)/%$(TESTEXT)
 	@mkdir -p $(BUILDDIR)
 	$(CC) $(CFLAGS) $(INC) -c -o $@ $<
 
-INTEGRATION_TEST := integrationTest
-INTEGRATION_TEST_CLASS_FILE := $(TESTDIR)/$(INTEGRATION_TEST)Class.cc
-INTEGRATION_TEST_GUARDS := $(BUILDDIR)/$(INTEGRATION_TEST)-guards.o
+INTEGRATION_TEST := combinationTester-test
+INTEGRATION_TEST_CLASS := integrationTestClass
+INTEGRATION_TEST_CLASS_FILE := $(TESTDIR)/$(INTEGRATION_TEST_CLASS).cc
+INTEGRATION_TEST_GUARDS := $(BUILDDIR)/$(INTEGRATION_TEST_CLASS)-guards.o
 INTEGRATION_TEST_FILE := $(TESTDIR)/$(INTEGRATION_TEST).cc
 
 $(INTEGRATION_TEST_GUARDS): $(INTEGRATION_TEST_CLASS_FILE)
@@ -98,7 +99,7 @@ docs: 	Doxyfile
 # 	use Doxyfile configuration to generate latex output for each class and recipe for compiling
 	doxygen Doxyfile
 #	compile latex files and create pdf file
-	make -C latex
+	pdflatex myrefman.tex
 
 test: $(TEST_TARGET) $(TEST_LIB)
 	./$(TEST_TARGET)

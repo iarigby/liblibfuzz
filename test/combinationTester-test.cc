@@ -1,9 +1,8 @@
+#include "combinationTester.hpp"
 #include "coverageReporter.h"
+#include "functionPointerMap.hpp"
 #include "integrationTestClass.h"
 #include <catch2/catch.hpp>
-// TODO:
-#include "../src/combinationTester.cpp"
-#include "functionPointerMap.hpp"
 
 CoverageReporter coverageReporter;
 bool started;
@@ -26,14 +25,14 @@ SCENARIO("integration test", "[integrationtest]") {
           return s;
         };
     CombinationTester<IntegrationTestClass> combinationTester(
-        6, a1, getTestClassInstance, &coverageReporter);
+        5, a1, getTestClassInstance, &coverageReporter);
 
     WHEN("a") {
       combinationTester.run();
       coverageReporter.printResults();
       THEN("b") {
-	int increaseCounterOccurences = 0;
-	//REQUIRE(increaseCounterOccurences == 2);
+        int increaseCounterOccurences = 0;
+        // REQUIRE(increaseCounterOccurences == 2);
       }
     }
   }
