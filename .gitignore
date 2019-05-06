@@ -21,3 +21,10 @@ results.txt
 
 # cquery
 compile_commands.json
+
+# doxygen latex files
+latex/Makefile
+latex/annotated.tex
+latex/dir_*
+latex/refman.tex
+
