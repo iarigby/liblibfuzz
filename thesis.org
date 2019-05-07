@@ -29,6 +29,8 @@ don't forget to update docs
 ***** determining when to insert a sequence that is a union of two sets is not trivial
 ** TODO in functionPointerMap talk about all the cool features I'm using
  added on [2019-04-13 szo 13:23]
+** TODO change colors for the printresults output (main and integration test)
+ added on [2019-05-08 sze 01:15]
 * meetings
 ** <2018-11-12 Tue 13:39>
 *** summary 
@@ -426,6 +428,9 @@ The user is adviced to only change the contents of [[main()]] function, and repl
 # #+INCLUDE: "~/.emacs" :lines "10-"    Include lines from 10 to EOF
 # **** _maybe_ using the script
 
+***** Getting the output
+After finishing, you can ask the coverageReporter to show results by simply printing it or writing to a file
+_(functions here)_
 **** Compile and run
 using commands
 #+BEGIN_SRC bash
@@ -434,13 +439,13 @@ make run-guards
 This command will _(....relevant section from the makefile)_
 |
 |
-*** output
+**** output
 _(TODO)_
-**** results
+***** results
 |
 |
 |
-**** memory leaks
+***** memory leaks
 After it's finished running
 #+BEGIN_EXAMPLE
 ==32362==ERROR: LeakSanitizer: detected memory leaks
@@ -481,32 +486,36 @@ there will be several other directories
 **** code conventions
 # TODO: make format
 Code is formatted according to LLVM standards. Clang-format is used  you add `make format` to your commit hook, or alternatively use clang-format plugin for IDE of your choice. 
-*** dependencies
+*** Dependencies and internal architecture
+**** catch2
+The project is thoroughly tested using the catch2 framework. Tests are represented with Given-When-Then style, and described scenarios carefully follow documentation. This library was chosen for its minimalistic setup and ability to describe the test cases with full sentences, and facilitates test driven development. You can find test cases corresponding to each scenario discussed in the documentation. _(TODO? is it ok to finish with this?)_.
+
+
+The exception to this is the integration test, which will be discussed in the section _([Example])_. It serves as a good example for showing how the library works, before going into the details about each unit. First, I will give a brief overview to the Sanitizer Coverage library and introduce the test class which will illustrate core concepts of both the library and my program. _(TODO review this sentence)_
 **** sanitizer coverage
 The program relies primarily on LLVM's built in coverage instrumentation to measure coverage of different function cal sequences. Basic understanding of how these functions work is necessary for development.
 
+
 |
 |
-_(2-3 medium sized paragraphs about the internals of SanitizerCoverage)_
-|
-|
-|
-|
+_(paragraph about guards)_
 |
 |
 |
+
+Let me illustrate this using an example. Let us introduce a simple class.
+#+CAPTION: example file
+#+BEGIN_listing
+#+INCLUDE: test/integrationTestClass.h example c++
+#+END_listing
 |
- 
-Sanitizer Coverage library offers numerous ways to observe the control flow of the program, including ones for. This could aid in refining the program for more complex applications.
+|
+
+Sanitizer Coverage library offers numerous ways to observe the control flow of the program, including ones for _(...)_. This could aid in refining the program for more complex applications.
 # documentation
-**** catch2
-The project is thoroughly tested using the catch2 framework. Tests are represented with Given-When-Then style, and described scenarios carefully follow documentation. This library was chosen for its minimalistic setup and ability to describe the test cases with full sentences. 
-|
-_(short paragraph about why it was chosen. maybe include a sample from tests)_
-|
+**** Example _(move this)_
 
 ***** steps
-
 #+BEGIN_EXAMPLE bash
 make test-main
 #+END_EXAMPLE 
@@ -523,9 +532,8 @@ _(I will create an integration test along with guards test here)_
 **** documentation
 Doxygen is used with javadoc style. All classes are thoroughly documented.
 run doxygen Doxyfile to generate documentation in html and latex source. Latex source needs additional compiling which can be done by running the command `make` in the latex/ directory.
-If you'd like to change doxygen settings, you can copy the Doxyfile and run doxygen my-Doxyfile.
+If you'd like to change doxygen settings, you can copy the Doxyfile and run doxygen [[my-Doxyfile]].
 *** Example
-
 
 You will observe that tweaking the number of maximum sequence length _..._. However, it will never replace _..._, as observed when tweaking the number from 6 to 7 for IntegrationTestClass.
 Right now, it is recommended to start with smaller number of function calls. 
