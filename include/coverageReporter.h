@@ -52,7 +52,7 @@ public:
   void printResults();
   void printResultsToFile();
   void printResultsToFile(std::string fileName);
-
+  pc_set coveredBlocks;
 private:
   /**
    * \return if first set is subset of the second
@@ -67,7 +67,6 @@ private:
    */
   void writeResults(std::ostream &outstream);
   bool newPcWasFound();
-  pc_set coveredBlocks;
 };
 
 #endif // COVERAGEREPORTER_H

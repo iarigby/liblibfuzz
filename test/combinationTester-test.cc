@@ -9,7 +9,7 @@ bool started;
 bool outputMessages = false;
 
 SCENARIO("integration test", "[integrationtest]") {
-  GIVEN("abc") {
+  GIVEN("All necessary classes and data for the combinationTester") {
     FunctionPointerMap<IntegrationTestClass> a1;
     a1.insert("increaseCounter", &IntegrationTestClass::increaseCounter);
     a1.insert("f2", &IntegrationTestClass::f2);
@@ -27,12 +27,12 @@ SCENARIO("integration test", "[integrationtest]") {
     CombinationTester<IntegrationTestClass> combinationTester(
         5, a1, getTestClassInstance, &coverageReporter);
 
-    WHEN("a") {
+    WHEN("The tests are run") {
       combinationTester.run();
-      coverageReporter.printResults();
-      THEN("b") {
-        int increaseCounterOccurences = 0;
-        // REQUIRE(increaseCounterOccurences == 2);
+      // coverageReporter.printResults();
+      THEN("SanitizerCoverage should report covered pc blocks to coverageReporter") {
+	int allCoveredBlocks = coverageReporter.coveredBlocks.size();
+        REQUIRE(allCoveredBlocks >= 1);
       }
     }
   }
