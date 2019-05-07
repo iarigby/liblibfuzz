@@ -2,7 +2,7 @@
 \label{classCombinationTester}\index{Combination\+Tester$<$ T $>$@{Combination\+Tester$<$ T $>$}}
 
 
-{\ttfamily \#include $<$combination\+Tester.\+h$>$}
+{\ttfamily \#include $<$combination\+Tester.\+hpp$>$}
 
 \subsection*{Public Member Functions}
 \begin{DoxyCompactItemize}
@@ -55,4 +55,4 @@ This function will keep getting new function sequences from permutation generato
 \item Coverage reporting is initialized with the new permutation
 \item Each function in the sequence is called using the functionpointermap. During this step, sanitizer\+Coverage library functions will insert found pc guards to coverage\+Reporter. If \hyperlink{classCombinationTester}{Combination\+Tester} encounters an exception during this step, it blacklists the path, stops and doesn\textquotesingle{}t explore any further paths starting with that sequence, since all possible continuations would be interrupted with that exception and won\textquotesingle{}t provide any new meaningful coverage.
 \item Finally, coverage\+Reporter is flushed 
-\end{DoxyEnumerate}entire loop is wrapped in try catch so that no more functions are called after an exception T\+O\+DO\+: is this also better for performance? in this implementation this step is not essential since paths are explored in increasing order. So only last call could possibly cause an exception However, if the implementation of permutation\+Generator is changed later, this guarantee will no longer hold so having the entire loop wrapped in try catch will ensure that testing stops on first exception
+\end{DoxyEnumerate}entire loop is wrapped in try catch so that no more functions are called after an exception in this implementation this step is not essential since paths are explored in increasing order. So only last call could possibly cause an exception However, if the implementation of permutation\+Generator is changed later, this guarantee will no longer hold so having the entire loop wrapped in try catch will ensure that testing stops on first exception
