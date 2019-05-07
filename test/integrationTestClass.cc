@@ -11,12 +11,12 @@ void IntegrationTestClass::setToggle(bool value) {
 int IntegrationTestClass::f2() {
   if (toggle) {
     if (counterIs2()) {
-      return f5();
+      return f4();
     } else {
       return 0;
     }
   } else {
-    return f4();
+    return 7;
   }
 }
 
@@ -29,6 +29,3 @@ int IntegrationTestClass::f4() {
   return 5;
 }
 
-int IntegrationTestClass::f5() {
-  return 7;
-}

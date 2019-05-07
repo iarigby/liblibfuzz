@@ -11,7 +11,6 @@ private:
   int counter = 1;
   bool counterIs2();
   int f4();
-  int f5();
 };
 
 #endif //INTEGRATION_TEST_CLASS_H

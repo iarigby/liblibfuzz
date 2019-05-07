@@ -49,8 +49,7 @@ $(BUILDDIR)/%.o: $(SRCDIR)/%.$(SRCEXT)
 
 $(INSERTED_GUARDS): $(TEST_TARGET_FILE)
 	@echo "\t \e[96mCompiling the test target class with guards\e[90m"
-	clang++ -c -g -o $@ $^ \
-		-fsanitize-coverage=trace-pc-guard 
+	clang++ -c -g -o $@ $^ -fsanitize-coverage=trace-pc-guard 
 
 $(TARGET): $(OBJECTS) $(INSERTED_GUARDS) $(MAINFILE)
 	@echo "\t \e[96m Linking with sanitizer coverage\e[90m"
