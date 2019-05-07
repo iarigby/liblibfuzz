@@ -4,23 +4,22 @@
 #define SIZE 10
 
 template <typename T>
-class stack
-    {
-        T *arr;
-        int top;
-        int capacity;
-        bool outPutMessages = false;
-    public:
-        stack(int size = SIZE);		// constructor
-        ~stack();
-        void toggleOutput(bool newValue);
-        void push(T);
-        T pop();
-        T peek();
+class stack {
+  T *arr;
+  int top;
+  int capacity;
+  bool outPutMessages = false;
 
-        int size();
-        bool isEmpty();
-        bool isFull();
-    };
+public:
+  stack(int size = SIZE); // constructor
+  ~stack();
+  void toggleOutput(bool newValue);
+  void push(T);
+  T pop();
+  T peek();
+  int size();
+  bool isEmpty();
+  bool isFull();
+};
 
 #endif // STACK_H

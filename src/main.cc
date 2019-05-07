@@ -11,7 +11,7 @@
  */
 
 // replace this line with the header of your own class
-#include "../examples/stack.h"
+#include "stack.h"
 // program
 #include "combinationTester.hpp"
 #include "functionPointerMap.hpp"
