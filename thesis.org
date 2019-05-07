@@ -247,9 +247,10 @@ Test based development is a favorable development method for modern software. We
 
 \vspace*{\fill}
 \cleardoublepage
+\setcounter{page}{1}
 #+TOC: headlines 0
 
-** other                                                           :noexport:
+** other                                                          :noexport:
 
 *** inbox
 **** fuzzing
@@ -332,21 +333,21 @@ ease of implementing
 ******** aims
 
 ******** conditions assumed:
-** discarded
-**** code
-***** combinationTester
-****** .h run
+*** discarded
+***** code
+****** combinationTester
+******* .h run
 // TODO: should this automatically start? what could be some actions that the
 // user might want to take
-****** .cpp run
-******* TODO: is this also better for performance?
-******* // TODO: remove this :D
+******* .cpp run
+******** TODO: is this also better for performance?
+******** // TODO: remove this :D
 // ha?
 //  https://stackoverflow.com/questions/3786360/confusing-template-error
-***** coveragereporter
-****** .cpp flush
+****** coveragereporter
+******* .cpp flush
   // TODO this is trash, rewrite
-***** permutationGenerator
+****** permutationGenerator
 // TODO maybe better if this class will be a container (using
                  // iterator with ++ and end() makes sense)
 ** Introduction
@@ -376,39 +377,56 @@ The _sanitizer coverage_ library is able to communicate its results using a sing
 *** Results
 Although the original intention was to discover new test cases, there were some surprising outcomes that could not have been anticipated. For example, the program is very good in minimizing the total number of test cases. For the sample stack class, it discovered that in . This outcome would be crucial for reducing the size of test suites, which leads to reduced runtime and maintenance cost
 ** User Documentation
-This section provides full information for users of the program. I am using a simple stack class implementation as an example. 
-_(class declaration will go here)_
+This section provides full information for users of the program. I am using a simple stack implementation as an example. 
+
 *** intended audience
 this software is intended for c++ developers who would like to increase 
 Therefore, at least basic knowledge of c++ is assumed, and the user will need to implement and pass pointers for several functions.
 **** Requirements
-_(....)_ and test target should satisfy following:
+_(....)_ and test target class should satisfy following:
 ***** The program is intended to test a single unit
-Current version can not analyze any of the dependencies of the class.
+Current version can not analyze any of the dependencies of the class in some cases. Although the feature might be able to work with multiple classes and different member functions, only single one is supported at this stage.
 ***** You need to be able to be compiled separately
-In order to analyze , the object file of the test target needs to be compiled with special flags separately of the rest of 
+In order to analyze , the object file of the test target needs to be compiled with special flags separately from the rest of the project. This means the implementation of the class can not be spread in multiple files, and those files should not contain anything else
 *** dependencies
 *** installation instructions
 run these commands from the directory where you want to install the project
 #+ATTR_LATEX: :float nil
-#+BEGIN_SRC sh
-git clone  # download the contents in any way you want
-cd <dir>
+#+BEGIN_listing
+# download the contents from the provided disk  
+cd <dir> # where dir is the path of the folder
+
 make test-main
+# this command runs unit tests on classes 
+
 make test # to make sure that everything works
-#+END_SRC
+#+END_listing
 After tests pass successfully, you can move on to next step and set up the  
-*** setup and running
-After installation, and successful tests
-**** structure of the main file
-# #+INCLUDE: src/main.cc example c++
+*** Instructions using an example
+After installation, and successful tests _(TODO)_
+**** Sample stack  class
+[[Listing _TODO_]] shows the definition for the class that the project tests by default. Full implementation can be found in corresponding [[.cpp]] file of the same directory. I will go through the example and explain how it can be adjusted for any other class.
+#+CAPTION: definition for the stack class in examples/stack.h
+#+BEGIN_listing
+#+INCLUDE: examples/stack.h :lines "6-24" example c++
+#+END_listing
+
+**** Structure of the main file
+The user is adviced to only change the contents of [[main()]] function, and replace the [[#include]] directive. More details about how these classes work and way they are engineered can be found in the [[Developer Documentation]]. Developer Documentation _(TODO)_
+
+***** Global objects
+# #+ATTR_LaTeX: :float t :placement [H]
+#+CAPTION: example file
+#+BEGIN_listing
+#+INCLUDE: src/main.cc :lines "10-15" example c++
+#+END_listing
 # src c++ also works
 # #+INCLUDE: "~/.emacs" :lines "5-10"   Include lines 5 to 10, 10 excluded
 # #+INCLUDE: "~/.emacs" :lines "-10"    Include lines 1 to 10, 10 excluded
 # #+INCLUDE: "~/.emacs" :lines "10-"    Include lines from 10 to EOF
 # **** _maybe_ using the script
 
-**** compile and run
+**** Compile and run
 using commands
 #+BEGIN_SRC bash
 make run-guards
@@ -438,9 +456,10 @@ the tests are designed so that all of the underlying infrastructure will be chec
 There might be problems with the addressSanitizer. To see if the program can run independently, use the make command, which will compile and run all the source files without the flag. The program will still work and call functions, but the coverage will not be reported. If this step is successful _describe how_ then please _check your compiler_
 **** running
 |
-_(TODO)_
+_(TODO reproduce)_
 |
 ***** Out of Memory error for AddressSanitizer
+This happens because _..._. Please refer to the requirements section. This error could be fixed by tweaking the AdressSanitizer, but as for now is not supported in the project. 
 ** Developer Documentation
 *** Information about the project
 **** structure and contents of the source folder
