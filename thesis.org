@@ -1,4 +1,4 @@
-#+TODO: TODO UPNEXT DOING REVIEW DONE
+#+TODO: TODO UPNEXT DOING REVIEW | DONE CANCELLED
 #+OPTIONS: \n:t H:5 toc:nil title:nil date:nil
 #+LATEX_CLASS: book 
 
@@ -6,31 +6,52 @@
 ** DONE thesis declaration
 CLOSED: [2019-01-28 Mon 21:11]
 added on [2018-12-26 Wed 13:42]
-** https://mcss.mosra.cz/doxygen/
+** CANCELLED https://mcss.mosra.cz/doxygen/
+CLOSED: [2019-05-08 sze 13:13]
 ** tasks
 *** Code
 **** components
-***** generate reports
-***** use a separate class in the extern functions
-***** move the sanitizercoverage flag to coveragereported
+***** CANCELLED generate reports
+CLOSED: [2019-05-08 sze 13:13]
+***** CANCELLED use a separate class in the extern functions
+CLOSED: [2019-05-08 sze 13:13]
+***** TODO move the sanitizercoverage flag to coveragereported
 don't forget to update docs
-**** add an integration test
+**** DONE add an integration test
+CLOSED: [2019-05-08 sze 13:14]
 **** results
-***** have the set of covered pc blocks and check when it reaches max, halt
+***** CANCELLED have the set of covered pc blocks and check when it reaches max, halt
+CLOSED: [2019-05-08 sze 13:14]
 ****** maybe when the block doesn't have any new covered pc, apply some different rules
-***** have some messages for the user
+***** CANCELLED have some messages for the user
+CLOSED: [2019-05-08 sze 13:14]
+# :)
+**** TODO change colors for the printresults output (main and integration test)
+ added on [2019-05-08 sze 01:15]
+**** TODO in functionPointerMap talk about all the cool features I'm using
+ added on [2019-04-13 szo 13:23]
+*** TODO try out testing an hpp file
+ added on [2019-05-08 sze 08:43]
 *** Thesis
 **** figs
 ! Don't forget to have captions and refer to them from the text
 ***** code snippets
-***** figures
+***** TODO binary tree for permutationGenerator
 **** other notes
 ***** you should aim for the shorter combination length
 ***** determining when to insert a sequence that is a union of two sets is not trivial
-** TODO in functionPointerMap talk about all the cool features I'm using
- added on [2019-04-13 szo 13:23]
-** TODO change colors for the printresults output (main and integration test)
- added on [2019-05-08 sze 01:15]
+**** technical - writing
+***** TODO fix section-subsection etc
+ added on [2019-05-08 sze 09:12]
+***** TODO go through listings and number them
+ added on [2019-05-08 sze 08:59]
+**** technical 
+***** TODO fix page for refman
+ added on [2019-05-08 sze 08:36]
+***** TODO listings inlcude line numberings
+ added on [2019-05-08 sze 09:04]
+***** TODO myrefman compile error for doxygen package
+ added on [2019-05-08 sze 08:35]
 * meetings
 ** <2018-11-12 Tue 13:39>
 *** summary 
@@ -467,7 +488,7 @@ _(TODO reproduce)_
 This happens because _..._. Please refer to the requirements section. This error could be fixed by tweaking the AdressSanitizer, but as for now is not supported in the project. 
 ** Developer Documentation
 *** Information about the project
-**** structure and contents of the source folder
+**** Makefile and project layout
 ***** include
 Header files. Definitions for 3 main classes of the project. It also contains definition of the template class along with its implementation.  
 ***** src
@@ -476,46 +497,15 @@ Implementations of classes from /include directory (excluding functionPointerMap
 this makes it easier to create a comprehensive but concise makefile which scans the source folder for .cpp files and .cc is used for main and 
 ***** test
 Test directory. Tests are discussed later in [[catch2]]
-***** lib
-...
 ***** Makefile
-
-***** other directories
-there will be several other directories 
-# #+INCLUDE: Makefile
+The test section of the makefile is discussed in catch2  _(TODO link)_
 **** code conventions
 # TODO: make format
-Code is formatted according to LLVM standards. Clang-format is used  you add `make format` to your commit hook, or alternatively use clang-format plugin for IDE of your choice. 
+Code is formatted according to LLVM coding standard[fn:1]. Clang-format is used and can be added to commit hook, or alternatively use clang-format plugin for IDE of your choice. 
 *** Dependencies and internal architecture
-**** catch2
+**** Catch2 library and tests
 The project is thoroughly tested using the catch2 framework. Tests are represented with Given-When-Then style, and described scenarios carefully follow documentation. This library was chosen for its minimalistic setup and ability to describe the test cases with full sentences, and facilitates test driven development. You can find test cases corresponding to each scenario discussed in the documentation. _(TODO? is it ok to finish with this?)_.
 
-
-The exception to this is the integration test, which will be discussed in the section _([Example])_. It serves as a good example for showing how the library works, before going into the details about each unit. First, I will give a brief overview to the Sanitizer Coverage library and introduce the test class which will illustrate core concepts of both the library and my program. _(TODO review this sentence)_
-**** sanitizer coverage
-The program relies primarily on LLVM's built in coverage instrumentation to measure coverage of different function cal sequences. Basic understanding of how these functions work is necessary for development.
-
-
-|
-|
-_(paragraph about guards)_
-|
-|
-|
-
-Let me illustrate this using an example. Let us introduce a simple class.
-#+CAPTION: example file
-#+BEGIN_listing
-#+INCLUDE: test/integrationTestClass.h example c++
-#+END_listing
-|
-|
-
-Sanitizer Coverage library offers numerous ways to observe the control flow of the program, including ones for _(...)_. This could aid in refining the program for more complex applications.
-# documentation
-**** Example _(move this)_
-
-***** steps
 #+BEGIN_EXAMPLE bash
 make test-main
 #+END_EXAMPLE 
@@ -524,26 +514,43 @@ This compiles the test-main.cpp which defines the main function of catch. Since 
 make test
 #+END_EXAMPLE
 runs the tests for all units in the project, excluding the combination tester.
-|
-|
-_(I will create an integration test along with guards test here)_ 
-|
-|
-**** documentation
-Doxygen is used with javadoc style. All classes are thoroughly documented.
-run doxygen Doxyfile to generate documentation in html and latex source. Latex source needs additional compiling which can be done by running the command `make` in the latex/ directory.
-If you'd like to change doxygen settings, you can copy the Doxyfile and run doxygen [[my-Doxyfile]].
-*** Example
 
-You will observe that tweaking the number of maximum sequence length _..._. However, it will never replace _..._, as observed when tweaking the number from 6 to 7 for IntegrationTestClass.
-Right now, it is recommended to start with smaller number of function calls. 
+The exception to this is the integration test, which will be discussed in the section _([Example])_. It serves as a good example for showing how the library works, before going into the details about each unit. First, I will give a brief overview to the Sanitizer Coverage library and introduce the test class which will illustrate core concepts of both the library and my program. _(TODO review this sentence)_
+
+**** Sanitizer Coverage library
+The program relies primarily on LLVM's built in coverage instrumentation to measure coverage of different function cal sequences. Basic understanding of how these functions work is necessary for development.
+
+_(paragraph about guards,)_
+
+
+Let me illustrate this using an example. First let us introduce a simple class on [[Listing 3]]. Most functions have descriptive names and their implementation does exactly that, so I will explain only what [[f2() ]]does, and also note that f4() returns a simple integer value without any calculations. 
+#+CAPTION: Definition of the class used in integration tests
+#+BEGIN_listing c++
+#+INCLUDE: test/integrationTestClass.h :lines "3-16" example c++
+#+END_listing
+
+As you will observe on [[Listing 3]], there are 3 different scenarios for [[f2()]], and Sanitizer Coverage will insert guards on entry point of each of them. The rest of the functions will simply have guards inserted in the beginning.
+
+#+CAPTION: Implementation of [[IntegrationTestClass::f2()]], with inserted guards highlighted _(TODO)_
+#+BEGIN_listing c++
+#+INCLUDE: test/integrationTestClass.cc :lines "12-22" example c++
+#+END_listing
+
+Sanitizer Coverage library offers numerous ways to observe the control flow of the program, three default ones being _(.... edge, block, explain differences)_. It also includes _(... for switches and )_. These could aid in refining the program for more complex applications but will not be covered here since only edge case is used currently.
+# documentation
+**** Example
+
+You will observe that tweaking the number of maximum sequence length will increase the number of covered blocks per unit test (and have larger sequences of function calls) while significantly decreasing the total number of unit tests, until it collapses to very few, maybe even one. It is not reasonable to test the entire logic in a single test, and also not clear _(when to stop growing)_, and it might also vary from the complexity of the unit. However, it will never replace _..._, as observed when tweaking the number from 6 to 7 for IntegrationTestClass.
+Right now, it is recommended to start with smaller number of function calls. It is hard to determine the threshold after which having a larger coverage per unit test stops being important. If we restrict the program to only save the function call sequence if it covers a new block, the number of unit tests will _(TODO? I think this is actually a reasonable approach, and should be the default and I could say that other alternatives could be found, at the same time, I don't think I have time to implement, test and document even such a small feature, since I did added other ones recently)._ 
 Choosing the right combination of number of function calls with regards to number of covered blocks is for another project. 
-*** class documentation
-|
-|
-_(this can be found in [[file:latex/refman.pdf][refman.pdf file]]. It has its own typesetting because contents are auto-generated in latex from documentation in the code. I'll look into transforming the typesetting to match ELTE requirements, or manually move it here. I'll add a few graphs and example as well)_
-|
-|
+
+This was a higher-level overview of the core concepts used for the program. The rest of the documentation is provided in the following section. 
+**** documentation
+All classes are thoroughly documented in header files, and some more detailed explanation and reasoning is sometimes provided in implementation files. For documentation generation, Doxygen library is used with javadoc style. 
+
+Run [[doxygen Doxyfile]] to generate documentation in html and latex source. Latex source needs additional compiling which can be done by running the command [[make]] in the [[latex/]] directory. If you would like to change doxygen settings, you can copy the Doxyfile and run doxygen [[my-Doxyfile]].
+
+_(TODO the blank rest of the page here to bind second pdf)_
 
 ** references                                                     :noexport:
 [1] https://github.com/CppCon/CppCon2017/blob/master/Demos/Fuzz%20Or%20Lose/Fuzz%20Or%20Lose%20-%20Kostya%20Serebryany%20-%20CppCon%202017.pdf
@@ -552,3 +559,10 @@ _(this can be found in [[file:latex/refman.pdf][refman.pdf file]]. It has its ow
 
 
 
+_(TODO? are the references ok like that?)_
+
+*** TODO move stuff from Footnotes
+* Footnotes
+
+[fn:1] https://llvm.org/docs/CodingStandards.html
+https://clang.llvm.org/docs/ClangFormatStyleOptions.html
