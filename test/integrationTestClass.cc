@@ -8,6 +8,7 @@ void IntegrationTestClass::increaseCounter() {
 void IntegrationTestClass::setToggle(bool value) {
   toggle = value;
 }
+
 int IntegrationTestClass::f2() {
   if (toggle) {
     if (counterIs2()) {
@@ -19,7 +20,6 @@ int IntegrationTestClass::f2() {
     return 7;
   }
 }
-
 
 bool IntegrationTestClass::counterIs2() {
   return counter > 2;

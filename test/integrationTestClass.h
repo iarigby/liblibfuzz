@@ -6,6 +6,7 @@ public:
   void increaseCounter();
   void setToggle(bool);
   int f2();
+
 private:
   bool toggle = false;
   int counter = 1;
@@ -13,4 +14,4 @@ private:
   int f4();
 };
 
-#endif //INTEGRATION_TEST_CLASS_H
+#endif // INTEGRATION_TEST_CLASS_H
