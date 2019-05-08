@@ -10,12 +10,13 @@ added on [2018-12-26 Wed 13:42]
 CLOSED: [2019-05-08 sze 13:13]
 ** tasks
 *** Code
-**** components
+**** DONE components
+CLOSED: [2019-05-08 sze 14:11]
 ***** CANCELLED generate reports
 CLOSED: [2019-05-08 sze 13:13]
 ***** CANCELLED use a separate class in the extern functions
 CLOSED: [2019-05-08 sze 13:13]
-***** TODO move the sanitizercoverage flag to coveragereported
+**** TODO move the sanitizercoverage flag to coveragereported
 don't forget to update docs
 **** DONE add an integration test
 CLOSED: [2019-05-08 sze 13:14]
@@ -30,7 +31,7 @@ CLOSED: [2019-05-08 sze 13:14]
  added on [2019-05-08 sze 01:15]
 **** TODO in functionPointerMap talk about all the cool features I'm using
  added on [2019-04-13 szo 13:23]
-*** TODO try out testing an hpp file
+**** TODO try out testing an hpp file
  added on [2019-05-08 sze 08:43]
 *** Thesis
 **** figs
@@ -45,6 +46,7 @@ CLOSED: [2019-05-08 sze 13:14]
  added on [2019-05-08 sze 09:12]
 ***** TODO go through listings and number them
  added on [2019-05-08 sze 08:59]
+***** TODO references chapter
 **** technical 
 ***** TODO fix page for refman
  added on [2019-05-08 sze 08:36]
@@ -52,6 +54,8 @@ CLOSED: [2019-05-08 sze 13:14]
  added on [2019-05-08 sze 09:04]
 ***** TODO myrefman compile error for doxygen package
  added on [2019-05-08 sze 08:35]
+***** TODO thesis margins check
+**** TODO add a separate section for tests and describe test scenarios. 
 * meetings
 ** <2018-11-12 Tue 13:39>
 *** summary 
@@ -505,7 +509,6 @@ Test directory. Tests are discussed later in [[catch2]]
 ***** Makefile
 The test section of the makefile is discussed in catch2  _(TODO link)_
 **** code conventions
-# TODO: make format
 Code is formatted according to LLVM coding standard[fn:1]. Clang-format is used and can be added to commit hook, or alternatively use clang-format plugin for IDE of your choice. 
 *** Dependencies and internal architecture
 **** Catch2 library and tests

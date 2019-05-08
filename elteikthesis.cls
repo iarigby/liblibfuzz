@@ -118,6 +118,7 @@
 \paperwidth 210mm
 \paperheight 297mm
 % ------------------------------
+\f@nch@setoffs
 
 % ------------------------------
 % Margók
