@@ -1,4 +1,4 @@
-% Created 2019-05-08 sze 01:26
+% Created 2019-05-08 sze 13:47
 \documentclass{elteikthesis}[2018/06/06]
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -228,10 +228,15 @@ There might be problems with the addressSanitizer. To see if the program can run
 This happens because \uline{\ldots{}}. Please refer to the requirements section. This error could be fixed by tweaking the AdressSanitizer, but as for now is not supported in the project. \\
 \chapter{Developer Documentation}
 \label{sec-3}
+This section discusses the structure and contents of the source directory, essential concepts for development and reasoning behind some of the architecture decisions. It also provides overview of the tools necessary for development, along with their usage. \\
 \section{Information about the project}
 \label{sec-3-1}
-\subsection{structure and contents of the source folder}
+Before going in-depth about the details of software, I would like to elaborate more on some commands that were dicusses in the User Manual. \\
+\subsection{Makefile and project layout}
 \label{sec-3-1-1}
+As mentioned before, the project is compiled using GNU make, since it was more straightforward to express the different compilation commands and necessary flags for Sanitizer library. \\
+
+\uline{(TODO) contents and commends of Makefile will be broken down here. show the file} \\
 \subsubsection{include}
 \label{sec-3-1-1-1}
 Header files. Definitions for 3 main classes of the project. It also contains definition of the template class along with its implementation. \\
@@ -243,82 +248,20 @@ Implementations of classes from /include directory (excluding functionPointerMap
 this makes it easier to create a comprehensive but concise makefile which scans the source folder for .cpp files and .cc is used for main and \\
 \subsubsection{test}
 \label{sec-3-1-1-4}
-Test directory. Tests are discussed later in \ref{sec-3-2-1} \\
-\subsubsection{lib}
-\label{sec-3-1-1-5}
-\ldots{} \\
+Test directory. Tests are discussed later in \texttt{catch2} \\
 \subsubsection{Makefile}
-\label{sec-3-1-1-6}
-
-\subsubsection{other directories}
-\label{sec-3-1-1-7}
-there will be several other directories \\
+\label{sec-3-1-1-5}
+The test section of the makefile is discussed in catch2  \uline{(TODO link)} \\
 \subsection{code conventions}
 \label{sec-3-1-2}
-Code is formatted according to LLVM standards. Clang-format is used  you add `make format` to your commit hook, or alternatively use clang-format plugin for IDE of your choice. \\
+Code is formatted according to LLVM coding standard\footnote{\url{https://llvm.org/docs/CodingStandards.html} \\
+\url{https://clang.llvm.org/docs/ClangFormatStyleOptions.html} \\}. Clang-format is used and can be added to commit hook, or alternatively use clang-format plugin for IDE of your choice. \\
 \section{Dependencies and internal architecture}
 \label{sec-3-2}
-\subsection{catch2}
+\subsection{Catch2 library and tests}
 \label{sec-3-2-1}
 The project is thoroughly tested using the catch2 framework. Tests are represented with Given-When-Then style, and described scenarios carefully follow documentation. This library was chosen for its minimalistic setup and ability to describe the test cases with full sentences, and facilitates test driven development. You can find test cases corresponding to each scenario discussed in the documentation. \uline{(TODO? is it ok to finish with this?)}. \\
 
-
-The exception to this is the integration test, which will be discussed in the section \uline{([Example])}. It serves as a good example for showing how the library works, before going into the details about each unit. First, I will give a brief overview to the Sanitizer Coverage library and introduce the test class which will illustrate core concepts of both the library and my program. \uline{(TODO review this sentence)} \\
-\subsection{sanitizer coverage}
-\label{sec-3-2-2}
-The program relies primarily on LLVM's built in coverage instrumentation to measure coverage of different function cal sequences. Basic understanding of how these functions work is necessary for development. \\
-
-
-\begin{center}
-\begin{tabular}{}
-\\
-\\
-\end{tabular}
-\end{center}
-\uline{(paragraph about guards)} \\
-\begin{center}
-\begin{tabular}{}
-\\
-\\
-\\
-\end{tabular}
-\end{center}
-
-Let me illustrate this using an example. Let us introduce a simple class. \\
-\begin{listing}
-\caption{example file}
-\begin{verbatim}
-#ifndef INTEGRATION_TEST_CLASS_H
-#define INTEGRATION_TEST_CLASS_H
-
-class IntegrationTestClass {
-public:
-  void increaseCounter();
-  void setToggle(bool);
-  int f2();
-private:
-  bool toggle = false;
-  int counter = 1;
-  bool counterIs2();
-  int f4();
-};
-
-#endif //INTEGRATION_TEST_CLASS_H
-\end{verbatim}
-\end{listing}
-\begin{center}
-\begin{tabular}{}
-\\
-\\
-\end{tabular}
-\end{center}
-
-Sanitizer Coverage library offers numerous ways to observe the control flow of the program, including ones for \uline{(\ldots{})}. This could aid in refining the program for more complex applications. \\
-\subsection{Example \underline{(move this)}}
-\label{sec-3-2-3}
-
-\subsubsection{steps}
-\label{sec-3-2-3-1}
 \begin{verbatim}
 make test-main
 \end{verbatim}
@@ -327,44 +270,68 @@ This compiles the test-main.cpp which defines the main function of catch. Since 
 make test
 \end{verbatim}
 runs the tests for all units in the project, excluding the combination tester. \\
-\begin{center}
-\begin{tabular}{}
-\\
-\\
-\end{tabular}
-\end{center}
-\uline{(I will create an integration test along with guards test here)}  \\
-\begin{center}
-\begin{tabular}{}
-\\
-\\
-\end{tabular}
-\end{center}
+
+The exception to this is the integration test, which will be discussed in the section \uline{([Example])}. It serves as a good example for showing how the library works, before going into the details about each unit. First, I will give a brief overview to the Sanitizer Coverage library and introduce the test class which will illustrate core concepts of both the library and my program. \uline{(TODO review this sentence)} \\
+
+\subsection{Sanitizer Coverage library}
+\label{sec-3-2-2}
+The program relies primarily on LLVM's built in coverage instrumentation to measure coverage of different function cal sequences. Basic understanding of how these functions work is necessary for development. \\
+
+\uline{(paragraph about guards,)} \\
+
+
+Let me illustrate this using an example. First let us introduce a simple class on \texttt{Listing 3}. Most functions have descriptive names and their implementation does exactly that, so I will explain only what \texttt{f2() }does, and also note that f4() returns a simple integer value without any calculations. \\
+\begin{listing}
+\caption{Definition of the class used in integration tests}
+\begin{verbatim}
+class IntegrationTestClass {
+public:
+  void increaseCounter();
+  void setToggle(bool);
+  int f2();
+
+private:
+  bool toggle = false;
+  int counter = 1;
+  bool counterIs2();
+  int f4();
+};
+\end{verbatim}
+\end{listing}
+
+As you will observe on \texttt{Listing 3}, there are 3 different scenarios for \texttt{f2()}, and Sanitizer Coverage will insert guards on entry point of each of them. The rest of the functions will simply have guards inserted in the beginning. \\
+
+\begin{listing}
+\caption{Implementation of \texttt{IntegrationTestClass::f2()}, with inserted guards highlighted \uline{(TODO)}}
+\begin{verbatim}
+int IntegrationTestClass::f2() {
+  if (toggle) {
+    if (counterIs2()) {
+      return f4();
+    } else {
+      return 0;
+    }
+  } else {
+    return 7;
+  }
+\end{verbatim}
+\end{listing}
+
+Sanitizer Coverage library offers numerous ways to observe the control flow of the program, three default ones being \uline{(\ldots{}. edge, block, explain differences)}. It also includes \uline{(\ldots{} for switches and )}. These could aid in refining the program for more complex applications but will not be covered here since only edge case is used currently. \\
+\subsection{Example}
+\label{sec-3-2-3}
+
+You will observe that tweaking the number of maximum sequence length will increase the number of covered blocks per unit test (and have larger sequences of function calls) while significantly decreasing the total number of unit tests, until it collapses to very few, maybe even one. It is not reasonable to test the entire logic in a single test, and also not clear \uline{(when to stop growing)}, and it might also vary from the complexity of the unit. However, it will never replace \uline{\ldots{}}, as observed when tweaking the number from 6 to 7 for IntegrationTestClass. \\
+Right now, it is recommended to start with smaller number of function calls. It is hard to determine the threshold after which having a larger coverage per unit test stops being important. If we restrict the program to only save the function call sequence if it covers a new block, the number of unit tests will \uline{(TODO? I think this is actually a reasonable approach, and should be the default and I could say that other alternatives could be found, at the same time, I don't think I have time to implement, test and document even such a small feature, since I did added other ones recently).}  \\
+Choosing the right combination of number of function calls with regards to number of covered blocks is for another project. \\
+
+This was a higher-level overview of the core concepts used for the program. The rest of the documentation is provided in the following section. \\
 \subsection{documentation}
 \label{sec-3-2-4}
-Doxygen is used with javadoc style. All classes are thoroughly documented. \\
-run doxygen Doxyfile to generate documentation in html and latex source. Latex source needs additional compiling which can be done by running the command `make` in the latex/ directory. \\
-If you'd like to change doxygen settings, you can copy the Doxyfile and run doxygen \texttt{my-Doxyfile}. \\
-\section{Example}
-\label{sec-3-3}
+All classes are thoroughly documented in header files, and some more detailed explanation and reasoning is sometimes provided in implementation files. For documentation generation, Doxygen library is used with javadoc style. \\
 
-You will observe that tweaking the number of maximum sequence length \uline{\ldots{}}. However, it will never replace \uline{\ldots{}}, as observed when tweaking the number from 6 to 7 for IntegrationTestClass. \\
-Right now, it is recommended to start with smaller number of function calls. \\
-Choosing the right combination of number of function calls with regards to number of covered blocks is for another project. \\
-\section{class documentation}
-\label{sec-3-4}
-\begin{center}
-\begin{tabular}{}
-\\
-\\
-\end{tabular}
-\end{center}
-\uline{(this can be found in \href{latex/refman.pdf}{refman.pdf file}. It has its own typesetting because contents are auto-generated in latex from documentation in the code. I'll look into transforming the typesetting to match ELTE requirements, or manually move it here. I'll add a few graphs and example as well)} \\
-\begin{center}
-\begin{tabular}{}
-\\
-\\
-\end{tabular}
-\end{center}
+Run \texttt{doxygen Doxyfile} to generate documentation in html and latex source. Latex source needs additional compiling which can be done by running the command \texttt{make} in the \texttt{latex/} directory. If you would like to change doxygen settings, you can copy the Doxyfile and run doxygen \texttt{my-Doxyfile}. \\
+
+\uline{(TODO the blank rest of the page here to bind second pdf)} \\
 % Emacs 25.2.2 (Org mode 8.2.10)
 \end{document}

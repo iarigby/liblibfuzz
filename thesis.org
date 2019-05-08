@@ -487,8 +487,13 @@ _(TODO reproduce)_
 ***** Out of Memory error for AddressSanitizer
 This happens because _..._. Please refer to the requirements section. This error could be fixed by tweaking the AdressSanitizer, but as for now is not supported in the project. 
 ** Developer Documentation
+This section discusses the structure and contents of the source directory, essential concepts for development and reasoning behind some of the architecture decisions. It also provides overview of the tools necessary for development, along with their usage.
 *** Information about the project
+Before going in-depth about the details of software, I would like to elaborate more on some commands that were dicusses in the User Manual.
 **** Makefile and project layout
+As mentioned before, the project is compiled using GNU make, since it was more straightforward to express the different compilation commands and necessary flags for Sanitizer library. 
+
+_(TODO) contents and commends of Makefile will be broken down here. show the file_
 ***** include
 Header files. Definitions for 3 main classes of the project. It also contains definition of the template class along with its implementation.  
 ***** src
