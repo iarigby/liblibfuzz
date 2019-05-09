@@ -73,7 +73,8 @@ $(TEST_LIB): $(TEST_MAIN)
 # test files end with 'test' before the extension
 TESTEXT := -test.$(SRCEXT)
 TEST_SOURCES := $(shell find $(TESTDIR) -type f -name *$(TESTEXT))
-TEST_OBJECTS := $(patsubst $(TESTDIR)/%,$(BUILDDIR)/%,$(TEST_SOURCES:.$(SRCEXT)=.o))
+TEST_OBJECTS := $(patsubst $(TESTDIR)/%,$(BUILDDIR)/%,\
+$(TEST_SOURCES:.$(SRCEXT)=.o))
 
 TEST_TARGET := bin/test
 $(TEST_TARGET): $(TEST_OBJECTS) $(OBJECTS) $(TEST_LIB)

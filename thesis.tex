@@ -1,4 +1,4 @@
-% Created 2019-05-08 sze 13:47
+% Created 2019-05-09 cs 16:47
 \documentclass{elteikthesis}[2018/06/06]
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -20,16 +20,17 @@
 \date{2019}
 \degree{Computer Science BSc}
 \supervisor{Zoltan Porkolab}
-\affiliation{Associate Professor}
-\university{Eötvös Loránd Tudományegyetem}
+\affiliation{Associate Professor, PhD}
+\university{Eötvös Loránd University}
 \faculty{Faculty of Informatics}
 \department{Department of Programming Languages}
+\departmentSecondLine{ And Compilers }
 \city{Budapest}
 \logo{elte_cimer_szines}
 \documentlang{english}
 \author{Ia Mgvdliashvili}
-\date{}
-\title{Test case generation based on fuzzing for C++}
+\date{\today}
+\title{thesis}
 \hypersetup{
   pdfkeywords={},
   pdfsubject={},
@@ -38,17 +39,6 @@
 
 \maketitle
 
-\begin{export}
-\begin{document} \\
-\begin{titlepage}
-\end{titlepage}
-\end{export}
-
-\vspace*{\fill} \\
-Test based development is a favorable development method for modern software. We create all the necessary test cases to test the software under development and then we implement the functionality. This is a widely accepted method for library development, when the test cases try to cover all meaningful combinations of API calls. However, in real software systems, the possible combinations can grow exponentially. It is very hard to determine the minimun necessary set of meaningful API call sequences. In this thesis we try to apply fuzzy testing methods for automatically generate API call sequences for testing C++ libraries. We will use the LLVM toolset to exploit the existing code coverage and test input mutation methods. However, our target is not to gereate a random input sequence but a meaningful sequence of API calls. It is also in our plans to analyse the result to create a minimal classification set. \\
-
-\vspace*{\fill} \\
-\cleardoublepage \\
 \setcounter{page}{1} \\
 \setcounter{tocdepth}{0}
 \tableofcontents
@@ -121,46 +111,20 @@ After tests pass successfully, you can move on to next step and set up the \\
 After installation, and successful tests \uline{(TODO)} \\
 \subsection{Sample stack  class}
 \label{sec-2-4-1}
-\texttt{Listing \_TODO\_} shows the definition for the class that the project tests by default. Full implementation can be found in corresponding \texttt{.cpp} file of the same directory. I will go through the example and explain how it can be adjusted for any other class. \\
+\texttt{Listing \_TODO\_} shows the definition for the class that the project tests by default. Full implementation can be found in corresponding \lstinline{.cpp} file of the same directory. I will go through the example and explain how it can be adjusted for any other class. \\
 \begin{listing}
 \caption{definition for the stack class in examples/stack.h}
-\begin{verbatim}
-template <typename T>
-class stack {
-  T *arr;
-  int top;
-  int capacity;
-  bool outPutMessages = false;
-
-public:
-  stack(int size = SIZE); // constructor
-  ~stack();
-  void toggleOutput(bool newValue);
-  void push(T);
-  T pop();
-  T peek();
-  int size();
-  bool isEmpty();
-  bool isFull();
-};
-\end{verbatim}
+\inputminted[firstline=6,lastline=24]{c++}{examples/stack.h} \\
 \end{listing}
-
 \subsection{Structure of the main file}
 \label{sec-2-4-2}
-The user is adviced to only change the contents of \texttt{main()} function, and replace the \texttt{\#include} directive. More details about how these classes work and way they are engineered can be found in the \ref{sec-3}. Developer Documentation \uline{(TODO)} \\
+The user is adviced to only change the contents of \lstinline{main} function, and replace the \lstinline{#include} directive. More details about how these classes work and way they are engineered can be found in the \ref{sec-3} Developer Documentation \uline{(TODO)} \\
 
 \subsubsection{Global objects}
 \label{sec-2-4-2-1}
 \begin{listing}
 \caption{example file}
-\begin{verbatim}
- * libraries needed for running
- */
-
-// replace this line with the header of your own class
-#include "stack.h"
-\end{verbatim}
+\inputminted[firstline=10,lastline=15]{c++}{src/main.cc} \\
 \end{listing}
 
 \subsubsection{Getting the output}
@@ -234,92 +198,53 @@ This section discusses the structure and contents of the source directory, essen
 Before going in-depth about the details of software, I would like to elaborate more on some commands that were dicusses in the User Manual. \\
 \subsection{Makefile and project layout}
 \label{sec-3-1-1}
-As mentioned before, the project is compiled using GNU make, since it was more straightforward to express the different compilation commands and necessary flags for Sanitizer library. \\
+As mentioned before, the project is compiled using GNU make, since it was more straightforward to express the different compilation commands and necessary flags for Sanitizer library. Each recipe is self documenting by using @echo to display its purpose when invoked. Since this is the most crucial information, it is highlighted in shell output. After that the compile command is displayed in less bright color, so the user and developer are not distracted. \\
 
-\uline{(TODO) contents and commends of Makefile will be broken down here. show the file} \\
-\subsubsection{include}
+Here is a brief overview of the source directory. Each of the subdirectories is displayed alongside corresponding variable in the Makefile. \\
+
+\subsubsection{include - \$(INC)}
 \label{sec-3-1-1-1}
-Header files. Definitions for 3 main classes of the project. It also contains definition of the template class along with its implementation. \\
-\subsubsection{src}
+Header files. Definitions for all classes of the project. It also contains definition of the template classes along with ther implementation. The \lstinline{lib} subdirectory holds the header file of the testing framework. \\
+\subsubsection{src - \$(SRCDIR)}
 \label{sec-3-1-1-2}
-Implementations of classes from /include directory (excluding functionPointerMap which is a template class) and a sample for the main file, which should be replaced by user for its own test target unit. \\
-\subsubsection{source file extensions}
+Implementations of non-template classes from \lstinline{include} directory and a sample for the main file, which should be replaced by user for its own test target unit. \\
+\subsubsection{bin and build - \$(BUILDDIR)}
 \label{sec-3-1-1-3}
-this makes it easier to create a comprehensive but concise makefile which scans the source folder for .cpp files and .cc is used for main and \\
+Output for binary and object files \\
 \subsubsection{test}
 \label{sec-3-1-1-4}
-Test directory. Tests are discussed later in \texttt{catch2} \\
-\subsubsection{Makefile}
-\label{sec-3-1-1-5}
-The test section of the makefile is discussed in catch2  \uline{(TODO link)} \\
+Test directory. Tests are discussed in detail in \ref{sec-3-3} Testing strategy. \\
 \subsection{code conventions}
 \label{sec-3-1-2}
 Code is formatted according to LLVM coding standard\footnote{\url{https://llvm.org/docs/CodingStandards.html} \\
-\url{https://clang.llvm.org/docs/ClangFormatStyleOptions.html} \\}. Clang-format is used and can be added to commit hook, or alternatively use clang-format plugin for IDE of your choice. \\
+\url{https://clang.llvm.org/docs/ClangFormatStyleOptions.html} \\
+\url{https://github.com/catchorg/Catch2/blob/master/docs/slow-compiles.md#top} \\}. Clang-format is used and can be added to commit hook, or alternatively use clang-format plugin for IDE of your choice. \\
 \section{Dependencies and internal architecture}
 \label{sec-3-2}
-\subsection{Catch2 library and tests}
-\label{sec-3-2-1}
-The project is thoroughly tested using the catch2 framework. Tests are represented with Given-When-Then style, and described scenarios carefully follow documentation. This library was chosen for its minimalistic setup and ability to describe the test cases with full sentences, and facilitates test driven development. You can find test cases corresponding to each scenario discussed in the documentation. \uline{(TODO? is it ok to finish with this?)}. \\
-
-\begin{verbatim}
-make test-main
-\end{verbatim}
-This compiles the test-main.cpp which defines the main function of catch. Since it needs to be defined just once and used for any test case, it is more efficient to compile it to an object which is later included in tests. \\
-\begin{verbatim}
-make test
-\end{verbatim}
-runs the tests for all units in the project, excluding the combination tester. \\
-
-The exception to this is the integration test, which will be discussed in the section \uline{([Example])}. It serves as a good example for showing how the library works, before going into the details about each unit. First, I will give a brief overview to the Sanitizer Coverage library and introduce the test class which will illustrate core concepts of both the library and my program. \uline{(TODO review this sentence)} \\
 
 \subsection{Sanitizer Coverage library}
-\label{sec-3-2-2}
+\label{sec-3-2-1}
 The program relies primarily on LLVM's built in coverage instrumentation to measure coverage of different function cal sequences. Basic understanding of how these functions work is necessary for development. \\
 
 \uline{(paragraph about guards,)} \\
 
 
-Let me illustrate this using an example. First let us introduce a simple class on \texttt{Listing 3}. Most functions have descriptive names and their implementation does exactly that, so I will explain only what \texttt{f2() }does, and also note that f4() returns a simple integer value without any calculations. \\
+Let me illustrate this using an example. First let us introduce a simple class on \texttt{Listing 3}. Most functions have descriptive names and their implementation does exactly that, so I will explain only what link \texttt{f2() }does, and also note that f4() returns a simple integer value without any calculations. \\
 \begin{listing}
 \caption{Definition of the class used in integration tests}
-\begin{verbatim}
-class IntegrationTestClass {
-public:
-  void increaseCounter();
-  void setToggle(bool);
-  int f2();
-
-private:
-  bool toggle = false;
-  int counter = 1;
-  bool counterIs2();
-  int f4();
-};
-\end{verbatim}
+\inputminted[firstline=3,lastline=16]{c++}{test/integrationTestClass.h} \\
 \end{listing}
 
-As you will observe on \texttt{Listing 3}, there are 3 different scenarios for \texttt{f2()}, and Sanitizer Coverage will insert guards on entry point of each of them. The rest of the functions will simply have guards inserted in the beginning. \\
+As you will observe on \texttt{Listing 3}, there are 3 different scenarios for link \texttt{f2()}, and Sanitizer Coverage will insert guards on entry point of each of them. The rest of the functions will simply have guards inserted in the beginning. \\
 
 \begin{listing}
 \caption{Implementation of \texttt{IntegrationTestClass::f2()}, with inserted guards highlighted \uline{(TODO)}}
-\begin{verbatim}
-int IntegrationTestClass::f2() {
-  if (toggle) {
-    if (counterIs2()) {
-      return f4();
-    } else {
-      return 0;
-    }
-  } else {
-    return 7;
-  }
-\end{verbatim}
+\inputminted[firstline=12,lastline=22]{c++}{test/integrationTestClass.cc} \\
 \end{listing}
 
 Sanitizer Coverage library offers numerous ways to observe the control flow of the program, three default ones being \uline{(\ldots{}. edge, block, explain differences)}. It also includes \uline{(\ldots{} for switches and )}. These could aid in refining the program for more complex applications but will not be covered here since only edge case is used currently. \\
 \subsection{Example}
-\label{sec-3-2-3}
+\label{sec-3-2-2}
 
 You will observe that tweaking the number of maximum sequence length will increase the number of covered blocks per unit test (and have larger sequences of function calls) while significantly decreasing the total number of unit tests, until it collapses to very few, maybe even one. It is not reasonable to test the entire logic in a single test, and also not clear \uline{(when to stop growing)}, and it might also vary from the complexity of the unit. However, it will never replace \uline{\ldots{}}, as observed when tweaking the number from 6 to 7 for IntegrationTestClass. \\
 Right now, it is recommended to start with smaller number of function calls. It is hard to determine the threshold after which having a larger coverage per unit test stops being important. If we restrict the program to only save the function call sequence if it covers a new block, the number of unit tests will \uline{(TODO? I think this is actually a reasonable approach, and should be the default and I could say that other alternatives could be found, at the same time, I don't think I have time to implement, test and document even such a small feature, since I did added other ones recently).}  \\
@@ -327,11 +252,44 @@ Choosing the right combination of number of function calls with regards to numbe
 
 This was a higher-level overview of the core concepts used for the program. The rest of the documentation is provided in the following section. \\
 \subsection{documentation}
-\label{sec-3-2-4}
+\label{sec-3-2-3}
 All classes are thoroughly documented in header files, and some more detailed explanation and reasoning is sometimes provided in implementation files. For documentation generation, Doxygen library is used with javadoc style. \\
 
-Run \texttt{doxygen Doxyfile} to generate documentation in html and latex source. Latex source needs additional compiling which can be done by running the command \texttt{make} in the \texttt{latex/} directory. If you would like to change doxygen settings, you can copy the Doxyfile and run doxygen \texttt{my-Doxyfile}. \\
+Run link \texttt{doxygen Doxyfile} to generate documentation in html and latex source. Latex source needs additional compiling which can be done by running the command \lstinline{make} in the link \texttt{latex/} directory. If you would like to change doxygen settings, you can copy the Doxyfile and run doxygen link \texttt{my-Doxyfile}. \\
 
 \uline{(TODO the blank rest of the page here to bind second pdf)} \\
+\section{Testing strategy}
+\label{sec-3-3}
+The project is thoroughly tested using the catch2 framework. Tests are represented with Behavior-driven Given-When-Then style, and described scenarios carefully follow documentation. This library was chosen for its minimalistic setup and ability to describe the test cases with full sentences. \\
+
+\subsection{Catch2 library}
+\label{sec-3-3-1}
+Catch is a multi-paradigm test framework for C++, distributed as a single header file. Though that does not mean that it needs to be compiled into every translation unit.  Since it needs to be defined just once and used for any test case, it is possible and more efficient to compile it to an object file which is later included in tests, as displayed on \texttt{listing \_(TODO and other)}. In the Makefile, value of \lstinline{TESTDIR} is test. \\
+
+\begin{listing}
+\caption{contents of test/catch2-main.cpp}
+\inputminted{c++}{test/catch2-main.cpp} \\
+\end{listing}
+
+\begin{listing}
+\caption{compilation recipe for catch2-main.cpp}
+\inputminted[firstline=67,lastline=72]{bash}{Makefile} \\
+\end{listing}
+
+Unit tests follow the convention by having the corresponding class name followed by "-test" suffix, and their compilation recipe is shown in \texttt{listing \_(TODO)\_}. The exception to this is the integration test, which will be discussed in the section \uline{(TODO [Example])}. It serves as a good demonstration for showing how the library works, before going into the details about each unit. First, I will give a brief overview to the Sanitizer Coverage library and introduce the test class which will illustrate core concepts of both the library and my program. \\
+
+\begin{listing}
+\caption{including compiled catch2-main.cpp in tests}
+\inputminted[firstline=74,lastline=90]{bash}{Makefile} \\
+\end{listing}
+
+\uline{(TODO reference)} \\
+
+\subsection{Example}
+\label{sec-3-3-2}
+The library was created mostly by test driven development. Before listing all of the test cases, I will walk through one example in more detail. Unit with most scenarios was \lstinline{CoverageReporter}, since it needs to decide when the new coverage was meaningful/worth storing. \\
+
+\subsection{List of test case scenarios}
+\label{sec-3-3-3}
 % Emacs 25.2.2 (Org mode 8.2.10)
 \end{document}

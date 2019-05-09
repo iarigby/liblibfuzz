@@ -54,7 +54,7 @@
 
 % Fejléc és lábléc távolsága a tartalomtól
 \topskip = 15pt		% default: 10pt
-\footskip = 40pt	% default: 30pt
+\footskip = 5pt	% default: 30pt
 
 % Lábléc törlése
 \fancyfoot{}
@@ -70,7 +70,7 @@
 	% Lábléc beállítása
     \fancyfoot[C]{\thepage}
 }
-
+\setlength{\headheight}{16pt}
 % Üres oldalakon ne legyen fej- és lábléc
 % http://www.tex.ac.uk/cgi-bin/texfaq2html?label=reallyblank
 \let\origdoublepage\cleardoublepage
@@ -324,6 +324,7 @@
 
 \DeclareDocumentCommand{\title}{m}{\newcommand{\thesistitle}{#1}\renewcommand{\@title}{#1}}
 \DeclareDocumentCommand{\date}{m}{\newcommand{\thesisyear}{#1}\renewcommand{\@date}{#1}}
+
 % ------------------------------
 
 % ------------------------------
@@ -367,66 +368,3 @@
 
 % ------------------------------
 % Címlap
-\renewcommand{\maketitle}{
-	\begin{titlepage}
-		
-		\begin{center}
-			
-			\begin{tabular}{ c c }
-				\multirow{4}{*}{\hspace{-1.0cm}\includegraphics[width=0.25\textwidth]{\logofilename}}
-				
-				& {\sc \Large \univname} \vspace{0.3cm}\\
-				& {\sc \Large \facname} \vspace{0.5cm}\\
-				& {\sc \large \deptname} \vspace{0.1cm}\\
-				& {\sc \large \deptnamesec}
-			\end{tabular}
-			
-			\vspace{5.0cm}
-			{\bf \LARGE \thesistitle}
-			\vspace{4.0cm}
-		
-			\ifdefined\extsupaff
-				{\it \large \authorlabel:}\\
-				{\large \authorname}\\
-				\degreename\\
-				\vspace{2.0cm}
-			
-				\begin{tabular}{ l c l }
-					{\it \large \intsuplabel:} &
-					\hspace{4.0cm} &
-					{\it \large \extsuplabel:}\\
-					
-					{\large \supname} &
-					\hspace{4.0cm} &
-					{\large \extsupname}\\
-					
-					\supaff &
-					\hspace{4.0cm} &
-					\extsupaff\\
-				\end{tabular}
-			\else
-				\vspace{1.0cm}
-				\begin{tabular}{ l c l }
-					{\it \large \suplabel:} &
-					\hspace{4.0cm} &
-					{\it \large \authorlabel:}\\
-					
-					{\large \supname} &
-					\hspace{4.0cm} &
-					{\large \authorname}\\
-					
-					\supaff &
-					\hspace{4.0cm} &
-					\degreename\\
-				\end{tabular}
-			\fi
-			
-			\vfill
-			
-			{\it \cityname, \thesisyear}
-			
-		\end{center}
-		
-	\end{titlepage}
-}
-% ------------------------------

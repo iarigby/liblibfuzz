@@ -1,0 +1,100 @@
+
+* meetings
+** <2018-11-12 Tue 13:39>
+*** summary 
+After going through
+** <2018-11-26 Mon 13:40>
+*** summary
+First draft
+** <2018-12-13 Thu 13:40>
+*** summary
+created the declaration of thesis
+*** decisions
+**** will use clang code coverage instead of libfuzz
+My arguments:
+***** don't need randomized input
+is that for combinations, there is a finite amount of sets we could test, which will be a subset of a much larger input set that libfuzz might provide us with (ie useless filtering of garbage)
+***** better coverage info
+libfuzz will filter out code coverage information that is irrelevant for APIs but might be crucial in terms of function combinations 
+****** TODO examples
+***** extracting information
+More control over combination hierarchy, no need to go through trouble of extracting it manually from libfuzz corpus (don't even know if it's possible in full form)
+** <2019-02-26 Tue 15:08> 
+*** report
+**** tried llvm-cov and then found sanitizerCoverage
+exactly what we needed and also what libfuzzer uses
+**** fixed functionPointerMap
+was forgetting to pass the class instance, then forgetting to pass by reference
+**** created CombinationGenerator
+doesn't store all combinations, insted just indexes
+would be suitable for multithreading too
+*** discussion topics
+**** current issues
+***** storing function arguments
+since functions are cast to void, I can't use decltype anywhere. everything has to be excplicitly specified. Right now I'm just ignoring the return value (technically do we need it?)
+should I use boost::any?
+std::any in c++17 or std::variant (better) also http://gsd.web.elte.hu/gyak/cpp17util.pdf
+***** coverage_pc does not work for template files
+pc_guards are inserted when creating the object file, otherwise it inserts the guards aaaall over the place. 
+**** design decisions
+***** what information to extract during processing
+right now it's recorded by function call (simple bool started) maybe I should record guards by each function in the sequence and see how calling other functions affects its guards 
+***** [[function interaction][how to analyze coverage]
+**** what's next
+***** start implementing [[design decisions]]
+***** start learning clang AST
+***** try to use threads
+for 5 most primitive functions and 8 combinations, it takes 5 seconds already 
+**** misc tasks
+***** start documentation
+***** makefile
+***** gdb
+***** more tests
+** <2019-03-15> Presentation (actually date is inaccurate)
+*** process description
+**** store function pointers in a map
+**** collect coverage
+***** initially thought to use libfuzzer
+[[some differences from fuzzing]]
+***** explored other paths
+****** llvm-cov
+summarizes the intire run, so if I call three different combinations of functions they results will be mixed in together. But it has some nice visualization data and maybe that could be used to display the results
+looked into libfuzzer source code to find out what they where using to collect the coverage, since they were doing multiple "isolated" runs to analyze
+****** sanitizercoverage
+******* how it works
+guards are inserted at function entrance points, if/else block starts, etc. You can implement the functions that get called when the guard is initialized and then when it's called
+******* how I use it
+there is one main function that has the map with all the functions
+**** analyze coverage
+***** base assumptions
+****** order of calls does not matter
+****** 
+*** next steps
+**** 
+*** notes from meeting
+**** TODO ...
+***** having an additional argument
+make some measurements
+***** take std::vector
+and ignore some of the functions, for example insert, erase etc, and just use push_back, pop_back;
+***** maybe deck too
+compare what was the behavior of the stuff
+***** user manual, developer manual, test cases
+*** TODO ...
+**** grammar induction
+exhaustive search on relatively small input to infer the grammar. 
+**** generational algorithm
+the way it overcomes the gaps 
+mutations like appending to random sequences together 
+**** contact libfuzzer developers
+*** some differences from fuzzing
+**** coverage info
+libfuzzer is created with different intent in mind and extracting the coverage information which is already filtered according to the library's priority might not be what we want
+**** possible input space
+much larger in fuzzing, more limited (and deterministic) here
+**** path exploration
+since it's more feasible to keep exploring different paths (for example calling the same function 17th time will unlock a new pc block) 
+**** handling exceptions
+fuzzer will hault on first exception it finds, because the design philosophy is that the consumer is an API. In case of libraries, exceptions might be expected so here each function (or combination?) call will be wrapped in a try catch so all the different call sequences that result in various exceptions
+** <2019-03-29> 
+*** 

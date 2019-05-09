@@ -21,3 +21,186 @@ each test will contain a group of functions. Get a set and update results for ea
 Will need to examine existing codebases to detect patterns
 **  what information to extract during processing
 right now it's recorded by function call (simple bool started) maybe I should record guards by each function in the sequence and see how calling other functions affects its guards 
+* other
+** Project outline
+*** Motivation
+start with linear number of test cases but at some point it explodes. Hard to determine which test cases are meaningful. 
+*** About fuzzing
+*** What can't be covered with fuzzing
+**** Does not consider the interaction of different functions
+If you write a TDD application, there is a well defined interface of functions.
+**** APIs should be tolerable
+(reference cppcon 17 video)
+Any kind of crash/abort/assert failure/timeout is considered a bug in an API, whereas for libraries it could be expected behavior that should be covered in tests
+*** ..
+**** why we're considering every possible input
+there might be new code coverage anywhere, and since it is a finite set...
+** Process description
+*** Analyze the library
+**** TODO what information can be inferred automatically?
+What will be the manual tasks that the programmer will need to do and specify for the library to work
+***** Type information
+should be able to do with clang
+*** Generate 
+
+*** Run coverage tests
+**** TODO how will the function inputs be handled?
+- my idea is to test each of the functions using libfuzz (would need to somehow get the output still)
+- it might be best for the programmer to provide 
+*** Analyze and communicate the results
+**** TODO give the smallest possible subset of function combinations
+**** TODO extra information
+- What else does the interaction of functions tell us?
+- Can we predict possible problems with the function based on code coverage
+* Research / Learning
+** DOING c++ tutorials
+general knowledge of language since I don't have a lot of experience currently
+*** std::forward http://cpptruths.blogspot.com/2012/06/perfect-forwarding-of-parameter-groups.html
+** clang
+*** DOING understand code coverage library
+*** DOING get familiar with libfuzz source code
+understand how libfuzz works since a lot of mechanisms are similar
+
+*** TODO AST
+will be needed for extracting type information
+** c++ reference
+*** typeinfo
+**** typeid
+Used where the dynamic type of a polymorphic object must be known and for static type identification. The typeid expression is an lvalue expression which refers to an object with static storage duration, of the polymorphic type const std::type_info or of some type derived from it.
+result refers to [[type_info]]
+**** type_info
+The class type_info holds implementation-specific information about a type, including the name of the type and means to compare two types for equality or collating order. This is the class returned by the [[typeid]] operator.
+**** type_index 
+The type_index class is a wrapper class around a std::type_info object, that can be used as index in associative and unordered associative containers. The relationship with type_info object is maintained through a pointer
+** related work
+*** klee 
+http://klee.github.io
+papers
+**** KLEE: Unassisted and Automatic Generation of High-CoverageTests for Complex Systems Programs
+http://www.doc.ic.ac.uk/~cristic/papers/klee-osdi-08.pdf
+**** Abstract
+We  present a new symbolic execution tool, KLEE, capable of automatically generating tests that achieve high coverage on a diverse set of complex and environmentally-intensive programs. We used KLEE to thoroughly check all 89 stand-alone programs in the GNU COREUTILS utility suite, which form the core user-level environment installed on millions of Unix systems, and arguably are the single most heavily tested set of open-source programs in existence. KLEE-generated tests achieve high line coverage — on average over 90 %per tool (median: over 94%) — and significantly beat the coverage of the developers’ own hand-written testsuite. When we did the same for 75 equivalent tools inthe BUSYBOX embedded system suite, results were evenbetter, including 100% coverage on 31 of them.
+We also used KLEE as a bug finding tool, applying it to 452 applications (over 430K total lines of code), where it found 56 serious bugs, including three in COREUTILS that had been missed for over 15 years. Finally, we used KLEE to crosscheck purportedly identical BUSYBOX and COREUTILS utilities, finding functional correctness errors and a myriad of inconsistencies.
+**** difference
+operates on bytecode instead of c++, which means the results cannot be easily implemented in ci or sth
+*** KLOVER: A Symbolic Execution and AutomaticTest Generation Tool for C++ Programs
+http://www.cs.utah.edu/~ligd/publications/KLOVER-CAV11.pdf
+**** abstract
+We present the first symbolic execution and automatic testgeneration tool for C++ programs. First we describe our effortin extend-ing an existing symbolic execution tool for C programs to handleC++programs. We then show how we made this tool generic, efficientandusable to handle real-life industrial applications. Novelfeatures includeextended symbolic virtual machine, library optimization for Cand C++,object-level execution and reasoning, interfacing with specific type of ef-ficient solvers, and semi-automatic unit and component testing. This toolis being used to assist the validation and testing of industrial softwareas well as publicly available programs written using the C++ language
+**** notes
+As shown in Fig. 1, the tool’s flow is similar to KLEE’s. A C++ program is compiled into LLVM bytecode, which is interpreted by KLOVER for symbolic execution
+** commands and stuff
+*** llvm-cov
+https://clang.llvm.org/docs/SourceBasedCodeCoverage.html
+
+#+BEGIN-EXAMPLE
+clang++ -fprofile-instr-generate -fcoverage-mapping stack.cpp -o stack
+LLVM_PROFILE_FILE="stack.profraw" ./stack
+llvm-profdata merge -sparse stack.profraw -o stack.profdata
+llvm-cov show ./stack -instr-profile=stack.profdata
+llvm-cov report ./stack -instr-profile=stack.profdata
+llvm-cov export ./stack -instr-profile=stack.profdata > export.json
+#+END-EXAMPLE
+**** flags
+***** sparse
+The -sparse flag is optional but can result in dramatically smaller indexed profiles. This option should not be used if the indexed profile will be reused for PGO.
+* resources
+** fuzzing
+https://resources.infosecinstitute.com/fuzzing-mutation-vs-generation/#gref
+https://www.wikiwand.com/en/Fuzzing
+https://www.securityevaluators.com/wp-content/uploads/2018/04/analysisfuzzing.pdf
+* other                                                            :noexport:
+** Looking for home :P                                            :noexport:
+*** Explored Implementations
+**** libfuzzer
+***** Implementing
+# Q should I provide sample code that I tried?
+with libfuzzer, the user defines the callback that consumes data and is executed on each iteration.
+***** 1. create a map of function pointers
+****** talks about functionPointerMap class
+In order to be able to dynamically call functions, I created a template class that is able to store member function pointers in a map and call them using keys. Storing functions with different types of return value and argument types is made possible by casting it to a void functiontype and saving it paired with the typeid. When calling the function using a key, user would specify the return type and pass any arguments needed for the call, which are then forwarded. Initially, I was discarding the return value and
+ ommiting functions that needed arguments.
+******* handling arguments
+will be discussed later. Had short tries and decided to not include in this scope
+# Q how should this be written?
+******** std::variant
+******** std::apply
+***** 2. handling the LLVMFUZZINPUT content
+****** how to map the data to map keys
+One way would be to parse it for exact sequence of function names. Instead, I decided to extract chars and match it with digits 
+***** 3. callback content 
+******* validate input data'
+We could try parsing the data for numbers and see if they satisfy the conditions ....  
+******* create the instance
+******* call all the functions
+***** issues with the approach
+****** challenges that arise in libraries but not in interfaces
+******* handling exceptions
+fuzzer will hault on first exception it finds, because the design philosophy is that the consumer is an API. In case of libraries, exceptions might be expected so here each function (or combination?) call will be wrapped in a try catch so all the different call sequences that result in various exceptions
+******* mutations and path exploration
+Library fuzzing might need different mutation techniques. For starters, function call is a sequence, and there are ways to create interesting inputs by being aware of it.
+
+is that for combinations, there is a finite amount of sets we could test, which will be a subset of a much larger input set that libfuzz might provide us with (ie useless filtering of garbage)
+
+For example, since it's more feasible to keep exploring different paths (for example calling the same function 17th time will unlock a new pc block). This is discussed in more detail later in . 
+****** features of libfuzz unnecessary for our case
+Even though libfuzzer will converge to the valid sequence calls very quickly, it will keep generating 'garbage' input which has no meaning in context of calling the function. 
+******* possible input space
+much larger in fuzzing, more limited (and deterministic) here
+****** additional needs not accomplishable without changing libfuzzer implementation
+******* coverage info
+libfuzzer is created with different intent in mind and extracting the coverage information which is already filtered according to the library's priority might not be what we want. Would need to change implementation if we wanted to somehow define the way coverage is collected
+**** llvm-cov
+summarizes the intire run, so if I call three different combinations of functions they results will be mixed in together. But it has some nice visualization data and maybe that could be used to display the results
+looked into libfuzzer source code to find out what they where using to collect the coverage, since they were doing multiple "isolated" runs to analyze
+**** sancov
+***** issues with the approach
+no straightforward way exists to isolate coverage on different sequences. need multiple commands, and would 
+**** sanitizercoverage
+***** how it works
+guards are inserted at function entrance points, if/else block starts, etc. You can implement the functions that get called when the guard is initialized and then when it's called*
+*** software verification tools
+**** testing
+# what to write here
+***** aims
+****** define expected outcomes of ...
+- generate unit test cases that achieve the  most code coverage with least function calls
+# code coverage
+***** drawbacks
+****** relies on the developer
+****** does not anticipate bugs that are not trivial
+****** 
+to adress these, other methods are more and more frequently used
+**** static analysis
+***** usual code checking tools
+- good for finding bugs, but does not touch code coverage
+# have only short overview and  
+***** symbolic execution
+- works on bitcode / bytecode
+- resource heavy
+  - ? cannot substitute unit tests
+  - ? not practical in a lot of cases where unit tests would suffice
+- sometimes not realistic because of path explosion
+**** dynamic analysis
+***** fuzzing (with the example of llvm's libfuzzer)
+ease of implementing 
+******* aims
+
+******* conditions assumed:
+** discarded
+**** code
+***** combinationTester
+****** .h run
+// TODO: should this automatically start? what could be some actions that the
+// user might want to take
+****** .cpp run
+******* TODO: is this also better for performance?
+******* // TODO: remove this :D
+// ha?
+//  https://stackoverflow.com/questions/3786360/confusing-template-error
+***** coveragereporter
+****** .cpp flush
+  // TODO this is trash, rewrite
+***** permutationGenerator
+// TODO maybe better if this class will be a container (using
+                 // iterator with ++ and end() makes sense)

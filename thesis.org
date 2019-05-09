@@ -1,251 +1,9 @@
 #+TODO: TODO UPNEXT DOING REVIEW | DONE CANCELLED
-#+OPTIONS: \n:t H:5 toc:nil title:nil date:nil
+#+OPTIONS: \n:t H:5 toc:nil title:nil 
 #+LATEX_CLASS: book 
 
-* Inbox
-** DONE thesis declaration
-CLOSED: [2019-01-28 Mon 21:11]
-added on [2018-12-26 Wed 13:42]
-** CANCELLED https://mcss.mosra.cz/doxygen/
-CLOSED: [2019-05-08 sze 13:13]
-** tasks
-*** Code
-**** DONE components
-CLOSED: [2019-05-08 sze 14:11]
-***** CANCELLED generate reports
-CLOSED: [2019-05-08 sze 13:13]
-***** CANCELLED use a separate class in the extern functions
-CLOSED: [2019-05-08 sze 13:13]
-**** TODO move the sanitizercoverage flag to coveragereported
-don't forget to update docs
-**** DONE add an integration test
-CLOSED: [2019-05-08 sze 13:14]
-**** results
-***** CANCELLED have the set of covered pc blocks and check when it reaches max, halt
-CLOSED: [2019-05-08 sze 13:14]
-****** maybe when the block doesn't have any new covered pc, apply some different rules
-***** CANCELLED have some messages for the user
-CLOSED: [2019-05-08 sze 13:14]
-# :)
-**** TODO change colors for the printresults output (main and integration test)
- added on [2019-05-08 sze 01:15]
-**** TODO in functionPointerMap talk about all the cool features I'm using
- added on [2019-04-13 szo 13:23]
-**** TODO try out testing an hpp file
- added on [2019-05-08 sze 08:43]
-*** Thesis
-**** figs
-! Don't forget to have captions and refer to them from the text
-***** code snippets
-***** TODO binary tree for permutationGenerator
-**** other notes
-***** you should aim for the shorter combination length
-***** determining when to insert a sequence that is a union of two sets is not trivial
-**** technical - writing
-***** TODO fix section-subsection etc
- added on [2019-05-08 sze 09:12]
-***** TODO go through listings and number them
- added on [2019-05-08 sze 08:59]
-***** TODO references chapter
-**** technical 
-***** TODO fix page for refman
- added on [2019-05-08 sze 08:36]
-***** TODO listings inlcude line numberings
- added on [2019-05-08 sze 09:04]
-***** TODO myrefman compile error for doxygen package
- added on [2019-05-08 sze 08:35]
-***** TODO thesis margins check
-**** TODO add a separate section for tests and describe test scenarios. 
-* meetings
-** <2018-11-12 Tue 13:39>
-*** summary 
-After going through
-** <2018-11-26 Mon 13:40>
-*** summary
-First draft
-** <2018-12-13 Thu 13:40>
-*** summary
-created the declaration of thesis
-*** decisions
-**** will use clang code coverage instead of libfuzz
-My arguments:
-***** don't need randomized input
-is that for combinations, there is a finite amount of sets we could test, which will be a subset of a much larger input set that libfuzz might provide us with (ie useless filtering of garbage)
-***** better coverage info
-libfuzz will filter out code coverage information that is irrelevant for APIs but might be crucial in terms of function combinations 
-****** TODO examples
-***** extracting information
-More control over combination hierarchy, no need to go through trouble of extracting it manually from libfuzz corpus (don't even know if it's possible in full form)
-** <2019-02-26 Tue 15:08> 
-*** report
-**** tried llvm-cov and then found sanitizerCoverage
-exactly what we needed and also what libfuzzer uses
-**** fixed functionPointerMap
-was forgetting to pass the class instance, then forgetting to pass by reference
-**** created CombinationGenerator
-doesn't store all combinations, insted just indexes
-would be suitable for multithreading too
-*** discussion topics
-**** current issues
-***** storing function arguments
-since functions are cast to void, I can't use decltype anywhere. everything has to be excplicitly specified. Right now I'm just ignoring the return value (technically do we need it?)
-should I use boost::any?
-std::any in c++17 or std::variant (better) also http://gsd.web.elte.hu/gyak/cpp17util.pdf
-***** coverage_pc does not work for template files
-pc_guards are inserted when creating the object file, otherwise it inserts the guards aaaall over the place. 
-**** design decisions
-***** what information to extract during processing
-right now it's recorded by function call (simple bool started) maybe I should record guards by each function in the sequence and see how calling other functions affects its guards 
-***** [[function interaction][how to analyze coverage]
-**** what's next
-***** start implementing [[design decisions]]
-***** start learning clang AST
-***** try to use threads
-for 5 most primitive functions and 8 combinations, it takes 5 seconds already 
-**** misc tasks
-***** start documentation
-***** makefile
-***** gdb
-***** more tests
-** <2019-03-15> Presentation (actually date is inaccurate)
-*** process description
-**** store function pointers in a map
-**** collect coverage
-***** initially thought to use libfuzzer
-[[some differences from fuzzing]]
-***** explored other paths
-****** llvm-cov
-summarizes the intire run, so if I call three different combinations of functions they results will be mixed in together. But it has some nice visualization data and maybe that could be used to display the results
-looked into libfuzzer source code to find out what they where using to collect the coverage, since they were doing multiple "isolated" runs to analyze
-****** sanitizercoverage
-******* how it works
-guards are inserted at function entrance points, if/else block starts, etc. You can implement the functions that get called when the guard is initialized and then when it's called
-******* how I use it
-there is one main function that has the map with all the functions
-**** analyze coverage
-***** base assumptions
-****** order of calls does not matter
-****** 
-*** next steps
-**** 
-*** notes from meeting
-**** TODO ...
-***** having an additional argument
-make some measurements
-***** take std::vector
-and ignore some of the functions, for example insert, erase etc, and just use push_back, pop_back;
-***** maybe deck too
-compare what was the behavior of the stuff
-***** user manual, developer manual, test cases
-*** TODO ...
-**** grammar induction
-exhaustive search on relatively small input to infer the grammar. 
-**** generational algorithm
-the way it overcomes the gaps 
-mutations like appending to random sequences together 
-**** contact libfuzzer developers
-*** some differences from fuzzing
-**** coverage info
-libfuzzer is created with different intent in mind and extracting the coverage information which is already filtered according to the library's priority might not be what we want
-**** possible input space
-much larger in fuzzing, more limited (and deterministic) here
-**** path exploration
-since it's more feasible to keep exploring different paths (for example calling the same function 17th time will unlock a new pc block) 
-**** handling exceptions
-fuzzer will hault on first exception it finds, because the design philosophy is that the consumer is an API. In case of libraries, exceptions might be expected so here each function (or combination?) call will be wrapped in a try catch so all the different call sequences that result in various exceptions
-** <2019-03-29> 
-*** 
-* other
-** Project outline
-*** Motivation
-start with linear number of test cases but at some point it explodes. Hard to determine which test cases are meaningful. 
-*** About fuzzing
-*** What can't be covered with fuzzing
-**** Does not consider the interaction of different functions
-If you write a TDD application, there is a well defined interface of functions.
-**** APIs should be tolerable
-(reference cppcon 17 video)
-Any kind of crash/abort/assert failure/timeout is considered a bug in an API, whereas for libraries it could be expected behavior that should be covered in tests
-*** ..
-**** why we're considering every possible input
-there might be new code coverage anywhere, and since it is a finite set...
-** Process description
-*** Analyze the library
-**** TODO what information can be inferred automatically?
-What will be the manual tasks that the programmer will need to do and specify for the library to work
-***** Type information
-should be able to do with clang
-*** Generate 
-
-*** Run coverage tests
-**** TODO how will the function inputs be handled?
-- my idea is to test each of the functions using libfuzz (would need to somehow get the output still)
-- it might be best for the programmer to provide 
-*** Analyze and communicate the results
-**** TODO give the smallest possible subset of function combinations
-**** TODO extra information
-- What else does the interaction of functions tell us?
-- Can we predict possible problems with the function based on code coverage
-* Research / Learning
-** DOING c++ tutorials
-general knowledge of language since I don't have a lot of experience currently
-*** std::forward http://cpptruths.blogspot.com/2012/06/perfect-forwarding-of-parameter-groups.html
-** clang
-*** DOING understand code coverage library
-*** DOING get familiar with libfuzz source code
-understand how libfuzz works since a lot of mechanisms are similar
-
-*** TODO AST
-will be needed for extracting type information
-** c++ reference
-*** typeinfo
-**** typeid
-Used where the dynamic type of a polymorphic object must be known and for static type identification. The typeid expression is an lvalue expression which refers to an object with static storage duration, of the polymorphic type const std::type_info or of some type derived from it.
-result refers to [[type_info]]
-**** type_info
-The class type_info holds implementation-specific information about a type, including the name of the type and means to compare two types for equality or collating order. This is the class returned by the [[typeid]] operator.
-**** type_index 
-The type_index class is a wrapper class around a std::type_info object, that can be used as index in associative and unordered associative containers. The relationship with type_info object is maintained through a pointer
-** related work
-*** klee 
-http://klee.github.io
-papers
-**** KLEE: Unassisted and Automatic Generation of High-CoverageTests for Complex Systems Programs
-http://www.doc.ic.ac.uk/~cristic/papers/klee-osdi-08.pdf
-**** Abstract
-We  present a new symbolic execution tool, KLEE, capable of automatically generating tests that achieve high coverage on a diverse set of complex and environmentally-intensive programs. We used KLEE to thoroughly check all 89 stand-alone programs in the GNU COREUTILS utility suite, which form the core user-level environment installed on millions of Unix systems, and arguably are the single most heavily tested set of open-source programs in existence. KLEE-generated tests achieve high line coverage — on average over 90 %per tool (median: over 94%) — and significantly beat the coverage of the developers’ own hand-written testsuite. When we did the same for 75 equivalent tools inthe BUSYBOX embedded system suite, results were evenbetter, including 100% coverage on 31 of them.
-We also used KLEE as a bug finding tool, applying it to 452 applications (over 430K total lines of code), where it found 56 serious bugs, including three in COREUTILS that had been missed for over 15 years. Finally, we used KLEE to crosscheck purportedly identical BUSYBOX and COREUTILS utilities, finding functional correctness errors and a myriad of inconsistencies.
-**** difference
-operates on bytecode instead of c++, which means the results cannot be easily implemented in ci or sth
-*** KLOVER: A Symbolic Execution and AutomaticTest Generation Tool for C++ Programs
-http://www.cs.utah.edu/~ligd/publications/KLOVER-CAV11.pdf
-**** abstract
-We present the first symbolic execution and automatic testgeneration tool for C++ programs. First we describe our effortin extend-ing an existing symbolic execution tool for C programs to handleC++programs. We then show how we made this tool generic, efficientandusable to handle real-life industrial applications. Novelfeatures includeextended symbolic virtual machine, library optimization for Cand C++,object-level execution and reasoning, interfacing with specific type of ef-ficient solvers, and semi-automatic unit and component testing. This toolis being used to assist the validation and testing of industrial softwareas well as publicly available programs written using the C++ language
-**** notes
-As shown in Fig. 1, the tool’s flow is similar to KLEE’s. A C++ program is compiled into LLVM bytecode, which is interpreted by KLOVER for symbolic execution
-** commands and stuff
-*** llvm-cov
-https://clang.llvm.org/docs/SourceBasedCodeCoverage.html
-
-#+BEGIN-EXAMPLE
-clang++ -fprofile-instr-generate -fcoverage-mapping stack.cpp -o stack
-LLVM_PROFILE_FILE="stack.profraw" ./stack
-llvm-profdata merge -sparse stack.profraw -o stack.profdata
-llvm-cov show ./stack -instr-profile=stack.profdata
-llvm-cov report ./stack -instr-profile=stack.profdata
-llvm-cov export ./stack -instr-profile=stack.profdata > export.json
-#+END-EXAMPLE
-**** flags
-***** sparse
-The -sparse flag is optional but can result in dramatically smaller indexed profiles. This option should not be used if the indexed profile will be reused for PGO.
-* resources
-** fuzzing
-https://resources.infosecinstitute.com/fuzzing-mutation-vs-generation/#gref
-https://www.wikiwand.com/en/Fuzzing
-https://www.securityevaluators.com/wp-content/uploads/2018/04/analysisfuzzing.pdf
-* content
 :PROPERTIES:
-:EXPORT_TITLE: Test case generation based on fuzzing for C++
+:EXPORT_TITLE: Test Case Generation Based On Fuzzing For C++
 :END:
 
 #+LATEX_HEADER: \date{2019}
@@ -253,170 +11,116 @@ https://www.securityevaluators.com/wp-content/uploads/2018/04/analysisfuzzing.pd
 #+LATEX_HEADER: \degree{Computer Science BSc}
 
 #+LATEX_HEADER: \supervisor{Zoltan Porkolab}
-#+LATEX_HEADER: \affiliation{Associate Professor}
+#+LATEX_HEADER: \affiliation{Associate Professor, PhD}
 
 
-#+LATEX_HEADER: \university{Eötvös Loránd Tudományegyetem}
+#+LATEX_HEADER: \university{Eötvös Loránd University}
 #+LATEX_HEADER: \faculty{Faculty of Informatics}
 #+LATEX_HEADER: \department{Department of Programming Languages}
-# TODO and compilers 
+#+LATEX_HEADER: \departmentSecondLine{ And Compilers } 
 #+LATEX_HEADER: \city{Budapest}
 #+LATEX_HEADER: \logo{elte_cimer_szines}
 #+LATEX_HEADER: \documentlang{english}
-#+BEGIN_EXPORT latex
-\begin{document}
-\begin{titlepage}
-\end{titlepage}
-#+END_EXPORT
 
-\vspace*{\fill}
-Test based development is a favorable development method for modern software. We create all the necessary test cases to test the software under development and then we implement the functionality. This is a widely accepted method for library development, when the test cases try to cover all meaningful combinations of API calls. However, in real software systems, the possible combinations can grow exponentially. It is very hard to determine the minimun necessary set of meaningful API call sequences. In this thesis we try to apply fuzzy testing methods for automatically generate API call sequences for testing C++ libraries. We will use the LLVM toolset to exploit the existing code coverage and test input mutation methods. However, our target is not to gereate a random input sequence but a meaningful sequence of API calls. It is also in our plans to analyse the result to create a minimal classification set.
-
-\vspace*{\fill}
-\cleardoublepage
 \setcounter{page}{1}
 #+TOC: headlines 0
 
-** other                                                          :noexport:
-
-*** inbox
-**** fuzzing
-Generation based fuzzing
-This step could be extended with g
-*** Looking for home :P                                          :noexport:
-**** Explored Implementations
-***** libfuzzer
-****** Implementing
-# Q should I provide sample code that I tried?
-with libfuzzer, the user defines the callback that consumes data and is executed on each iteration.
-****** 1. create a map of function pointers
-******* talks about functionPointerMap class
-In order to be able to dynamically call functions, I created a template class that is able to store member function pointers in a map and call them using keys. Storing functions with different types of return value and argument types is made possible by casting it to a void functiontype and saving it paired with the typeid. When calling the function using a key, user would specify the return type and pass any arguments needed for the call, which are then forwarded. Initially, I was discarding the return value and
- ommiting functions that needed arguments.
-******** handling arguments
-will be discussed later. Had short tries and decided to not include in this scope
-# Q how should this be written?
-********* std::variant
-********* std::apply
-****** 2. handling the LLVMFUZZINPUT content
-******* how to map the data to map keys
-One way would be to parse it for exact sequence of function names. Instead, I decided to extract chars and match it with digits 
-****** 3. callback content 
-******** validate input data'
-We could try parsing the data for numbers and see if they satisfy the conditions ....  
-******** create the instance
-******** call all the functions
-****** issues with the approach
-******* challenges that arise in libraries but not in interfaces
-******** handling exceptions
-fuzzer will hault on first exception it finds, because the design philosophy is that the consumer is an API. In case of libraries, exceptions might be expected so here each function (or combination?) call will be wrapped in a try catch so all the different call sequences that result in various exceptions
-******** mutations and path exploration
-Library fuzzing might need different mutation techniques. For starters, function call is a sequence, and there are ways to create interesting inputs by being aware of it.
-
-is that for combinations, there is a finite amount of sets we could test, which will be a subset of a much larger input set that libfuzz might provide us with (ie useless filtering of garbage)
-
-For example, since it's more feasible to keep exploring different paths (for example calling the same function 17th time will unlock a new pc block). This is discussed in more detail later in . 
-******* features of libfuzz unnecessary for our case
-Even though libfuzzer will converge to the valid sequence calls very quickly, it will keep generating 'garbage' input which has no meaning in context of calling the function. 
-******** possible input space
-much larger in fuzzing, more limited (and deterministic) here
-******* additional needs not accomplishable without changing libfuzzer implementation
-******** coverage info
-libfuzzer is created with different intent in mind and extracting the coverage information which is already filtered according to the library's priority might not be what we want. Would need to change implementation if we wanted to somehow define the way coverage is collected
-***** llvm-cov
-summarizes the intire run, so if I call three different combinations of functions they results will be mixed in together. But it has some nice visualization data and maybe that could be used to display the results
-looked into libfuzzer source code to find out what they where using to collect the coverage, since they were doing multiple "isolated" runs to analyze
-***** sancov
-****** issues with the approach
-no straightforward way exists to isolate coverage on different sequences. need multiple commands, and would 
-***** sanitizercoverage
-****** how it works
-guards are inserted at function entrance points, if/else block starts, etc. You can implement the functions that get called when the guard is initialized and then when it's called*
-**** software verification tools
-***** testing
-# what to write here
-****** aims
-******* define expected outcomes of ...
-- generate unit test cases that achieve the  most code coverage with least function calls
-# code coverage
-****** drawbacks
-******* relies on the developer
-******* does not anticipate bugs that are not trivial
-******* 
-to adress these, other methods are more and more frequently used
-***** static analysis
-****** usual code checking tools
-- good for finding bugs, but does not touch code coverage
-# have only short overview and  
-****** symbolic execution
-- works on bitcode / bytecode
-- resource heavy
-  - ? cannot substitute unit tests
-  - ? not practical in a lot of cases where unit tests would suffice
-- sometimes not realistic because of path explosion
-***** dynamic analysis
-****** fuzzing (with the example of llvm's libfuzzer)
-ease of implementing 
-******** aims
-
-******** conditions assumed:
-*** discarded
-***** code
-****** combinationTester
-******* .h run
-// TODO: should this automatically start? what could be some actions that the
-// user might want to take
-******* .cpp run
-******** TODO: is this also better for performance?
-******** // TODO: remove this :D
-// ha?
-//  https://stackoverflow.com/questions/3786360/confusing-template-error
-****** coveragereporter
-******* .cpp flush
-  // TODO this is trash, rewrite
-****** permutationGenerator
-// TODO maybe better if this class will be a container (using
-                 // iterator with ++ and end() makes sense)
-** Introduction
+* Inbox                                                            :noexport:
+** DONE thesis declaration
+CLOSED: [2019-01-28 Mon 21:11]
+added on [2018-12-26 Wed 13:42]
+** CANCELLED https://mcss.mosra.cz/doxygen/
+CLOSED: [2019-05-08 sze 13:13]
+** tasks
+** Code tasks 
+*** DONE components
+CLOSED: [2019-05-08 sze 14:11]
+**** CANCELLED generate reports
+CLOSED: [2019-05-08 sze 13:13]
+**** CANCELLED use a separate class in the extern functions
+CLOSED: [2019-05-08 sze 13:13]
+*** TODO move the sanitizercoverage flag to coveragereported
+don't forget to update docs
+*** DONE add an integration test
+CLOSED: [2019-05-08 sze 13:14]
+*** results
+**** CANCELLED have the set of covered pc blocks and check when it reaches max, halt
+CLOSED: [2019-05-08 sze 13:14]
+***** maybe when the block doesn't have any new covered pc, apply some different rules
+**** CANCELLED have some messages for the user
+CLOSED: [2019-05-08 sze 13:14]
+# :)
+*** TODO change colors for the printresults output (main and integration test)
+ added on [2019-05-08 sze 01:15]
+*** TODO in functionPointerMap talk about all the cool features I'm using
+ added on [2019-04-13 szo 13:23]
+*** TODO try out testing an hpp file
+ added on [2019-05-08 sze 08:43]
+** Thesis tasks
+*** figs
+! Don't forget to have captions and refer to them from the text
+**** code snippets
+**** TODO binary tree for permutationGenerator
+*** other notes
+**** you should aim for the shorter combination length
+**** determining when to insert a sequence that is a union of two sets is not trivial
+*** technical - writing
+**** TODO fix section-subsection etc
+ added on [2019-05-08 sze 09:12]
+**** TODO go through listings and number them
+ added on [2019-05-08 sze 08:59]
+**** TODO references chapter
+*** technical 
+**** TODO fix page for refman
+ added on [2019-05-08 sze 08:36]
+**** TODO listings inlcude line numberings
+ added on [2019-05-08 sze 09:04]
+**** TODO myrefman compile error for doxygen package
+ added on [2019-05-08 sze 08:35]
+**** TODO thesis margins check
+*** TODO add a separate section for tests and describe test scenarios. 
+** TODO add filenames to listing captions
+ added on [2019-05-09 cs 13:25]
+* Introduction
 Most software heavily relies on unit tests as its primary source for logic and _fault tolerance_ verification. This approach has been largely considered as essential, but it has some inherent difficulties associated with it. Although testing single member functions independently is more often than not trivial, most of the time the user will call various combinations of them. It is impossible to write unit tests with all possible function call sequences since such space is effectively infinite. Therefore, the need arises for the developer to personally determine which function call sequences are most meaningful. 
 
 Other than that, a lot of times the behavior of the function will depend on internal state of the instance, which is in itself reached after certain function calls.
-*** Background
-**** Fuzzing
+** Background
+*** Fuzzing
 Dynamic analysis, or fuzzing, is a popular and effective method of finding vulnerabilities in software. Fuzz testing reaches impressive results in exposing interface vulnerabilities in very short amount of time. 
 
 Fuzzing heavily relies on the concept of Fuzz target - a function that accepts an array of bytes and then uses it in user defined way against the API under test. This API usually has a single endpoint that consumes any kind data. Anything that causes an exception, abort, exit, crash, assert failure, timeout is considered a bug[1]. That means, discovery of the first instance of any one of them will cause the libfuzzer to halt and inform us about the input that caused the bug, along with some other information. 
 
 There are a number of tools available for fuzzing, including AFL and Radamsa. One of the most notable implementations is Libfuzzer, LLVM's tool for coverage guided, evolutionary fuzzing engine[2]. The code coverage information for libFuzzer is provided by LLVM’s SanitizerCoverage instrumentation, and I will discuss it in the next subsection.
-**** SanitizerCoverage library
+*** SanitizerCoverage library
 LLVM has an interface for its built-in code coverage instrumentation[3]. The user is able to gather information about the covereged regions of the program during runtime. There are severeal different levels of depth for coverage, and the library also offers rich ways to trace the data flow. This tool was crucial for the development of my program and in the developer's manual, I discuss the library in more detail.
 
-*** _using fuzz testing for .._
+** _using fuzz testing for .._
 Although fuzz testing has been mostly defined to be for exploiting the vulnerabilities of the program, _we decided_ to apply its coverage based philosophy to explore the possible member function call sequences and pinpoint ones which might be most interesting for the developer.
 This also required to change the overall approach with which fuzzing is used. 
 
 In [[Fuzzing]] Background on Fuzzing, I talked about the classical assumptions about the fuzz target. In our scenario, we have different expectations - since we are testing an entire unit and not a single API endpoint, some kind of control flow disruptions might be expected. For example, assertions are common in member functions. Therefore, the previous approach of exiting on first such failure should be modified to allow the program to gather information about all possible combinations that result in things like exceptions, so the user will be informed about them and decide what constitues the normal behavior of their library and what is outside of specifications.
 
-*** Program description
+** Program description
 To acheive the intended results, I created a program that uses LLVM's _sanitizer coverage_ library and generation based fuzzing. The test case needs almost minimal setup which consists of the user specifying all the member functions it wants to use in testing, and passing a single function pointer for constructing an instance of the class. Modern c++ tools have aided greatly with this by giving the ability to store pointers to functions with different type signatures. There are still difficulties with regards to determining and passing the function arguments, which is in scope of a larger _research / project_. In order for this issue to not interfere with the initial program implementation, I allow users to additionally pass pointers to the functions that will in turn call the specific member function with desired arguments.
 
 The _sanitizer coverage_ library is able to communicate its results using a single global object. _(more about this)_ 
-*** Results
+** Results
 Although the original intention was to discover new test cases, there were some surprising outcomes that could not have been anticipated. For example, the program is very good in minimizing the total number of test cases. For the sample stack class, it discovered that in . This outcome would be crucial for reducing the size of test suites, which leads to reduced runtime and maintenance cost
-** User Documentation
-This section provides full information for users of the program. I am using a simple stack implementation as an example. 
+* User Documentation
+This chapter provides full information for users of the program. I am using a simple stack implementation as an example. 
 
-*** intended audience
+** intended audience
 this software is intended for c++ developers who would like to increase 
 Therefore, at least basic knowledge of c++ is assumed, and the user will need to implement and pass pointers for several functions.
-**** Requirements
+*** Requirements
 _(....)_ and test target class should satisfy following:
-***** The program is intended to test a single unit
+**** The program is intended to test a single unit
 Current version can not analyze any of the dependencies of the class in some cases. Although the feature might be able to work with multiple classes and different member functions, only single one is supported at this stage.
-***** You need to be able to be compiled separately
+**** You need to be able to be compiled separately
 In order to analyze , the object file of the test target needs to be compiled with special flags separately from the rest of the project. This means the implementation of the class can not be spread in multiple files, and those files should not contain anything else
-*** dependencies
-*** installation instructions
+** dependencies
+** installation instructions
 run these commands from the directory where you want to install the project
 #+ATTR_LATEX: :float nil
 #+BEGIN_listing
@@ -429,34 +133,33 @@ make test-main
 make test # to make sure that everything works
 #+END_listing
 After tests pass successfully, you can move on to next step and set up the  
-*** Instructions using an example
+** Instructions using an example
 After installation, and successful tests _(TODO)_
-**** Sample stack  class
-[[Listing _TODO_]] shows the definition for the class that the project tests by default. Full implementation can be found in corresponding [[.cpp]] file of the same directory. I will go through the example and explain how it can be adjusted for any other class.
+*** Sample stack  class
+[[Listing _TODO_]] shows the definition for the class that the project tests by default. Full implementation can be found in corresponding \lstinline{.cpp} file of the same directory. I will go through the example and explain how it can be adjusted for any other class.
 #+CAPTION: definition for the stack class in examples/stack.h
 #+BEGIN_listing
-#+INCLUDE: examples/stack.h :lines "6-24" example c++
+\inputminted[firstline=6,lastline=24]{c++}{examples/stack.h}
 #+END_listing
+*** Structure of the main file
+The user is adviced to only change the contents of \lstinline{main} function, and replace the \lstinline{#include} directive. More details about how these classes work and way they are engineered can be found in the [[Developer Documentation]] Developer Documentation _(TODO)_
 
-**** Structure of the main file
-The user is adviced to only change the contents of [[main()]] function, and replace the [[#include]] directive. More details about how these classes work and way they are engineered can be found in the [[Developer Documentation]]. Developer Documentation _(TODO)_
-
-***** Global objects
+**** Global objects
 # #+ATTR_LaTeX: :float t :placement [H]
 #+CAPTION: example file
 #+BEGIN_listing
-#+INCLUDE: src/main.cc :lines "10-15" example c++
+\inputminted[firstline=10,lastline=15]{c++}{src/main.cc}
 #+END_listing
 # src c++ also works
-# #+INCLUDE: "~/.emacs" :lines "5-10"   Include lines 5 to 10, 10 excluded
-# #+INCLUDE: "~/.emacs" :lines "-10"    Include lines 1 to 10, 10 excluded
-# #+INCLUDE: "~/.emacs" :lines "10-"    Include lines from 10 to EOF
+# \inputminted{excluded}{"~/.emacs" :lines "5-10"   Include lines 5 to 10,}
+# \inputminted{excluded}{"~/.emacs" :lines "-10"    Include lines 1 to 10,}
+# \inputminted{EOF}{"~/.emacs" :lines "10-"    Include lines from 10}
 # **** _maybe_ using the script
 
-***** Getting the output
+**** Getting the output
 After finishing, you can ask the coverageReporter to show results by simply printing it or writing to a file
 _(functions here)_
-**** Compile and run
+*** Compile and run
 using commands
 #+BEGIN_SRC bash
 make run-guards
@@ -464,13 +167,13 @@ make run-guards
 This command will _(....relevant section from the makefile)_
 |
 |
-**** output
+*** output
 _(TODO)_
-***** results
+**** results
 |
 |
 |
-***** memory leaks
+**** memory leaks
 After it's finished running
 #+BEGIN_EXAMPLE
 ==32362==ERROR: LeakSanitizer: detected memory leaks
@@ -478,89 +181,104 @@ After it's finished running
 Since the program will be compiled using the `-fsanitize=address` compiler flag, any existing memory leaks will be discovered. 
 _(example with a stack class but missing constructor)_
 For more info about interpreting and fixing these messages visit AddressSanitizer.
-*** troubleshooting
+** troubleshooting
 There are few mistakes 
-**** installation
+*** installation
 the tests are designed so that all of the underlying infrastructure will be checked. If you start having any problems:
-***** test if clang build works correctly
+**** test if clang build works correctly
 There might be problems with the addressSanitizer. To see if the program can run independently, use the make command, which will compile and run all the source files without the flag. The program will still work and call functions, but the coverage will not be reported. If this step is successful _describe how_ then please _check your compiler_
-**** running
+*** running
 |
 _(TODO reproduce)_
 |
-***** Out of Memory error for AddressSanitizer
+**** Out of Memory error for AddressSanitizer
 This happens because _..._. Please refer to the requirements section. This error could be fixed by tweaking the AdressSanitizer, but as for now is not supported in the project. 
-** Developer Documentation
-This section discusses the structure and contents of the source directory, essential concepts for development and reasoning behind some of the architecture decisions. It also provides overview of the tools necessary for development, along with their usage.
-*** Information about the project
+* Developer Documentation
+This chapter discusses the structure and contents of the source directory, essential concepts for development and reasoning behind some of the architecture decisions. It also provides overview of the tools necessary for development, along with their usage.
+** Information about the project
 Before going in-depth about the details of software, I would like to elaborate more on some commands that were dicusses in the User Manual.
-**** Makefile and project layout
-As mentioned before, the project is compiled using GNU make, since it was more straightforward to express the different compilation commands and necessary flags for Sanitizer library. 
+*** Makefile and project layout
+As mentioned before, the project is compiled using GNU make, since it was more straightforward to express the different compilation commands and necessary flags for Sanitizer library. Each recipe is self documenting by using @echo to display its purpose when invoked. Since this is the most crucial information, it is highlighted in shell output. After that the compile command is displayed in less bright color, so the user and developer are not distracted.
 
-_(TODO) contents and commends of Makefile will be broken down here. show the file_
-***** include
-Header files. Definitions for 3 main classes of the project. It also contains definition of the template class along with its implementation.  
-***** src
-Implementations of classes from /include directory (excluding functionPointerMap which is a template class) and a sample for the main file, which should be replaced by user for its own test target unit.
-***** source file extensions
-this makes it easier to create a comprehensive but concise makefile which scans the source folder for .cpp files and .cc is used for main and 
-***** test
-Test directory. Tests are discussed later in [[catch2]]
-***** Makefile
-The test section of the makefile is discussed in catch2  _(TODO link)_
-**** code conventions
+Here is a brief overview of the source directory. Each of the subdirectories is displayed alongside corresponding variable in the Makefile.
+
+**** include - $(INC)
+Header files. Definitions for all classes of the project. It also contains definition of the template classes along with ther implementation. The \lstinline{lib} subdirectory holds the header file of the testing framework.
+**** src - $(SRCDIR)
+Implementations of non-template classes from \lstinline{include} directory and a sample for the main file, which should be replaced by user for its own test target unit.
+**** bin and build - $(BUILDDIR)
+Output for binary and object files
+**** test
+Test directory. Tests are discussed in detail in [[Testing strategy]] Testing strategy.
+*** code conventions
 Code is formatted according to LLVM coding standard[fn:1]. Clang-format is used and can be added to commit hook, or alternatively use clang-format plugin for IDE of your choice. 
-*** Dependencies and internal architecture
-**** Catch2 library and tests
-The project is thoroughly tested using the catch2 framework. Tests are represented with Given-When-Then style, and described scenarios carefully follow documentation. This library was chosen for its minimalistic setup and ability to describe the test cases with full sentences, and facilitates test driven development. You can find test cases corresponding to each scenario discussed in the documentation. _(TODO? is it ok to finish with this?)_.
-
-#+BEGIN_EXAMPLE bash
-make test-main
-#+END_EXAMPLE 
-This compiles the test-main.cpp which defines the main function of catch. Since it needs to be defined just once and used for any test case, it is more efficient to compile it to an object which is later included in tests.
-#+BEGIN_EXAMPLE bash 
-make test
-#+END_EXAMPLE
-runs the tests for all units in the project, excluding the combination tester.
-
-The exception to this is the integration test, which will be discussed in the section _([Example])_. It serves as a good example for showing how the library works, before going into the details about each unit. First, I will give a brief overview to the Sanitizer Coverage library and introduce the test class which will illustrate core concepts of both the library and my program. _(TODO review this sentence)_
-
-**** Sanitizer Coverage library
+** Dependencies and internal architecture
+*** Sanitizer Coverage library
 The program relies primarily on LLVM's built in coverage instrumentation to measure coverage of different function cal sequences. Basic understanding of how these functions work is necessary for development.
 
 _(paragraph about guards,)_
 
 
-Let me illustrate this using an example. First let us introduce a simple class on [[Listing 3]]. Most functions have descriptive names and their implementation does exactly that, so I will explain only what [[f2() ]]does, and also note that f4() returns a simple integer value without any calculations. 
+Let me illustrate this using an example. First let us introduce a simple class on [[Listing 3]]. Most functions have descriptive names and their implementation does exactly that, so I will explain only what link [[f2() ]]does, and also note that f4() returns a simple integer value without any calculations. 
 #+CAPTION: Definition of the class used in integration tests
 #+BEGIN_listing c++
-#+INCLUDE: test/integrationTestClass.h :lines "3-16" example c++
+\inputminted[firstline=3,lastline=16]{c++}{test/integrationTestClass.h}
 #+END_listing
 
-As you will observe on [[Listing 3]], there are 3 different scenarios for [[f2()]], and Sanitizer Coverage will insert guards on entry point of each of them. The rest of the functions will simply have guards inserted in the beginning.
+As you will observe on [[Listing 3]], there are 3 different scenarios for link [[f2()]], and Sanitizer Coverage will insert guards on entry point of each of them. The rest of the functions will simply have guards inserted in the beginning.
 
 #+CAPTION: Implementation of [[IntegrationTestClass::f2()]], with inserted guards highlighted _(TODO)_
 #+BEGIN_listing c++
-#+INCLUDE: test/integrationTestClass.cc :lines "12-22" example c++
+\inputminted[firstline=12,lastline=22]{c++}{test/integrationTestClass.cc}
 #+END_listing
 
 Sanitizer Coverage library offers numerous ways to observe the control flow of the program, three default ones being _(.... edge, block, explain differences)_. It also includes _(... for switches and )_. These could aid in refining the program for more complex applications but will not be covered here since only edge case is used currently.
 # documentation
-**** Example
+*** Example
 
 You will observe that tweaking the number of maximum sequence length will increase the number of covered blocks per unit test (and have larger sequences of function calls) while significantly decreasing the total number of unit tests, until it collapses to very few, maybe even one. It is not reasonable to test the entire logic in a single test, and also not clear _(when to stop growing)_, and it might also vary from the complexity of the unit. However, it will never replace _..._, as observed when tweaking the number from 6 to 7 for IntegrationTestClass.
 Right now, it is recommended to start with smaller number of function calls. It is hard to determine the threshold after which having a larger coverage per unit test stops being important. If we restrict the program to only save the function call sequence if it covers a new block, the number of unit tests will _(TODO? I think this is actually a reasonable approach, and should be the default and I could say that other alternatives could be found, at the same time, I don't think I have time to implement, test and document even such a small feature, since I did added other ones recently)._ 
 Choosing the right combination of number of function calls with regards to number of covered blocks is for another project. 
 
 This was a higher-level overview of the core concepts used for the program. The rest of the documentation is provided in the following section. 
-**** documentation
+*** documentation
 All classes are thoroughly documented in header files, and some more detailed explanation and reasoning is sometimes provided in implementation files. For documentation generation, Doxygen library is used with javadoc style. 
 
-Run [[doxygen Doxyfile]] to generate documentation in html and latex source. Latex source needs additional compiling which can be done by running the command [[make]] in the [[latex/]] directory. If you would like to change doxygen settings, you can copy the Doxyfile and run doxygen [[my-Doxyfile]].
+Run link [[doxygen Doxyfile]] to generate documentation in html and latex source. Latex source needs additional compiling which can be done by running the command \lstinline{make} in the link [[latex/]] directory. If you would like to change doxygen settings, you can copy the Doxyfile and run doxygen link [[my-Doxyfile]].
 
 _(TODO the blank rest of the page here to bind second pdf)_
+** Testing strategy
+The project is thoroughly tested using the catch2 framework. Tests are represented with Behavior-driven Given-When-Then style, and described scenarios carefully follow documentation. This library was chosen for its minimalistic setup and ability to describe the test cases with full sentences. 
 
-** references                                                     :noexport:
+*** Catch2 library
+Catch is a multi-paradigm test framework for C++, distributed as a single header file. Though that does not mean that it needs to be compiled into every translation unit.  Since it needs to be defined just once and used for any test case, it is possible and more efficient to compile it to an object file which is later included in tests, as displayed on [[listing _(TODO and other)]]. In the Makefile, value of \lstinline{TESTDIR} is test.
+
+#+CAPTION: contents of test/catch2-main.cpp
+#+BEGIN_listing
+\inputminted{c++}{test/catch2-main.cpp}
+#+END_listing
+
+#+CAPTION: compilation recipe for catch2-main.cpp
+#+BEGIN_listing
+\inputminted[firstline=67,lastline=72]{bash}{Makefile}
+#+END_listing
+
+Unit tests follow the convention by having the corresponding class name followed by "-test" suffix, and their compilation recipe is shown in [[listing _(TODO)_]]. The exception to this is the integration test, which will be discussed in the section _(TODO [Example])_. It serves as a good demonstration for showing how the library works, before going into the details about each unit. First, I will give a brief overview to the Sanitizer Coverage library and introduce the test class which will illustrate core concepts of both the library and my program.
+
+#+CAPTION: including compiled catch2-main.cpp in tests
+#+BEGIN_listing
+\inputminted[firstline=74,lastline=90]{bash}{Makefile}
+#+END_listing
+
+_(TODO reference)_
+
+*** Example 
+The library was created mostly by test driven development. Before listing all of the test cases, I will walk through one example in more detail. Unit with most scenarios was \lstinline{CoverageReporter}, since it needs to decide when the new coverage was meaningful/worth storing.
+
+*** List of test case scenarios 
+
+
+* references                                                       :noexport:
 [1] https://github.com/CppCon/CppCon2017/blob/master/Demos/Fuzz%20Or%20Lose/Fuzz%20Or%20Lose%20-%20Kostya%20Serebryany%20-%20CppCon%202017.pdf
 [2] https://llvm.org/docs/LibFuzzer.html
 [3] https://clang.llvm.org/docs/SanitizerCoverage.html
@@ -569,8 +287,9 @@ _(TODO the blank rest of the page here to bind second pdf)_
 
 _(TODO? are the references ok like that?)_
 
-*** TODO move stuff from Footnotes
-* Footnotes
+** TODO move stuff from Footnotes
+* Footnotes                                                        :noexport:
 
 [fn:1] https://llvm.org/docs/CodingStandards.html
 https://clang.llvm.org/docs/ClangFormatStyleOptions.html
+https://github.com/catchorg/Catch2/blob/master/docs/slow-compiles.md#top
