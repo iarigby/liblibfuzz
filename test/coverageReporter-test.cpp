@@ -1,7 +1,5 @@
-//#define CATCH_CONFIG_MAIN
-
 #include "coverageReporter.h"
-#include <catch2/catch.hpp>
+#include "catch.hpp"
 
 struct TestData {
   std::vector<std::string> shortCombination{"f1"};

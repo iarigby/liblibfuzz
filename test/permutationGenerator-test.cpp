@@ -1,6 +1,5 @@
-//#define CATCH_CONFIG_MAIN
 #include "permutationGenerator.h"
-#include <catch2/catch.hpp>
+#include "catch.hpp"
 
 SCENARIO("all permutations produced", "[permutationgenerator]") {
   std::vector<std::string> vec = {"a", "b"};

@@ -2,7 +2,7 @@
 #include "coverageReporter.h"
 #include "functionPointerMap.hpp"
 #include "integrationTestClass.h"
-#include <catch2/catch.hpp>
+#include "catch.hpp"
 
 CoverageReporter coverageReporter;
 bool started;

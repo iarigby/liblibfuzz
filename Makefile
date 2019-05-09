@@ -37,7 +37,7 @@ OBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.o))
 MAINFILE := $(SRCDIR)/main.cc
 TARGET := bin/guards
 
-INSERTED_GUARDS := bin/inserted-guards.o
+INSERTED_GUARDS := $(BUILDDIR)/inserted-guards.o
 SANITIZERFLAGS := -fsanitize=address ./src/trace-pc-guard-cb.cc
 
 .DEFAULT_GOAL := $(TARGET)
@@ -65,7 +65,7 @@ TESTDIR := test
 # This file is used to compile the catch2 library separately
 # so the compilation is sped up
 TEST_MAIN := $(TESTDIR)/catch2-main.cpp
-TEST_LIB := bin/catch2-main.o
+TEST_LIB := $(BUILDDIR)/catch2-main.o
 $(TEST_LIB): $(TEST_MAIN)
 	@echo "\t \e[96m Compiling the test library\e[90m"
 	$(CC) -c $^ -o $@
