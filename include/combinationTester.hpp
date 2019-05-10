@@ -91,6 +91,11 @@ CombinationTester<T>::CombinationTester(int permutationSize,
                                         CoverageReporter *cr)
     : functionPointerMap{fpm}, permutationSize{permutationSize},
       getNewInstance{ifp}, coverageReporter{cr} {
+  if (permutationSize > 10) {
+    std::cout
+        << "***\n\tYou have chosen a large size for maximum permutations, which is not advised due to 
+        increased runtime n ";
+  }
   std::vector<std::string> v{fpm.getFunctions()};
   permutationGenerator = PermutationGenerator<std::string>(v, permutationSize);
 }

@@ -21,6 +21,7 @@
 #+LATEX_HEADER: \city{Budapest}
 #+LATEX_HEADER: \logo{elte_cimer_szines}
 #+LATEX_HEADER: \documentlang{english}
+#+LATEX_HEADER: \newcommand*{\code}{\lstinline[keywordstyle=\color{violet}, basicstyle=\color{violet}]}
 
 \setcounter{page}{1}
 #+TOC: headlines 0
@@ -136,13 +137,13 @@ After tests pass successfully, you can move on to next step and set up the
 ** Instructions using an example
 After installation, and successful tests _(TODO)_
 *** Sample stack  class
-[[Listing _TODO_]] shows the definition for the class that the project tests by default. Full implementation can be found in corresponding \lstinline{.cpp} file of the same directory. I will go through the example and explain how it can be adjusted for any other class.
+[[Listing _TODO_]] shows the definition for the class that the project tests by default. Full implementation can be found in corresponding \code{.cpp} file of the same directory. I will go through the example and explain how it can be adjusted for any other class.
 #+CAPTION: definition for the stack class in examples/stack.h
 #+BEGIN_listing
 \inputminted[firstline=6,lastline=24]{c++}{examples/stack.h}
 #+END_listing
 *** Structure of the main file
-The user is adviced to only change the contents of \lstinline{main} function, and replace the \lstinline{#include} directive. More details about how these classes work and way they are engineered can be found in the [[Developer Documentation]] Developer Documentation _(TODO)_
+The user is adviced to only change the contents of \code{main} function, and replace the \code{#include} directive. More details about how these classes work and way they are engineered can be found in the [[Developer Documentation]] Developer Documentation _(TODO)_
 
 **** Global objects
 # #+ATTR_LaTeX: :float t :placement [H]
@@ -156,6 +157,8 @@ The user is adviced to only change the contents of \lstinline{main} function, an
 # \inputminted{EOF}{"~/.emacs" :lines "10-"    Include lines from 10}
 # **** _maybe_ using the script
 
+**** Choosing the number of maximum combinations
+Feel free to tweak this number to suit your library's needs. If the functions are relatively small but there is a greater number of them, it is more reasonable to settle for numbers lower than 5. In some cases large size of functions requires a very specific state of the class which can only be achieved by more function calls. Such cases will better be resolved by mutation-based fuzzing.
 **** Getting the output
 After finishing, you can ask the coverageReporter to show results by simply printing it or writing to a file
 _(functions here)_
@@ -203,9 +206,9 @@ As mentioned before, the project is compiled using GNU make, since it was more s
 Here is a brief overview of the source directory. Each of the subdirectories is displayed alongside corresponding variable in the Makefile.
 
 **** include - $(INC)
-Header files. Definitions for all classes of the project. It also contains definition of the template classes along with ther implementation. The \lstinline{lib} subdirectory holds the header file of the testing framework.
+Header files. Definitions for all classes of the project. It also contains definition of the template classes along with ther implementation. The \code{lib} subdirectory holds the header file of the testing framework.
 **** src - $(SRCDIR)
-Implementations of non-template classes from \lstinline{include} directory and a sample for the main file, which should be replaced by user for its own test target unit.
+Implementations of non-template classes from \code{include} directory and a sample for the main file, which should be replaced by user for its own test target unit.
 **** bin and build - $(BUILDDIR)
 Output for binary and object files
 **** test
@@ -244,21 +247,21 @@ This was a higher-level overview of the core concepts used for the program. The 
 *** documentation
 All classes are thoroughly documented in header files, and some more detailed explanation and reasoning is sometimes provided in implementation files. For documentation generation, Doxygen library is used with javadoc style. 
 
-Run link [[doxygen Doxyfile]] to generate documentation in html and latex source. Latex source needs additional compiling which can be done by running the command \lstinline{make} in the link [[latex/]] directory. If you would like to change doxygen settings, you can copy the Doxyfile and run doxygen link [[my-Doxyfile]].
+Run \code{doxygen Doxyfile} to generate documentation in html and latex source. Latex source needs additional compiling which can be done by running the command \lstinline{make} in the link \lstinline{latex/ directory}. If you would like to change doxygen settings, you can copy the Doxyfile and run doxygen link \lstinline{my-Doxyfile}.
 
 _(TODO the blank rest of the page here to bind second pdf)_
 ** Testing strategy
 The project is thoroughly tested using the catch2 framework. Tests are represented with Behavior-driven Given-When-Then style, and described scenarios carefully follow documentation. This library was chosen for its minimalistic setup and ability to describe the test cases with full sentences. 
 
 *** Catch2 library
-Catch is a multi-paradigm test framework for C++, distributed as a single header file. Though that does not mean that it needs to be compiled into every translation unit.  Since it needs to be defined just once and used for any test case, it is possible and more efficient to compile it to an object file which is later included in tests, as displayed on [[listing _(TODO and other)]]. In the Makefile, value of \lstinline{TESTDIR} is test.
+Catch is a multi-paradigm test framework for C++, distributed as a single header file. Though that does not mean that it needs to be compiled into every translation unit.  Since it needs to be defined just once and used for any test case, it is possible and more efficient to compile it to an object file which is later included in tests, as displayed on [[listing _(TODO and other)]]. In the Makefile, value of \code{TESTDIR} is test.
 
-#+CAPTION: contents of test/catch2-main.cpp
+#+CAPTION: contents of \code{test/catch2-main.cpp}
 #+BEGIN_listing
 \inputminted{c++}{test/catch2-main.cpp}
 #+END_listing
 
-#+CAPTION: compilation recipe for catch2-main.cpp
+#+CAPTION: compilation recipe for \code{catch2-main.cpp}
 #+BEGIN_listing
 \inputminted[firstline=67,lastline=72]{bash}{Makefile}
 #+END_listing
@@ -273,7 +276,7 @@ Unit tests follow the convention by having the corresponding class name followed
 _(TODO reference)_
 
 *** Example 
-The library was created mostly by test driven development. Before listing all of the test cases, I will walk through one example in more detail. Unit with most scenarios was \lstinline{CoverageReporter}, since it needs to decide when the new coverage was meaningful/worth storing.
+The library was created mostly by test driven development. Before listing all of the test cases, I will walk through one example in more detail. Unit with most scenarios was \code{CoverageReporter}, since it needs to decide when the new coverage was meaningful/worth storing.
 
 *** List of test case scenarios 
 
