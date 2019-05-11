@@ -1,7 +1,7 @@
 ################################################################################
 #                                   Makefile                                   # 
 # This file contains the entire structure of the project along                 #
-# with all necessary commands. Each recipe is followed by an @echo -e statement   #
+# with all necessary commands. Each recipe is followed by an @echo statement   #
 # that explains what it does.						       #
 ################################################################################
 
@@ -27,6 +27,8 @@ SRCDIR := src
 # object files. The results from the command for $(SOURCES) will be
 # compiled here
 BUILDDIR := build
+
+TARGETDIR := bin
 # extension for source files that should be compiled to object files.
 # There are 2 that will be exempt in this stage
 # because they require to be compiled/included separately  
@@ -35,7 +37,7 @@ SOURCES := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
 OBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.o))
 
 MAINFILE := $(SRCDIR)/main.cc
-TARGET := bin/guards
+TARGET := $(TARGETDIR)/main
 
 INSERTED_GUARDS := $(BUILDDIR)/inserted-guards.o
 SANITIZERFLAGS := -fsanitize=address ./src/trace-pc-guard-cb.cc
@@ -53,6 +55,7 @@ $(INSERTED_GUARDS): $(TEST_TARGET_FILE)
 
 $(TARGET): $(OBJECTS) $(INSERTED_GUARDS) $(MAINFILE)
 	@echo -e "\t \e[96m Linking with sanitizer coverage\e[90m"
+	@mkdir -p $(TARGETDIR)
 	$(CC) $(INC) $(TEST_TARGET_INC) $(SANITIZERFLAGS) $^ -o $@
 
 run: $(TARGET)
@@ -76,8 +79,9 @@ TEST_SOURCES := $(shell find $(TESTDIR) -type f -name *$(TESTEXT))
 TEST_OBJECTS := $(patsubst $(TESTDIR)/%,$(BUILDDIR)/%,\
 $(TEST_SOURCES:.$(SRCEXT)=.o))
 
-TEST_TARGET := bin/test
+TEST_TARGET := $(TARGETDIR)/test
 $(TEST_TARGET): $(TEST_OBJECTS) $(OBJECTS) $(TEST_LIB)
+	@mkdir -p $(TARGETDIR)
 	@echo -e "\t \e[96mLinking tests\e[90m"
 	$(CC) $^ -o $(TEST_TARGET) 
 
@@ -93,7 +97,7 @@ test: $(TEST_TARGET)
 INTEGRATION_TEST := combinationTester-test
 INTEGRATION_TEST_CLASS := integrationTestClass
 INTEGRATION_TEST_FILE := $(TESTDIR)/$(INTEGRATION_TEST).cc
-INTEGRATION_TEST_TARGET := bin/integration-test
+INTEGRATION_TEST_TARGET := $(TARGETDIR)/integration-test
 
 # compile the integration test class with sanitizer flag
 INTEGRATION_TEST_CLASS_FILE := $(TESTDIR)/$(INTEGRATION_TEST_CLASS).cc
@@ -105,14 +109,13 @@ $(INTEGRATION_TEST_GUARDS): $(INTEGRATION_TEST_CLASS_FILE)
 
 $(INTEGRATION_TEST_TARGET): $(INTEGRATION_TEST_GUARDS) $(TEST_LIB) \
 $(OBJECTS) $(INTEGRATION_TEST_FILE)
+	@mkdir -p $(TARGETDIR)
 	@echo -e "\t \e[96mLinking integration test...\e[90m"
 	$(CC) $(INC) $(SANITIZERFLAGS) $^ -o $@
 
 integration-test-run: $(INTEGRATION_TEST_TARGET)
 	@echo -e "\t \e[96mRunning the integration test with $(INTEGRATION_TEST_CLASS)\e[90m"
 	ASAN_OPTIONS=strip_path_prefix=`pwd`/ ./bin/integration-test
-
-test-all: test integration-test-run
 
 # 	generate pdf documentation
 docs: 	Doxyfile myrefman.tex
@@ -123,6 +126,6 @@ docs: 	Doxyfile myrefman.tex
 
 clean:
 	@echo -e "\t \e[96mCleaning...\e[90m"
-	$(RM) -r $(INSERTED_GUARDS) $(BUILDDIR) $(TARGET) $(TEST_LIB)
+	$(RM) -r $(BUILDDIR) $(TARGETDIR)
 
 .PHONY: clean

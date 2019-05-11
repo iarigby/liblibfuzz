@@ -54,6 +54,7 @@ int main(int argc, char **argv) {
                                                   &coverageReporter);
   combinationTester.run();
   coverageReporter.printResults();
+  coverageReporter.printResultsToFile();
   // cr.printResultsToFile();
   // comment this line if not compiling with guards
   // std::cout << i;

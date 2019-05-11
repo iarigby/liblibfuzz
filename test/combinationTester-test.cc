@@ -29,7 +29,8 @@ SCENARIO("integration test", "[integrationtest]") {
 
     WHEN("The tests are run") {
       combinationTester.run();
-      // coverageReporter.printResults();
+      coverageReporter.printResults();
+      coverageReporter.printResultsToFile("integration-test-results.txt");
       THEN("SanitizerCoverage should report covered pc blocks to coverageReporter") {
 	int allCoveredBlocks = coverageReporter.coveredBlocks.size();
         REQUIRE(allCoveredBlocks >= 1);

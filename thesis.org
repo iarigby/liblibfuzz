@@ -31,7 +31,6 @@ CLOSED: [2019-01-28 Mon 21:11]
 added on [2018-12-26 Wed 13:42]
 ** CANCELLED https://mcss.mosra.cz/doxygen/
 CLOSED: [2019-05-08 sze 13:13]
-** tasks
 ** Code tasks 
 *** DONE components
 CLOSED: [2019-05-08 sze 14:11]
@@ -70,16 +69,19 @@ CLOSED: [2019-05-08 sze 13:14]
 **** TODO go through listings and number them
  added on [2019-05-08 sze 08:59]
 **** TODO references chapter
-*** technical 
+*** technical
+**** TODO check Makefile inputminteds
 **** TODO fix page for refman
  added on [2019-05-08 sze 08:36]
 **** TODO listings inlcude line numberings
  added on [2019-05-08 sze 09:04]
 **** TODO myrefman compile error for doxygen package
  added on [2019-05-08 sze 08:35]
-**** TODO thesis margins check
-*** TODO add a separate section for tests and describe test scenarios. 
-** TODO add filenames to listing captions
+**** TODO thesis margins check and fix for myrefman too
+*** DONE add a separate section for tests and describe test scenarios. 
+CLOSED: [2019-05-11 Sat 14:16]
+** DONE add filenames to listing captions
+CLOSED: [2019-05-11 Sat 14:16]
  added on [2019-05-09 cs 13:25]
 * Introduction
 Most software heavily relies on unit tests as its primary source for logic and _fault tolerance_ verification. This approach has been largely considered as essential, but it has some inherent difficulties associated with it. Although testing single member functions independently is more often than not trivial, most of the time the user will call various combinations of them. It is impossible to write unit tests with all possible function call sequences since such space is effectively infinite. Therefore, the need arises for the developer to personally determine which function call sequences are most meaningful. 
@@ -124,13 +126,13 @@ Following dependencies need to be installed in order to
 ** Installation instructions
 run these commands from the directory where you have copied the contents of the project and run commands provided in _(TODO listing one)_
 _(TODO highlight and caption this)_
-#+CAPTION:  
+#+CAPTION: Installation commands
 #+BEGIN_listing bash
 # download the contents from the provided disk  
 cd <dir> # where dir is the path of the folder
 
 make test-main
-# this command runs unit tests
+# this command compiles everything and runs unit tests
  
 make integration-test-run 
 # makes sure that AddressSanitizer library works properly
@@ -139,49 +141,40 @@ After tests pass successfully, you can move on to next step and set up the proje
 ** Instructions using an example
 After installation, and successful tests, you need to modify the contents of \code{src/main.cc} file and several lines in \code{Makefile}. I will demonstrate the instructions using an example.
 *** Sample stack  class
-[[Listing _TODO_]] shows the definition for the class that the project tests by default. Full implementation can be found in corresponding \lstinline{.cpp} file of the same directory. I will go through the example and explain how it can be adjusted for any other class.
+[[Listing _TODO_]] shows the definition for the class that the project tests by default. Full implementation can be found in corresponding \code{.cpp} file of the same directory. I will go through the example and explain how it can be adjusted for any other class.
 #+CAPTION: definition for the stack class in \code{examples/stack.h}
 #+BEGIN_listing
 \inputminted[firstline=6,lastline=24]{c++}{examples/stack.h}
 #+END_listing
 *** Structure of the main file
 The user is adviced to only change the contents of \lstinline{main()} function, and replace the \lstinline{#include} directive. I will explain how to construct the \code{CombinationTester} class instance. More details about how classes used in the \code{main.cc} file work and way they are engineered can be found in the [[Developer Documentation]] Developer Documentation _(TODO)_
-**** 
+**** 1. Include your header file and provide it's path in the 
+
 **** Global objects
-# #+ATTR_LaTeX: :float t :placement [H]
-#+CAPTION: example file
+#+CAPTION: example file _TODO_ I think this should be removed
 #+BEGIN_listing
 \inputminted[firstline=10,lastline=15]{c++}{src/main.cc}
 #+END_listing
-# src c++ also works
-# \inputminted{excluded}{"~/.emacs" :lines "5-10"   Include lines 5 to 10,}
-# \inputminted{excluded}{"~/.emacs" :lines "-10"    Include lines 1 to 10,}
-# \inputminted{EOF}{"~/.emacs" :lines "10-"    Include lines from 10}
-# **** _maybe_ using the script
 
 **** Getting the output
 After finishing, you can ask the coverageReporter to show results by simply printing it or writing to a file
 _(functions here)_
 *** Compile and run
-using commands
-#+BEGIN_SRC bash
-make run-guards
-#+END_SRC
-This command will _(....relevant section from the makefile)_
-|
-|
+If you followed the instructions in the previous section, you are ready to generate test cases for your class using \code{`make run`} command.
 *** output
 _(TODO)_
 **** results
-|
-|
-|
+#+CAPTION: Output _TODO_ that will be written to \code{results.txt} file
+#+BEGIN_listing
+\inputminted{results.txt}
+#+END_listing
 **** memory leaks
 After it's finished running
+#+CAPTION: Memory leak discoverd when the destructor is missing
 #+BEGIN_EXAMPLE
 ==32362==ERROR: LeakSanitizer: detected memory leaks
 #+END_EXAMPLE
-Since the program will be compiled using the `-fsanitize=address` compiler flag, any existing memory leaks will be discovered. 
+Since the program will be compiled using the \code{`-fsanitize=address`} compiler flag, any existing memory leaks will be discovered and message shown on [[Listing TODO]] will inform you about it
 _(example with a stack class but missing constructor)_
 For more info about interpreting and fixing these messages visit AddressSanitizer.
 ** troubleshooting
@@ -196,26 +189,10 @@ _(TODO reproduce)_
 |
 **** Out of Memory error for AddressSanitizer
 This happens because _..._. Please refer to the requirements section. This error could be fixed by tweaking the AdressSanitizer, but as for now is not supported in the project. 
-* Developer Documentation
+* Developer Documentation 
 This chapter discusses the structure and contents of the source directory, essential concepts for development and reasoning behind some of the architecture decisions. It also provides overview of the tools necessary for development, along with their usage.
-** Information about the project
-Before going in-depth about the details of software, I would like to elaborate more on some commands that were dicusses in the User Manual.
-*** Makefile and project layout
-As mentioned before, the project is compiled using GNU make, since it was more straightforward to express the different compilation commands and necessary flags for Sanitizer library. Each recipe is self documenting by using @echo to display its purpose when invoked. Since this is the most crucial information, it is highlighted in shell output. After that the compile command is displayed in less bright color, so the user and developer are not distracted.
-
-Here is a brief overview of the source directory. Each of the subdirectories is displayed alongside corresponding variable in the Makefile.
-
-**** include - $(INC)
-Header files. Definitions for all classes of the project. It also contains definition of the template classes along with ther implementation. The \lstinline{lib} subdirectory holds the header file of the testing framework.
-**** src - $(SRCDIR)
-Implementations of non-template classes from \lstinline{include} directory and a sample for the main file, which should be replaced by user for its own test target unit.
-**** bin and build - $(BUILDDIR)
-Output for binary and object files
-**** test
-Test directory. Tests are discussed in detail in [[Testing strategy]] Testing strategy.
-*** code conventions
-Code is formatted according to LLVM coding standard[fn:1]. Clang-format is used and can be added to commit hook, or alternatively use clang-format plugin for IDE of your choice. 
 ** Dependencies and internal architecture
+Before diving into the specifics, I would like to introduce some material that is necessary for understanding why - and how, everything works. First, I will give a brief overview to the Sanitizer Coverage library and introduce the test class which will illustrate core concepts of both the library and my program.
 *** Sanitizer Coverage library
 The program relies primarily on LLVM's built in coverage instrumentation to measure coverage of different function cal sequences. Basic understanding of how these functions work is necessary for development.
 
@@ -224,13 +201,14 @@ _(paragraph about guards,)_
 
 Let me illustrate this using an example. First let us introduce a simple class on [[Listing 3]]. Most functions have descriptive names and their implementation does exactly that, so I will explain only what link [[f2() ]]does, and also note that f4() returns a simple integer value without any calculations. 
 #+CAPTION: Definition of the class used in integration tests
-#+BEGIN_listing c++
+#+BEGIN_listing
 \inputminted[firstline=3,lastline=16]{c++}{test/integrationTestClass.h}
+
 #+END_listing
 
 As you will observe on [[Listing 3]], there are 3 different scenarios for link [[f2()]], and Sanitizer Coverage will insert guards on entry point of each of them. The rest of the functions will simply have guards inserted in the beginning.
 
-#+CAPTION: Implementation of [[IntegrationTestClass::f2()]], with inserted guards highlighted _(TODO)_
+#+CAPTION: Implementation of \code{IntegrationTestClass::f2()} provided in \code{test/integrationTestClass.cc}, with inserted guards highlighted _(TODO)_
 #+BEGIN_listing c++
 \inputminted[firstline=12,lastline=22]{c++}{test/integrationTestClass.cc}
 #+END_listing
@@ -238,37 +216,91 @@ As you will observe on [[Listing 3]], there are 3 different scenarios for link [
 Sanitizer Coverage library offers numerous ways to observe the control flow of the program, three default ones being _(.... edge, block, explain differences)_. It also includes _(... for switches and )_. These could aid in refining the program for more complex applications but will not be covered here since only edge case is used currently.
 # documentation
 *** Example
+Let us get back to our test class and think about _(TODO talk about expectations)_
+
+#+CAPTION: output of \code{make integration-test-run}
+#+BEGIN_listing
+\inputminted{text}{integration-test-results.txt}
+#+END_listing
+
+As you see, the program manages to find .
 
 You will observe that tweaking the number of maximum sequence length will increase the number of covered blocks per unit test (and have larger sequences of function calls) while significantly decreasing the total number of unit tests, until it collapses to very few, maybe even one. It is not reasonable to test the entire logic in a single test, and also not clear _(when to stop growing)_, and it might also vary from the complexity of the unit. However, it will never replace _..._, as observed when tweaking the number from 6 to 7 for IntegrationTestClass.
 Right now, it is recommended to start with smaller number of function calls. It is hard to determine the threshold after which having a larger coverage per unit test stops being important. If we restrict the program to only save the function call sequence if it covers a new block, the number of unit tests will _(TODO? I think this is actually a reasonable approach, and should be the default and I could say that other alternatives could be found, at the same time, I don't think I have time to implement, test and document even such a small feature, since I did added other ones recently)._ 
 Choosing the right combination of number of function calls with regards to number of covered blocks is for another project. 
 
-This was a higher-level overview of the core concepts used for the program. The rest of the documentation is provided in the following section. 
 *** documentation
-All classes are thoroughly documented in header files, and some more detailed explanation and reasoning is sometimes provided in implementation files. For documentation generation, Doxygen library is used with javadoc style. 
+This was a higher-level overview of the core concepts used for the program. The rest of the documentation is provided in the last section of this chapter. All classes are thoroughly documented in header files, and some more detailed explanation and reasoning is sometimes provided in implementation files. For documentation generation, Doxygen library is used with javadoc style. 
 
-Run link [[doxygen Doxyfile]] to generate documentation in html and latex source. Latex source needs additional compiling which can be done by running the command \lstinline{make} in the link [[latex/]] directory. If you would like to change doxygen settings, you can copy the Doxyfile and run doxygen link [[my-Doxyfile]].
+If you have \code{doxygen} installed, Run \code{doxygen Doxyfile} to generate documentation in html and latex source. Latex source needs additional compiling which can be done by running the command \code{make} in the \code{latex} directory. If you would like to change doxygen settings, you can copy the Doxyfile and run \code{doxygen Doxyfile}.
+*** code conventions
+Code is formatted according to LLVM coding standard[fn:1]. Clang-format is used and can be added to commit hook, or alternatively use clang-format plugin for IDE of your choice. 
+** Makefile and project layout
+As mentioned before, the project is compiled using GNU make, since it was more straightforward to express the different compilation commands and necessary flags for Sanitizer library. Each recipe is self documenting by using @echo to display its purpose when invoked. Since this is the most crucial information, it is highlighted in shell output. After that the compile command is displayed in less bright color, so that the user and developer are not distracted but can still observe which commands are being ran.
+*** Source directory contents 
+Here is a brief overview of the source directory. Each of the subdirectories is displayed alongside corresponding variable in the Makefile.
 
-_(TODO the blank rest of the page here to bind second pdf)_
+**** $(INC) - include
+Header files. Definitions for all classes of the project. It also contains definition of the template classes along with ther implementation. The \lstinline{lib} subdirectory holds the header file of the testing framework.
+**** $(SRCDIR) - src
+Implementations of non-template classes from \lstinline{include} directory and a sample for the main file, which should be replaced by user for its own test target unit.
+**** $(BUILDDIR), $(TARGETDIR) - build, bin
+Output for binary and object files
+**** $(TESTDIR) - test
+Test directory. Tests are discussed in detail in [[Testing strategy]] Testing strategy, but compilation instructios will be provided here.
+*** Other Makefile variables
+**** $(SRCEXT)
+_...._ \code{.cc} is reserved for special file types, will be discussed later
+**** $(CC)
+Clang++ is used for all compilation commands
+**** $(INC)
+Adds \code{include} and \code{include/lib} (containing the test library) directories to include path. 
+*** Targets
+**** Object files for classes
+Located in \code{src} directory, ending with \code{.cpp} file extension. [[Listing _TODO_]] shows 
+**** Program test target class
+**** Object files for tests
+**** Integration test target class
+*** Compilation commands
+**** \code{make} default and \{make run}
+#+CAPTION: TODO in \code{Makefile}
+#+BEGIN_listing
+\inputminted[firsline=47,lastline=63]{bash}{Makefile}
+#+END_listing
+\{make run} runs \code{bin/main}, which is compiled by default with all necessary parts. These include:
+***** Object files from the \code{src} directory
+***** Program Test target class 
+***** Compiler flag for _..._
+**** test
+#+CAPTION: TODO in \code{Makefile}
+#+BEGIN_listing
+\inputminted[firstline=70,lastline=95]{bash}{Makefile}
+#+END_listing
+_(TODO)_ runs \code{bin/test}
+**** integration-test-run
+#+CAPTION: TODO \code{Makefile}
+#+BEGIN_listing
+\inputminted[firstline=97,lastline=118]{bash}{Makefile}
+#+END_listing
+_TODO_ runs \code{bin/integration-test}
+**** docs
+_TODO_
+**** clean
+Empties the output directories.
 ** Testing strategy
 The project is thoroughly tested using the catch2 framework. Tests are represented with Behavior-driven Given-When-Then style, and described scenarios carefully follow documentation. This library was chosen for its minimalistic setup and ability to describe the test cases with full sentences. 
 
 *** Catch2 library
-Catch is a multi-paradigm test framework for C++, distributed as a single header file. Though that does not mean that it needs to be compiled into every translation unit.  Since it needs to be defined just once and used for any test case, it is possible and more efficient to compile it to an object file which is later included in tests, as displayed on [[listing _(TODO and other)]]. In the Makefile, value of \lstinline{TESTDIR} is test.
+Catch is a multi-paradigm test framework for C++, distributed as a single header file. Though that does not mean that it needs to be compiled into every translation unit.  Since it needs to be defined just once and used for any test case, it is possible and more efficient to compile it to an object file which is later included in tests, as displayed on [[listing _(TODO and other)]]. 
 
-#+CAPTION: contents of test/catch2-main.cpp
+#+CAPTION: contents of \code{test/catch2-main.cpp}
 #+BEGIN_listing
 \inputminted{c++}{test/catch2-main.cpp}
 #+END_listing
 
-#+CAPTION: compilation recipe for catch2-main.cpp
-#+BEGIN_listing
-\inputminted[firstline=67,lastline=72]{bash}{Makefile}
-#+END_listing
+Unit tests follow the convention by having the corresponding class name followed by "-test" suffix, and their compilation recipe is shown in [[listing _(TODO)]]_. The exception to this is the integration test, which was discussed in the section _(TODO [Example])_. It serves as a good demonstration for showing how the library works, before going into the details about each unit. _TODO :(_
 
-Unit tests follow the convention by having the corresponding class name followed by "-test" suffix, and their compilation recipe is shown in [[listing _(TODO)_]]. The exception to this is the integration test, which will be discussed in the section _(TODO [Example])_. It serves as a good demonstration for showing how the library works, before going into the details about each unit. First, I will give a brief overview to the Sanitizer Coverage library and introduce the test class which will illustrate core concepts of both the library and my program.
-
-#+CAPTION: including compiled catch2-main.cpp in tests
+#+CAPTION: including compiled \code{catch2-main.cpp} in tests
 #+BEGIN_listing
 \inputminted[firstline=74,lastline=90]{bash}{Makefile}
 #+END_listing
@@ -276,7 +308,7 @@ Unit tests follow the convention by having the corresponding class name followed
 _(TODO reference)_
 
 *** Example 
-The library was created mostly by test driven development. Before listing all of the test cases, I will walk through one example in more detail. Unit with most scenarios was \lstinline{CoverageReporter}, since it needs to decide when the new coverage was meaningful/worth storing.
+The library was created mostly by test driven development. Before listing all of the test cases, I will walk through one example in more detail. Unit with most scenarios was \code{CoverageReporter}, since it needs to decide when the new coverage was meaningful/worth storing.
 
 *** List of test case scenarios 
 
