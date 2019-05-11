@@ -108,42 +108,45 @@ The _sanitizer coverage_ library is able to communicate its results using a sing
 ** Results
 Although the original intention was to discover new test cases, there were some surprising outcomes that could not have been anticipated. For example, the program is very good in minimizing the total number of test cases. For the sample stack class, it discovered that in . This outcome would be crucial for reducing the size of test suites, which leads to reduced runtime and maintenance cost
 * User Documentation
-This chapter provides full information for users of the program. I am using a simple stack implementation as an example. 
-
+This software aids in finding test cases for a single class interface by trying out different permutations of member function calls and discovering ones that give the most coverage. In this chapter, I provide full information about its usage for users of the program. I will be using a simple stack implementation _(TODO source and say that I modified it)_ as an example. 
 ** intended audience
-this software is intended for c++ developers who would like to increase 
-Therefore, at least basic knowledge of c++ is assumed, and the user will need to implement and pass pointers for several functions.
-*** Requirements
-_(....)_ and test target class should satisfy following:
-**** The program is intended to test a single unit
-Current version can not analyze any of the dependencies of the class in some cases. Although the feature might be able to work with multiple classes and different member functions, only single one is supported at this stage.
-**** You need to be able to be compiled separately
+this software is intended for c++ developers who would like to increase their unit test coverage for an interface/class. Therefore, at least basic knowledge of c++ is assumed, and the user will need to implement and pass pointers for several functions.
+
+ and test target class should satisfy following:
+**** The program is intended to test a single class
+Current version can not analyze multiple classes or ones with a lot of complex dependencies. Although the feature might be able to work with multiple classes and different member functions, only single one is supported at this stage.
+**** You need to be able to be compile said class separately
 In order to analyze , the object file of the test target needs to be compiled with special flags separately from the rest of the project. This means the implementation of the class can not be spread in multiple files, and those files should not contain anything else
-** dependencies
-** installation instructions
-run these commands from the directory where you want to install the project
-#+ATTR_LATEX: :float nil
-#+BEGIN_listing
+** System Requirements
+Following dependencies need to be installed in order to 
+*** GNU Make 4.0+
+*** Clang 7.0+ with AddressSanitizer (inlcuded by default)
+** Installation instructions
+run these commands from the directory where you have copied the contents of the project and run commands provided in _(TODO listing one)_
+_(TODO highlight and caption this)_
+#+CAPTION:  
+#+BEGIN_listing bash
 # download the contents from the provided disk  
 cd <dir> # where dir is the path of the folder
 
 make test-main
-# this command runs unit tests on classes 
-
-make test # to make sure that everything works
+# this command runs unit tests
+ 
+make integration-test-run 
+# makes sure that AddressSanitizer library works properly
 #+END_listing
-After tests pass successfully, you can move on to next step and set up the  
+After tests pass successfully, you can move on to next step and set up the project to test your class.  
 ** Instructions using an example
-After installation, and successful tests _(TODO)_
+After installation, and successful tests, you need to modify the contents of \code{src/main.cc} file and several lines in \code{Makefile}. I will demonstrate the instructions using an example.
 *** Sample stack  class
 [[Listing _TODO_]] shows the definition for the class that the project tests by default. Full implementation can be found in corresponding \lstinline{.cpp} file of the same directory. I will go through the example and explain how it can be adjusted for any other class.
-#+CAPTION: definition for the stack class in examples/stack.h
+#+CAPTION: definition for the stack class in \code{examples/stack.h}
 #+BEGIN_listing
 \inputminted[firstline=6,lastline=24]{c++}{examples/stack.h}
 #+END_listing
 *** Structure of the main file
-The user is adviced to only change the contents of \lstinline{main} function, and replace the \lstinline{#include} directive. More details about how these classes work and way they are engineered can be found in the [[Developer Documentation]] Developer Documentation _(TODO)_
-
+The user is adviced to only change the contents of \lstinline{main()} function, and replace the \lstinline{#include} directive. I will explain how to construct the \code{CombinationTester} class instance. More details about how classes used in the \code{main.cc} file work and way they are engineered can be found in the [[Developer Documentation]] Developer Documentation _(TODO)_
+**** 
 **** Global objects
 # #+ATTR_LaTeX: :float t :placement [H]
 #+CAPTION: example file
