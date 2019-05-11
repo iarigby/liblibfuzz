@@ -21,11 +21,8 @@
  */
 // used by sanitizer coverage to record covered pc blocks
 CoverageReporter coverageReporter;
-//
-bool started;
 
-// verbose
-// TODO maybe this should be a compiler flag?
+// verbose, report each block that is found if 
 bool outputMessages = false;
 
 // extern int i;

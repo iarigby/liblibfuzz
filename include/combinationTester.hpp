@@ -82,7 +82,6 @@ private:
 // template <typename T> using InstanceFunctionPointer = T (*)(int);
 
 // TODO
-extern bool started;
 
 template <typename T>
 CombinationTester<T>::CombinationTester(int permutationSize,
@@ -99,7 +98,6 @@ template <typename T> void CombinationTester<T>::run() {
   while (!permutationGenerator.isDone()) {
     auto permutation = permutationGenerator.nextPermutation();
     T instance = getNewInstance(permutationSize);
-    started = true;
     coverageReporter->startCoverage(permutation);
     /**
      * entire loop is wrapped in try catch so that no more functions are called
@@ -120,7 +118,6 @@ template <typename T> void CombinationTester<T>::run() {
       permutationGenerator.blacklistPermutation();
     }
     coverageReporter->flush();
-    started = false;
   }
 }
 

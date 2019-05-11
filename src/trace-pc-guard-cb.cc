@@ -5,7 +5,6 @@
 #include <stdio.h>
 
 extern CoverageReporter coverageReporter;
-extern bool started;
 extern bool outputMessages;
 
 extern "C" void __sanitizer_cov_trace_pc_guard_init(uint32_t *start,
@@ -25,7 +24,7 @@ extern "C" void __sanitizer_cov_trace_pc_guard(uint32_t *guard) {
   void *PC = __builtin_return_address(0);
   char PcDescr[1024];
   __sanitizer_symbolize_pc(PC, "%p %F %L", PcDescr, sizeof(PcDescr));
-  if (started) {
+  if (coverageReporter.recordingCoverage) {
     coverageReporter.addPCForCombination(std::string(PcDescr));
     if (outputMessages)
       printf("adding to the list: ");

@@ -53,6 +53,7 @@ public:
   void printResultsToFile();
   void printResultsToFile(std::string fileName);
   pc_set coveredBlocks;
+  bool recordingCoverage;
 private:
   /**
    * \return if first set is subset of the second

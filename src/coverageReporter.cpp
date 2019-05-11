@@ -2,7 +2,7 @@
 
 void CoverageReporter::startCoverage(
     std::vector<std::string> functionSequence) {
-  // TODO should I check whether the functionSequence has been covered already?
+  recordingCoverage = true;
   currentSequence = functionSequence;
 }
 
@@ -62,6 +62,7 @@ void CoverageReporter::flush() {
   // by clearing the sequence and the set
   currentSequence.clear();
   currentPC.clear();
+  recordingCoverage = false;
 }
 
 std::set<pc_set> CoverageReporter::coverage() {
