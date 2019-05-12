@@ -1,8 +1,9 @@
 // trace-pc-guard-cb.cc
 // https://clang.llvm.org/docs/SanitizerCoverage.html
-#include "../include/coverageReporter.h"
+#include "coverageReporter.h"
 #include <sanitizer/coverage_interface.h>
 #include <stdio.h>
+#include <string>
 
 extern CoverageReporter coverageReporter;
 extern bool outputMessages;
@@ -23,7 +24,7 @@ extern "C" void __sanitizer_cov_trace_pc_guard(uint32_t *guard) {
     return;
   void *PC = __builtin_return_address(0);
   char PcDescr[1024];
-  __sanitizer_symbolize_pc(PC, "%p %F %L", PcDescr, sizeof(PcDescr));
+  __sanitizer_symbolize_pc(PC, "%F %L", PcDescr, sizeof(PcDescr));
   if (coverageReporter.recordingCoverage) {
     coverageReporter.addPCForCombination(std::string(PcDescr));
     if (outputMessages)

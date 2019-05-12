@@ -1,10 +1,7 @@
 #+TODO: TODO UPNEXT DOING REVIEW | DONE CANCELLED
 #+OPTIONS: \n:t H:5 toc:nil title:nil 
 #+LATEX_CLASS: book 
-
-:PROPERTIES:
-:EXPORT_TITLE: Test Case Generation Based On Fuzzing For C++
-:END:
+#+TITLE: Test Case Generation Based On Fuzzing For C++
 
 #+LATEX_HEADER: \date{2019}
 
@@ -125,9 +122,9 @@ Following dependencies need to be installed in order to
 *** GNU Make 4.0+
 *** Clang 7.0+ with AddressSanitizer (inlcuded by default)
 ** Installation instructions
-run these commands from the directory where you have copied the contents of the project and run commands provided in _(TODO listing one)_
-_(TODO highlight and caption this)_
+run these commands from the directory where you have copied the contents of the project and run commands provided in Listing [[Installation commands]]
 #+CAPTION: Installation commands
+#+LABEL: Installation commands
 #+BEGIN_listing bash
 # download the contents from the provided disk  
 cd <dir> # where dir is the path of the folder
@@ -142,8 +139,9 @@ After tests pass successfully, you can move on to next step and set up the proje
 ** Instructions using an example
 After installation, and successful tests, you need to modify the contents of \code{src/main.cc} file and several lines in \code{Makefile}. I will demonstrate the instructions using an example.
 *** Sample stack  class
-[[Listing _TODO_]] shows the definition for the class that the project tests by default. Full implementation can be found in corresponding \code{.cpp} file of the same directory. I will go through the example and explain how it can be adjusted for any other class.
+Listing [[stack definition]] shows the definition for the class that the project tests by default. Full implementation can be found in corresponding \code{.cpp} file of the same directory. I will go through the example and explain how it can be adjusted for any other class.
 #+CAPTION: definition for the stack class in \code{examples/stack.h}
+#+LABEL:  stack definition
 #+BEGIN_listing
 \inputminted[firstline=6,lastline=24]{c++}{examples/stack.h}
 #+END_listing
@@ -152,10 +150,6 @@ The user is adviced to only change the contents of \lstinline{main()} function, 
 **** 1. Include your header file and provide it's path in the 
 
 **** Global objects
-#+CAPTION: example file _TODO_ I think this should be removed
-#+BEGIN_listing
-\inputminted[firstline=10,lastline=15]{c++}{src/main.cc}
-#+END_listing
 
 **** Choosing the number of maximum combinations
 Feel free to tweak this number to suit your library's needs. If the functions are relatively small but there is a greater number of them, it is more reasonable to settle for numbers lower than 5. In some cases large size of functions requires a very specific state of the class which can only be achieved by more function calls. Such cases will better be resolved by mutation-based fuzzing.
@@ -169,15 +163,19 @@ _(TODO)_
 **** results
 #+CAPTION: Output _TODO_ that will be written to \code{results.txt} file
 #+BEGIN_listing
-\inputminted{results.txt}
+\inputminted{text}{results.txt}
 #+END_listing
 **** memory leaks
 After it's finished running
 #+CAPTION: Memory leak discoverd when the destructor is missing
-#+BEGIN_EXAMPLE
+#+LABEL: Memory leak
+#+BEGIN_listing
+.
 ==32362==ERROR: LeakSanitizer: detected memory leaks
-#+END_EXAMPLE
-Since the program will be compiled using the \code{`-fsanitize=address`} compiler flag, any existing memory leaks will be discovered and message shown on [[Listing TODO]] will inform you about it
+_TODO_ this should be extended
+#+END_listing
+
+Since the program will be compiled using the \code{`-fsanitize=address`} compiler flag, any existing memory leaks will be discovered and message shown on Listing [[Memory leak]] will inform you about it
 _(example with a stack class but missing constructor)_
 For more info about interpreting and fixing these messages visit AddressSanitizer.
 ** troubleshooting
@@ -202,16 +200,18 @@ The program relies primarily on LLVM's built in coverage instrumentation to meas
 _(paragraph about guards,)_
 
 
-Let me illustrate this using an example. First let us introduce a simple class on [[Listing 3]]. Most functions have descriptive names and their implementation does exactly that, so I will explain only what link [[f2() ]]does, and also note that f4() returns a simple integer value without any calculations. 
+Let me illustrate this using an example. First let us introduce a simple class on Listing [[integrationTestClass definition]]. Most functions have descriptive names and their implementation does exactly that, so I will explain only what \code{f4()} does, and also note that \code{f4()} returns a simple integer value without any calculations. 
 #+CAPTION: Definition of the class used in integration tests
+#+LABEL: integrationTestClass definition
 #+BEGIN_listing
 \inputminted[firstline=3,lastline=16]{c++}{test/integrationTestClass.h}
 
 #+END_listing
 
-As you will observe on [[Listing 3]], there are 3 different scenarios for link [[f2()]], and Sanitizer Coverage will insert guards on entry point of each of them. The rest of the functions will simply have guards inserted in the beginning.
+As you will observe on Listing integrationTestClass implementation]], there are 3 different scenarios for \code{f4()}, and Sanitizer Coverage will insert guards on entry point of each of them. The rest of the functions will simply have guards inserted in the beginning.
 
 #+CAPTION: Implementation of \code{IntegrationTestClass::f2()} provided in \code{test/integrationTestClass.cc}, with inserted guards highlighted _(TODO)_
+#+LABEL: integrationTestClass implementation
 #+BEGIN_listing c++
 \inputminted[firstline=12,lastline=22]{c++}{test/integrationTestClass.cc}
 #+END_listing
@@ -222,11 +222,12 @@ Sanitizer Coverage library offers numerous ways to observe the control flow of t
 Let us get back to our test class and think about _(TODO talk about expectations)_
 
 #+CAPTION: output of \code{make integration-test-run}
+#+LABEL: integration test output
 #+BEGIN_listing
-\inputminted{text}{integration-test-results.txt}
+\inputminted[fontsize=\small,breaklines]{text}{integration-test-results.txt}
 #+END_listing
 
-As you see, the program manages to find .
+As you see, the program manages to find . _TODO_ Listing [[integration test output]]
 
 You will observe that tweaking the number of maximum sequence length will increase the number of covered blocks per unit test (and have larger sequences of function calls) while significantly decreasing the total number of unit tests, until it collapses to very few, maybe even one. It is not reasonable to test the entire logic in a single test, and also not clear _(when to stop growing)_, and it might also vary from the complexity of the unit. However, it will never replace _..._, as observed when tweaking the number from 6 to 7 for IntegrationTestClass.
 Right now, it is recommended to start with smaller number of function calls. It is hard to determine the threshold after which having a larger coverage per unit test stops being important. If we restrict the program to only save the function call sequence if it covers a new block, the number of unit tests will _(TODO? I think this is actually a reasonable approach, and should be the default and I could say that other alternatives could be found, at the same time, I don't think I have time to implement, test and document even such a small feature, since I did added other ones recently)._ 
@@ -260,32 +261,35 @@ Clang++ is used for all compilation commands
 Adds \code{include} and \code{include/lib} (containing the test library) directories to include path. 
 *** Targets
 **** Object files for classes
-Located in \code{src} directory, ending with \code{.cpp} file extension. [[Listing _TODO_]] shows 
+Located in \code{src} directory, ending with \code{.cpp} file extension. _Listing TODO_ shows 
 **** Program test target class
 **** Object files for tests
 **** Integration test target class
 *** Compilation commands
-**** \code{make} default and \{make run}
+**** main and default command
 #+CAPTION: TODO in \code{Makefile}
+#+LABEL: Makefile main
 #+BEGIN_listing
 \inputminted[firsline=47,lastline=63]{bash}{Makefile}
 #+END_listing
-\{make run} runs \code{bin/main}, which is compiled by default with all necessary parts. These include:
+\{make run} runs \code{bin/main}, which is compiled by default when running \code{make}, with all necessary parts. These include: _TODO_ Listing [[Makefile main]]
 ***** Object files from the \code{src} directory
 ***** Program Test target class 
 ***** Compiler flag for _..._
 **** test
 #+CAPTION: TODO in \code{Makefile}
+#+LABEL: Makefile test
 #+BEGIN_listing
 \inputminted[firstline=70,lastline=95]{bash}{Makefile}
 #+END_listing
-_(TODO)_ runs \code{bin/test}
+_(TODO)_ runs \code{bin/test} _TODO_ Listing [[Makefile test]]
 **** integration-test-run
 #+CAPTION: TODO \code{Makefile}
+#+LABEL: Makefile integration-test
 #+BEGIN_listing
 \inputminted[firstline=97,lastline=118]{bash}{Makefile}
 #+END_listing
-_TODO_ runs \code{bin/integration-test}
+_TODO_ runs \code{bin/integration-test} _TODO_ [[Makefile integration-test]]
 **** docs
 _TODO_
 **** clean
@@ -294,16 +298,18 @@ Empties the output directories.
 The project is thoroughly tested using the catch2 framework. Tests are represented with Behavior-driven Given-When-Then style, and described scenarios carefully follow documentation. This library was chosen for its minimalistic setup and ability to describe the test cases with full sentences. 
 
 *** Catch2 library
-Catch is a multi-paradigm test framework for C++, distributed as a single header file. Though that does not mean that it needs to be compiled into every translation unit.  Since it needs to be defined just once and used for any test case, it is possible and more efficient to compile it to an object file which is later included in tests, as displayed on [[listing _(TODO and other)]]. 
+Catch is a multi-paradigm test framework for C++, distributed as a single header file. Though that does not mean that it needs to be compiled into every translation unit.  Since it needs to be defined just once and used for any test case, it is possible and more efficient to compile it to an object file which is later included in tests, as displayed on _listing (TODO and other)_
 
 #+CAPTION: contents of \code{test/catch2-main.cpp}
+#+LABEL: catch main
 #+BEGIN_listing
 \inputminted{c++}{test/catch2-main.cpp}
 #+END_listing
 
-Unit tests follow the convention by having the corresponding class name followed by "-test" suffix, and their compilation recipe is shown in [[listing _(TODO)]]_. The exception to this is the integration test, which was discussed in the section _(TODO [Example])_. It serves as a good demonstration for showing how the library works, before going into the details about each unit. _TODO :(_
+Unit tests follow the convention by having the corresponding class name followed by "-test" suffix, and their compilation recipe is shown in listing [[catch main]]. The exception to this is the integration test, which was discussed in the section _(TODO [Example])_. It serves as a good demonstration for showing how the library works, before going into the details about each unit. _TODO :(_
 
 #+CAPTION: including compiled \code{catch2-main.cpp} in tests
+#+LABEL: _TODO_ and also mention
 #+BEGIN_listing
 \inputminted[firstline=74,lastline=90]{bash}{Makefile}
 #+END_listing
