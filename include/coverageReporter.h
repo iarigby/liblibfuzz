@@ -25,9 +25,9 @@ public:
   /**
    * \param pc will be added to the current set of collected pcs
    */
-  void addPCForCombination(const std::string &pc);
+  void addPCForSequence(const std::string &pc);
   /**
-   * saves current permutation and associated coverage and empties both.
+   * saves current sequence and associated coverage and empties both.
    * if exact same coverage has been found with same or shorter sequence,
    * the coverageSequences won't be updated, if longer one, the sequence for
    * coverage will be replaced.

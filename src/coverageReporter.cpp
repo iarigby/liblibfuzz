@@ -6,7 +6,7 @@ void CoverageReporter::startCoverage(
   currentSequence = functionSequence;
 }
 
-void CoverageReporter::addPCForCombination(const std::string &pc) {
+void CoverageReporter::addPCForSequence(const std::string &pc) {
   currentPC.insert(pc);
 }
 
@@ -92,7 +92,7 @@ bool CoverageReporter::newPcWasFound() {
 
 void CoverageReporter::writeResults(std::ostream &outstream) {
   for (const auto &coverage : coverageSequences) {
-    outstream << "combination: ";
+    outstream << "sequence: ";
     for (const auto &func : coverage.second) {
       outstream << func << " ";
     }

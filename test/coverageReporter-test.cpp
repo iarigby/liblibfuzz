@@ -2,22 +2,22 @@
 #include "catch.hpp"
 
 struct TestData {
-  std::vector<std::string> shortCombination{"f1"};
-  std::vector<std::string> combination1{"f1", "f2"};
-  std::vector<std::string> combination2{"f2", "f3"};
-  std::vector<std::string> longCombination{"f1", "f2", "f3"};
+  std::vector<std::string> shortSequence{"f1"};
+  std::vector<std::string> sequence1{"f1", "f2"};
+  std::vector<std::string> sequence2{"f2", "f3"};
+  std::vector<std::string> longSequence{"f1", "f2", "f3"};
 };
 
 using pc_set = std::set<std::string>;
-SCENARIO("coverage reporting", "[coveragereporter]") {
+SCENARIO("expected behavior of coverageReporter", "[coveragereporter]") {
   TestData testData;
   CoverageReporter cr;
   const pc_set smallCoverage = {"pc1"};
   const pc_set largeCoverage = {"pc1", "pc2"};
   GIVEN("coverage reporter with no coverage") {
-    cr.startCoverage(testData.combination1);
+    cr.startCoverage(testData.sequence1);
     WHEN("flush is called") {
-      cr.addPCForCombination("pc1");
+      cr.addPCForSequence("pc1");
       REQUIRE(cr.currentPC == smallCoverage);
       cr.flush();
       THEN("currentPC should be inserted to coverage and cleared") {
@@ -29,16 +29,16 @@ SCENARIO("coverage reporting", "[coveragereporter]") {
   }
   
   GIVEN("new coverage") {
-    cr.startCoverage(testData.combination1);
+    cr.startCoverage(testData.sequence1);
     WHEN("exists coverage that is a subset of new reporting") {
-      cr.addPCForCombination("pc1");
+      cr.addPCForSequence("pc1");
       cr.flush();
-      cr.startCoverage(testData.shortCombination);
-      cr.addPCForCombination("pc2");
+      cr.startCoverage(testData.shortSequence);
+      cr.addPCForSequence("pc2");
       cr.flush();
-      cr.startCoverage(testData.combination2);
-      cr.addPCForCombination("pc1");
-      cr.addPCForCombination("pc2");
+      cr.startCoverage(testData.sequence2);
+      cr.addPCForSequence("pc1");
+      cr.addPCForSequence("pc2");
       REQUIRE(cr.currentPC == largeCoverage);
       cr.flush();
       THEN("all of them should be removed") {
@@ -49,11 +49,11 @@ SCENARIO("coverage reporting", "[coveragereporter]") {
     }
 
     WHEN("new coverage is not contained in one of the sets") {
-      cr.addPCForCombination("pc1");
-      cr.addPCForCombination("pc2");
+      cr.addPCForSequence("pc1");
+      cr.addPCForSequence("pc2");
       cr.flush();
-      cr.startCoverage(testData.combination2);
-      cr.addPCForCombination("pc3");
+      cr.startCoverage(testData.sequence2);
+      cr.addPCForSequence("pc3");
       cr.flush();
       THEN("new coverage should be inserted") {
         std::set<pc_set> expectedCoverage{{"pc3"}, largeCoverage};
@@ -61,11 +61,11 @@ SCENARIO("coverage reporting", "[coveragereporter]") {
       }
     }
     WHEN("new coverage is already contained in one of the sets") {
-      cr.addPCForCombination("pc1");
-      cr.addPCForCombination("pc2");
+      cr.addPCForSequence("pc1");
+      cr.addPCForSequence("pc2");
       cr.flush();
-      cr.startCoverage(testData.combination2);
-      cr.addPCForCombination("pc2");
+      cr.startCoverage(testData.sequence2);
+      cr.addPCForSequence("pc2");
       cr.flush();
       THEN("new coverage should not be inserted") {
         std::set<pc_set> expectedCoverage{largeCoverage};
@@ -75,58 +75,58 @@ SCENARIO("coverage reporting", "[coveragereporter]") {
   }
 }
 
-SCENARIO("new combination already exists in the set") {
+SCENARIO("new sequence already exists in the set") {
   TestData testData;
   CoverageReporter cr;
-  cr.startCoverage(testData.combination1);
+  cr.startCoverage(testData.sequence1);
   pc_set coverage = {"pc1", "pc2"};
-  cr.addPCForCombination("pc1");
-  cr.addPCForCombination("pc2");
+  cr.addPCForSequence("pc1");
+  cr.addPCForSequence("pc2");
   cr.flush();
   auto sequence = cr.coverageSequences.find(coverage)->second;
-  REQUIRE(sequence == testData.combination1);
+  REQUIRE(sequence == testData.sequence1);
   GIVEN("new coverage with sequence of same length") {
-    cr.startCoverage(testData.combination2);
-    cr.addPCForCombination("pc1");
-    cr.addPCForCombination("pc2");
+    cr.startCoverage(testData.sequence2);
+    cr.addPCForSequence("pc1");
+    cr.addPCForSequence("pc2");
     cr.flush();
     THEN("existing sequence for coverage should not be replaced") {
       auto sequence = cr.coverageSequences.find(coverage)->second;
-      REQUIRE(sequence == testData.combination1);
+      REQUIRE(sequence == testData.sequence1);
     }
   }
 
   GIVEN("new coverage with longer sequence") {
-    cr.startCoverage(testData.longCombination);
-    cr.addPCForCombination("pc1");
-    cr.addPCForCombination("pc2");
+    cr.startCoverage(testData.longSequence);
+    cr.addPCForSequence("pc1");
+    cr.addPCForSequence("pc2");
     cr.flush();
     THEN("existing sequence for coverage should not be replaced") {
       auto sequence = cr.coverageSequences.find(coverage)->second;
-      REQUIRE(sequence == testData.combination1);
+      REQUIRE(sequence == testData.sequence1);
     }
   }
 
   GIVEN("new coverage with shorter sequence") {
-    cr.startCoverage(testData.shortCombination);
-    cr.addPCForCombination("pc1");
-    cr.addPCForCombination("pc2");
+    cr.startCoverage(testData.shortSequence);
+    cr.addPCForSequence("pc1");
+    cr.addPCForSequence("pc2");
     cr.flush();
     THEN("existing sequence for coverage should be updated with new one") {
       auto sequence = cr.coverageSequences.find(coverage)->second;
-      REQUIRE(sequence == testData.shortCombination);
+      REQUIRE(sequence == testData.shortSequence);
     }
   }
 }
 
-SCENARIO("user forgot to set current combination", "[coveragereporter]") {
+SCENARIO("user forgot to set current sequence", "[coveragereporter]") {
   CoverageReporter cr;
-  std::vector<std::string> combination{"f1", "f2"};
-  cr.startCoverage(combination);
-  cr.addPCForCombination("pc1");
+  std::vector<std::string> sequence{"f1", "f2"};
+  cr.startCoverage(sequence);
+  cr.addPCForSequence("pc1");
   cr.flush();
-  cr.addPCForCombination("pc2");
-  GIVEN("coverage reporter without current combination") {
+  cr.addPCForSequence("pc2");
+  GIVEN("coverage reporter without current sequence") {
     THEN("flushing would cause an exception") { REQUIRE_THROWS(cr.flush()); }
   }
 }

@@ -26,7 +26,7 @@ extern "C" void __sanitizer_cov_trace_pc_guard(uint32_t *guard) {
   char PcDescr[1024];
   __sanitizer_symbolize_pc(PC, "%F %L", PcDescr, sizeof(PcDescr));
   if (coverageReporter.recordingCoverage) {
-    coverageReporter.addPCForCombination(std::string(PcDescr));
+    coverageReporter.addPCForSequence(std::string(PcDescr));
     if (outputMessages)
       printf("adding to the list: ");
   }
