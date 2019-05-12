@@ -21,6 +21,7 @@
 #+LATEX_HEADER: \city{Budapest}
 #+LATEX_HEADER: \logo{elte_cimer_szines}
 #+LATEX_HEADER: \documentlang{english}
+#+LATEX_HEADER: \newcommand*{\code}{\lstinline[keywordstyle=\color{violet}, basicstyle=\color{violet}]}
 
 \setcounter{page}{1}
 #+TOC: headlines 0
@@ -156,6 +157,8 @@ The user is adviced to only change the contents of \lstinline{main()} function, 
 \inputminted[firstline=10,lastline=15]{c++}{src/main.cc}
 #+END_listing
 
+**** Choosing the number of maximum combinations
+Feel free to tweak this number to suit your library's needs. If the functions are relatively small but there is a greater number of them, it is more reasonable to settle for numbers lower than 5. In some cases large size of functions requires a very specific state of the class which can only be achieved by more function calls. Such cases will better be resolved by mutation-based fuzzing.
 **** Getting the output
 After finishing, you can ask the coverageReporter to show results by simply printing it or writing to a file
 _(functions here)_

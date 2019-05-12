@@ -54,7 +54,7 @@
 
 % Fejléc és lábléc távolsága a tartalomtól
 \topskip = 15pt		% default: 10pt
-\footskip = 5pt	% default: 30pt
+\footskip = 10pt	% default: 30pt
 
 % Lábléc törlése
 \fancyfoot{}
