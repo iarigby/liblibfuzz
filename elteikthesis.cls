@@ -22,7 +22,7 @@
 %% SOFTWARE.
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{elteikthesis}[2018/06/06 ELTE IK szakdolgozat és diplomamunka sablon]
+\ProvidesClass{elteikthesis}[2018/06/06]
 
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{report}}
 \ProcessOptions \relax
