@@ -107,16 +107,17 @@ To acheive the intended results, I created a program that uses LLVM's _sanitizer
 
 The _sanitizer coverage_ library is able to communicate its results using a single global object. _(more about this)_ 
 ** Results
-Although the original intention was to discover new test cases, there were some surprising outcomes that could not have been anticipated. For example, the program is very good in minimizing the total number of test cases. For the sample stack class, it discovered that in . This outcome would be crucial for reducing the size of test suites, which leads to reduced runtime and maintenance cost
+Although the original intention was to discover new test cases, there were some surprising outcomes that could not have been anticipated. For example, the program is very good in minimizing the total number of test cases. For the sample stack class, it discovered that in _...)_. This outcome would be crucial for reducing the size of test suites, which leads to reduced runtime and maintenance cost
 * User Documentation
 This software aids in finding test cases for a single class interface by trying out different permutations of member function calls and discovering ones that give the most coverage. In this chapter, I provide full information about its usage for users of the program. I will be using a simple stack implementation _(TODO source and say that I modified it)_ as an example. 
 ** intended audience
-this software is intended for c++ developers who would like to increase their unit test coverage for an interface/class. Therefore, at least basic knowledge of c++ is assumed, and the user will need to implement and pass pointers for several functions.
+this software is intended for c++ developers who would like to discover meaningful function call sequences that provide good coverage for their interface/class. Therefore, at least basic knowledge of c++ is assumed, and the user will need to implement and pass pointers for several functions.
 
- and test target class should satisfy following:
-**** The program is intended to test a single class
-Current version can not analyze multiple classes or ones with a lot of complex dependencies. Although the feature might be able to work with multiple classes and different member functions, only single one is supported at this stage.
-**** You need to be able to be compile said class separately
+*** Requirements
+Some restrictions apply with regards to the test target class. It should satisfy following for the program to work properly:
+**** The program is intended to test a single unit
+Current version can not analyze any of the dependencies of the class in some cases. Although the feature might be able to work with multiple classes and different member functions, only single one is supported at this stage.
+**** You need to be able to be compiled separately
 In order to analyze , the object file of the test target needs to be compiled with special flags separately from the rest of the project. This means the implementation of the class can not be spread in multiple files, and those files should not contain anything else
 ** System Requirements
 Following dependencies need to be installed in order to 
