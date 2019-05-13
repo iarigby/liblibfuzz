@@ -9,20 +9,17 @@
 \item 
 void \hyperlink{classCoverageReporter_a560eff3e34be25d1a49c37ffd99e69c1}{start\+Coverage} (std\+::vector$<$ std\+::string $>$ function\+Sequence)
 \item 
-void \hyperlink{classCoverageReporter_a477866b25aa53c3ebbc60de7b7863943}{add\+P\+C\+For\+Combination} (const std\+::string \&pc)
+void \hyperlink{classCoverageReporter_a2ec8a765cc78851be632d08383e5dcac}{add\+P\+C\+For\+Sequence} (const std\+::string \&pc)
 \item 
 void \hyperlink{classCoverageReporter_a046428d09487a4a3d3420caf77f436df}{flush} ()
 \item 
 std\+::set$<$ pc\+\_\+set $>$ \hyperlink{classCoverageReporter_af515596c46758142ea7aa7dbbab47b7e}{coverage} ()
 \item 
-\mbox{\Hypertarget{classCoverageReporter_a4c9c89e13cc4bc7f5cb26441c1e7e723}\label{classCoverageReporter_a4c9c89e13cc4bc7f5cb26441c1e7e723}} 
-void {\bfseries print\+Results} ()
+void \hyperlink{classCoverageReporter_a4c9c89e13cc4bc7f5cb26441c1e7e723}{print\+Results} ()
 \item 
-\mbox{\Hypertarget{classCoverageReporter_aadef25c261ffd89e68fe9e59da591247}\label{classCoverageReporter_aadef25c261ffd89e68fe9e59da591247}} 
-void {\bfseries print\+Results\+To\+File} ()
+void \hyperlink{classCoverageReporter_aadef25c261ffd89e68fe9e59da591247}{print\+Results\+To\+File} ()
 \item 
-\mbox{\Hypertarget{classCoverageReporter_aa195d96544ab9b29a6a6f7fbcb11070a}\label{classCoverageReporter_aa195d96544ab9b29a6a6f7fbcb11070a}} 
-void {\bfseries print\+Results\+To\+File} (std\+::string file\+Name)
+void \hyperlink{classCoverageReporter_aa195d96544ab9b29a6a6f7fbcb11070a}{print\+Results\+To\+File} (std\+::string file\+Name)
 \end{DoxyCompactItemize}
 \subsection*{Public Attributes}
 \begin{DoxyCompactItemize}
@@ -31,8 +28,9 @@ pc\+\_\+set \hyperlink{classCoverageReporter_a731717e0ad503323a0b541b8c1497080}{
 \item 
 std\+::map$<$ pc\+\_\+set, std\+::vector$<$ std\+::string $>$ $>$ \hyperlink{classCoverageReporter_a395e6d59cc394e670fff1e8a575fc329}{coverage\+Sequences}
 \item 
-\mbox{\Hypertarget{classCoverageReporter_a180661161246c7f350d19ad4dfd82680}\label{classCoverageReporter_a180661161246c7f350d19ad4dfd82680}} 
-pc\+\_\+set {\bfseries covered\+Blocks}
+pc\+\_\+set \hyperlink{classCoverageReporter_a180661161246c7f350d19ad4dfd82680}{covered\+Blocks}
+\item 
+bool \hyperlink{classCoverageReporter_a045c6e4451868fd74701c659f85e25c4}{recording\+Coverage}
 \end{DoxyCompactItemize}
 
 
@@ -40,11 +38,11 @@ pc\+\_\+set {\bfseries covered\+Blocks}
 Stores reported coverage 
 
 \subsection{Member Function Documentation}
-\mbox{\Hypertarget{classCoverageReporter_a477866b25aa53c3ebbc60de7b7863943}\label{classCoverageReporter_a477866b25aa53c3ebbc60de7b7863943}} 
-\index{Coverage\+Reporter@{Coverage\+Reporter}!add\+P\+C\+For\+Combination@{add\+P\+C\+For\+Combination}}
-\index{add\+P\+C\+For\+Combination@{add\+P\+C\+For\+Combination}!Coverage\+Reporter@{Coverage\+Reporter}}
-\subsubsection{\texorpdfstring{add\+P\+C\+For\+Combination()}{addPCForCombination()}}
-{\footnotesize\ttfamily void Coverage\+Reporter\+::add\+P\+C\+For\+Combination (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{pc }\end{DoxyParamCaption})}
+\mbox{\Hypertarget{classCoverageReporter_a2ec8a765cc78851be632d08383e5dcac}\label{classCoverageReporter_a2ec8a765cc78851be632d08383e5dcac}} 
+\index{Coverage\+Reporter@{Coverage\+Reporter}!add\+P\+C\+For\+Sequence@{add\+P\+C\+For\+Sequence}}
+\index{add\+P\+C\+For\+Sequence@{add\+P\+C\+For\+Sequence}!Coverage\+Reporter@{Coverage\+Reporter}}
+\subsubsection{\texorpdfstring{add\+P\+C\+For\+Sequence()}{addPCForSequence()}}
+{\footnotesize\ttfamily void Coverage\+Reporter\+::add\+P\+C\+For\+Sequence (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{pc }\end{DoxyParamCaption})}
 
 
 \begin{DoxyParams}{Parameters}
@@ -66,7 +64,30 @@ keys of coverage\+Sequences, set of sets
 \subsubsection{\texorpdfstring{flush()}{flush()}}
 {\footnotesize\ttfamily void Coverage\+Reporter\+::flush (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
 
-saves current permutation and associated coverage and empties both. if exact same coverage has been found with same or shorter sequence, the coverage\+Sequences won\textquotesingle{}t be updated, if longer one, the sequence for coverage will be replaced. otherwise, the function will check if new coverage contains any of the existing ones as a subset, in which case the old coverage will be removed and replaced with the larger set. \mbox{\Hypertarget{classCoverageReporter_a560eff3e34be25d1a49c37ffd99e69c1}\label{classCoverageReporter_a560eff3e34be25d1a49c37ffd99e69c1}} 
+saves current sequence and associated coverage and resets data. if exact same coverage has been found with same or shorter sequence, the coverage\+Sequences won\textquotesingle{}t be updated, if longer one, the sequence for coverage will be replaced. otherwise, the function will check if new coverage contains any of the existing ones as a subset, in which case the old coverage will be removed and replaced with the larger set. \mbox{\Hypertarget{classCoverageReporter_a4c9c89e13cc4bc7f5cb26441c1e7e723}\label{classCoverageReporter_a4c9c89e13cc4bc7f5cb26441c1e7e723}} 
+\index{Coverage\+Reporter@{Coverage\+Reporter}!print\+Results@{print\+Results}}
+\index{print\+Results@{print\+Results}!Coverage\+Reporter@{Coverage\+Reporter}}
+\subsubsection{\texorpdfstring{print\+Results()}{printResults()}}
+{\footnotesize\ttfamily void Coverage\+Reporter\+::print\+Results (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+print results to std\+::cout \mbox{\Hypertarget{classCoverageReporter_aadef25c261ffd89e68fe9e59da591247}\label{classCoverageReporter_aadef25c261ffd89e68fe9e59da591247}} 
+\index{Coverage\+Reporter@{Coverage\+Reporter}!print\+Results\+To\+File@{print\+Results\+To\+File}}
+\index{print\+Results\+To\+File@{print\+Results\+To\+File}!Coverage\+Reporter@{Coverage\+Reporter}}
+\subsubsection{\texorpdfstring{print\+Results\+To\+File()}{printResultsToFile()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily void Coverage\+Reporter\+::print\+Results\+To\+File (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+print results to \char`\"{}results.\+txt\char`\"{} of working directory \mbox{\Hypertarget{classCoverageReporter_aa195d96544ab9b29a6a6f7fbcb11070a}\label{classCoverageReporter_aa195d96544ab9b29a6a6f7fbcb11070a}} 
+\index{Coverage\+Reporter@{Coverage\+Reporter}!print\+Results\+To\+File@{print\+Results\+To\+File}}
+\index{print\+Results\+To\+File@{print\+Results\+To\+File}!Coverage\+Reporter@{Coverage\+Reporter}}
+\subsubsection{\texorpdfstring{print\+Results\+To\+File()}{printResultsToFile()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily void Coverage\+Reporter\+::print\+Results\+To\+File (\begin{DoxyParamCaption}\item[{std\+::string}]{file\+Name }\end{DoxyParamCaption})}
+
+Print results to file\+Name 
+\begin{DoxyParams}{Parameters}
+{\em file\+Name} & path of the file \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classCoverageReporter_a560eff3e34be25d1a49c37ffd99e69c1}\label{classCoverageReporter_a560eff3e34be25d1a49c37ffd99e69c1}} 
 \index{Coverage\+Reporter@{Coverage\+Reporter}!start\+Coverage@{start\+Coverage}}
 \index{start\+Coverage@{start\+Coverage}!Coverage\+Reporter@{Coverage\+Reporter}}
 \subsubsection{\texorpdfstring{start\+Coverage()}{startCoverage()}}
@@ -86,10 +107,22 @@ saves passed sequence as current one
 \subsubsection{\texorpdfstring{coverage\+Sequences}{coverageSequences}}
 {\footnotesize\ttfamily std\+::map$<$pc\+\_\+set, std\+::vector$<$std\+::string$>$ $>$ Coverage\+Reporter\+::coverage\+Sequences}
 
-stores the shortest recorded function sequence for given coverage \mbox{\Hypertarget{classCoverageReporter_a731717e0ad503323a0b541b8c1497080}\label{classCoverageReporter_a731717e0ad503323a0b541b8c1497080}} 
+stores the shortest recorded function sequence for given coverage \mbox{\Hypertarget{classCoverageReporter_a180661161246c7f350d19ad4dfd82680}\label{classCoverageReporter_a180661161246c7f350d19ad4dfd82680}} 
+\index{Coverage\+Reporter@{Coverage\+Reporter}!covered\+Blocks@{covered\+Blocks}}
+\index{covered\+Blocks@{covered\+Blocks}!Coverage\+Reporter@{Coverage\+Reporter}}
+\subsubsection{\texorpdfstring{covered\+Blocks}{coveredBlocks}}
+{\footnotesize\ttfamily pc\+\_\+set Coverage\+Reporter\+::covered\+Blocks}
+
+PC blocks that have been discovered across all sequences \mbox{\Hypertarget{classCoverageReporter_a731717e0ad503323a0b541b8c1497080}\label{classCoverageReporter_a731717e0ad503323a0b541b8c1497080}} 
 \index{Coverage\+Reporter@{Coverage\+Reporter}!current\+PC@{current\+PC}}
 \index{current\+PC@{current\+PC}!Coverage\+Reporter@{Coverage\+Reporter}}
 \subsubsection{\texorpdfstring{current\+PC}{currentPC}}
 {\footnotesize\ttfamily pc\+\_\+set Coverage\+Reporter\+::current\+PC}
 
-set of all coverage points collected for current permutation 
+set of all coverage points collected for current permutation \mbox{\Hypertarget{classCoverageReporter_a045c6e4451868fd74701c659f85e25c4}\label{classCoverageReporter_a045c6e4451868fd74701c659f85e25c4}} 
+\index{Coverage\+Reporter@{Coverage\+Reporter}!recording\+Coverage@{recording\+Coverage}}
+\index{recording\+Coverage@{recording\+Coverage}!Coverage\+Reporter@{Coverage\+Reporter}}
+\subsubsection{\texorpdfstring{recording\+Coverage}{recordingCoverage}}
+{\footnotesize\ttfamily bool Coverage\+Reporter\+::recording\+Coverage}
+
+Flag for Sanitizer\+Coverage callbacks 

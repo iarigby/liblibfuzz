@@ -10,8 +10,7 @@
 template <typename T> using InstanceFunctionPointer = T (*)(int);
 
 /**
- * This is the class that connects all others and achieves the main task of
- * TODO sample code would be the main.cpp file
+ * This is the class that connects all others and executes the main task of the project
  * Note:
  * Although functionPointerMap is capable of forwarding passed arguments and
  * returning the result, currently it is discarded. I could not find a
@@ -71,7 +70,6 @@ private:
    *    1. Member functions
    *    2. void functions taking the class instance as an argument
    */
-  // TODO describe in more detail
   FunctionPointerMap<T> functionPointerMap;
   /**
    * Created using the keys of functionPointerMap and combinationSize passed in
@@ -79,9 +77,6 @@ private:
    */
   PermutationGenerator<std::string> permutationGenerator;
 };
-// template <typename T> using InstanceFunctionPointer = T (*)(int);
-
-// TODO
 
 template <typename T>
 CombinationTester<T>::CombinationTester(int permutationSize,
@@ -112,9 +107,7 @@ template <typename T> void CombinationTester<T>::run() {
      * changed later, this guarantee will no longer hold so having the entire
      * loop wrapped in try catch will ensure that testing stops on first
      * exception
-     */
-    // TODO go over this explanation again
-    try {
+     */try {
       for (auto const &functionName : permutation) {
         functionPointerMap.template searchAndCall<void>(instance, functionName);
       }

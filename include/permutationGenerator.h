@@ -18,8 +18,7 @@
  *
  *  It is easier to simply to treat the problem
  * space as a recursive B+ tree with children of each node being all the
- * elements of the initial set.
-//TODO sample code for usage
+ * elements of the initial set
  */
 template <typename T> class PermutationGenerator {
 public:
@@ -33,8 +32,6 @@ public:
    * The permutations are done on integer indices and then used to retreive
    * elements from the initialSet. Explained in more detail in member
    * permutations.
-  // TODO insert link to permuatations?
-  // TODO should I check for uniqueness in the initial set?
    */
   PermutationGenerator(std::vector<T> initialSet, int maxLength);
   PermutationGenerator();
@@ -42,7 +39,6 @@ public:
    * \return the next permutation
    * The permutation selection order follows inorder traversal of the tree. It
    * will start out with a first element of the set
-// TODO: include the image
    */
   std::vector<T> nextPermutation();
   /**

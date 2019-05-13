@@ -27,7 +27,7 @@ public:
    */
   void addPCForSequence(const std::string &pc);
   /**
-   * saves current sequence and associated coverage and empties both.
+   * saves current sequence and associated coverage and resets data.
    * if exact same coverage has been found with same or shorter sequence,
    * the coverageSequences won't be updated, if longer one, the sequence for
    * coverage will be replaced.
@@ -49,10 +49,26 @@ public:
    * stores the shortest recorded function sequence for given coverage
    */
   std::map<pc_set, std::vector<std::string>> coverageSequences;
+  /**
+   * print results to std::cout
+   */
   void printResults();
+  /**
+   * print results to "results.txt" of working directory
+   */
   void printResultsToFile();
+  /** 
+   * Print results to fileName
+   * \param fileName path of the file
+   */
   void printResultsToFile(std::string fileName);
+  /**
+   * PC blocks that have been discovered across all sequences
+   */
   pc_set coveredBlocks;
+  /**
+   * Flag for SanitizerCoverage callbacks
+   */
   bool recordingCoverage;
 private:
   /**
@@ -67,6 +83,9 @@ private:
    * prints the coverageSequence member
    */
   void writeResults(std::ostream &outstream);
+  /**
+   * Check if new coverage was discovered during currentPC 
+   */
   bool newPcWasFound();
 };
 

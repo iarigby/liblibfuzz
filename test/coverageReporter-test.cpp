@@ -1,5 +1,5 @@
-#include "coverageReporter.h"
 #include "catch.hpp"
+#include "coverageReporter.h"
 
 struct TestData {
   std::vector<std::string> shortSequence{"f1"};
@@ -9,14 +9,14 @@ struct TestData {
 };
 
 using pc_set = std::set<std::string>;
-SCENARIO("expected behavior of coverageReporter", "[coveragereporter]") {
+SCENARIO("CoverageReporter has no coverage", "[coveragereporter]") {
   TestData testData;
   CoverageReporter cr;
   const pc_set smallCoverage = {"pc1"};
   const pc_set largeCoverage = {"pc1", "pc2"};
-  GIVEN("coverage reporter with no coverage") {
+  GIVEN("new coverage blocks") {
     cr.startCoverage(testData.sequence1);
-    WHEN("flush is called") {
+    WHEN("current sequence is flushed") {
       cr.addPCForSequence("pc1");
       REQUIRE(cr.currentPC == smallCoverage);
       cr.flush();
@@ -27,7 +27,13 @@ SCENARIO("expected behavior of coverageReporter", "[coveragereporter]") {
       }
     }
   }
-  
+}
+
+SCENARIO("CoverageReporter has existing coverage", "[coveragereporter]") {
+  TestData testData;
+  CoverageReporter cr;
+  const pc_set smallCoverage = {"pc1"};
+  const pc_set largeCoverage = {"pc1", "pc2"};
   GIVEN("new coverage") {
     cr.startCoverage(testData.sequence1);
     WHEN("exists coverage that is a subset of new reporting") {
@@ -44,7 +50,7 @@ SCENARIO("expected behavior of coverageReporter", "[coveragereporter]") {
       THEN("all of them should be removed") {
         std::set<pc_set> expectedCoverage{largeCoverage};
         REQUIRE(cr.coverage() == expectedCoverage);
-	REQUIRE(cr.coverageSequences.size() == 1);
+        REQUIRE(cr.coverageSequences.size() == 1);
       }
     }
 
@@ -75,7 +81,8 @@ SCENARIO("expected behavior of coverageReporter", "[coveragereporter]") {
   }
 }
 
-SCENARIO("new sequence already exists in the set", "[coveragereporter]") {
+
+SCENARIO("coverage for new sequence already exists", "[coveragereporter]") {
   TestData testData;
   CoverageReporter cr;
   cr.startCoverage(testData.sequence1);
@@ -85,8 +92,9 @@ SCENARIO("new sequence already exists in the set", "[coveragereporter]") {
   cr.flush();
   auto sequence = cr.coverageSequences.find(coverage)->second;
   REQUIRE(sequence == testData.sequence1);
-  GIVEN("new coverage with sequence of same length") {
-    cr.startCoverage(testData.sequence2);
+  
+  GIVEN("new coverage with longer sequence") {
+    cr.startCoverage(testData.longSequence);
     cr.addPCForSequence("pc1");
     cr.addPCForSequence("pc2");
     cr.flush();
@@ -95,9 +103,9 @@ SCENARIO("new sequence already exists in the set", "[coveragereporter]") {
       REQUIRE(sequence == testData.sequence1);
     }
   }
-
-  GIVEN("new coverage with longer sequence") {
-    cr.startCoverage(testData.longSequence);
+  
+  GIVEN("new coverage with sequence of same length") {
+    cr.startCoverage(testData.sequence2);
     cr.addPCForSequence("pc1");
     cr.addPCForSequence("pc2");
     cr.flush();
@@ -112,7 +120,7 @@ SCENARIO("new sequence already exists in the set", "[coveragereporter]") {
     cr.addPCForSequence("pc1");
     cr.addPCForSequence("pc2");
     cr.flush();
-    THEN("existing sequence for coverage should be updated with new one") {
+    THEN("existing sequence for coverage should be updated") {
       auto sequence = cr.coverageSequences.find(coverage)->second;
       REQUIRE(sequence == testData.shortSequence);
     }
@@ -125,10 +133,8 @@ SCENARIO("user forgot to set current sequence", "[coveragereporter]") {
   cr.startCoverage(sequence);
   cr.addPCForSequence("pc1");
   cr.flush();
-  cr.addPCForSequence("pc2");
   GIVEN("coverage reporter without current sequence") {
-    THEN("flushing would cause an exception") {
-      REQUIRE_THROWS(cr.flush());
-    }
+    cr.addPCForSequence("pc2");
+    THEN("flushing would cause an exception") { REQUIRE_THROWS(cr.flush()); }
   }
 }

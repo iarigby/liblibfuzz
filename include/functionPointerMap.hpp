@@ -33,8 +33,7 @@ public:
    * Originally, type_index is used to assert that T and Args conform to the
    * function signature.
    *  Currently this feature is turned off because of reasons
-   * specified in ...
-   * TODO: something about rvalue references
+   * specified in description of CombinationTester class
    * \param a reference to the instance which the function will be called on
    * \param functionName key used for looking up the function pointer in the map
    * \param T return type

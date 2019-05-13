@@ -83,7 +83,8 @@ CLOSED: [2019-05-13 h 14:40]
 **** DOING check Makefile inputminteds
 **** TODO fix page for refman
  added on [2019-05-08 sze 08:36]
-**** TODO listings include line numberings
+**** CANCELLED listings include line numberings
+CLOSED: [2019-05-13 h 16:33]
  added on [2019-05-08 sze 09:04]
 **** TODO myrefman compile error for doxygen package
  added on [2019-05-08 sze 08:35]
@@ -107,8 +108,8 @@ There are a number of tools available for fuzzing, including AFL and Radamsa. On
 *** SanitizerCoverage library
 LLVM has an interface for its built-in code coverage instrumentation[fn:sanitizer coverage docs]. The user is able to gather information about the covered regions of the program during runtime. There are several different levels of depth for coverage, and the library also offers rich ways to trace the data flow. This tool was crucial for the development of my program and in the developer's manual, I discuss the library in more detail.
 
-** _using fuzz testing for .._
-Although fuzz testing has been mostly defined to be for exploiting the vulnerabilities of the program, _we decided_ to apply its coverage based philosophy to explore the possible member function call sequences and pinpoint ones which might be most interesting for the developer.
+** Using fuzz testing for unit tests
+Although fuzz testing has been mostly defined to be for exploiting the vulnerabilities of the program, I tried to apply its coverage based philosophy to explore the possible member function call sequences and pinpoint ones which might be most interesting for the developer.
 This also required to change the overall approach with which fuzzing is used. 
 
 In [[Fuzzing]] Background on Fuzzing, I talked about the classical assumptions about the fuzz target. In our scenario, we have different expectations - since we are testing an entire unit and not a single API endpoint, some kind of control flow disruptions might be expected. For example, assertions are common in member functions. Therefore, the previous approach of exiting on first such failure should be modified to allow the program to gather information about all possible combinations that result in things like exceptions, so the user will be informed about them and decide what constitutes the normal behavior of their library and what is outside of specifications.
@@ -121,7 +122,7 @@ Although the original intention was to discover new test cases, there were some 
 * User Documentation
 This software aids in finding test cases for a single class interface by trying out different permutations of member function calls and discovering ones that give the most coverage. In this chapter, I provide full information about its usage for users of the program. I will be using a simple stack implementation as an example[fn:stack implementation]. 
 ** Intended audience
-This software is intended for c++ developers who would like to discover meaningful function call sequences that provide good coverage for their interface/class. Therefore, at least basic knowledge of c++ is assumed, and the user will need to implement and pass pointers for several functions.
+This software is intended for C++ developers who would like to discover meaningful function call sequences that provide good coverage for their interface/class. Therefore, at least basic knowledge of C++ is assumed, and the user will need to implement and pass pointers for several functions.
 
 *** Requirements
 Some restrictions apply with regards to the test target class. It should satisfy following for the program to work properly:
@@ -150,31 +151,42 @@ make integration-test-run
 After tests pass successfully, you can move on to next step and set up the project to test your class.  
 ** Instructions using an example
 After installation, and successful tests, you need to modify the contents of \code{src/main.cc} file and several lines in \code{Makefile}. I will demonstrate the instructions using an example.
-*** Sample stack  class
-Listing [[stack definition]] shows the definition for the class that the project tests by default. Full implementation can be found in corresponding \code{.cpp} file of the same directory. I will go through the example and explain how it can be adjusted for any other class.
 #+CAPTION: definition for the stack class in \code{examples/stack.h}
 #+LABEL:  stack definition
 #+BEGIN_listing
 \inputminted[firstline=6,lastline=24]{c++}{examples/stack.h}
 #+END_listing
+*** Sample stack  class
+Listing [[stack definition]] shows the definition for the class that the project tests by default. Full implementation can be found in corresponding \code{.cpp} file of the same directory. I will go through the example and explain how it can be adjusted for any other class.
 *** Structure of the main file
-The user is advised to only change the contents of \lstinline{main()} function, and replace the \lstinline{#include} directive. I will explain how to construct the \code{CombinationTester} class instance. More details about how classes used in the \code{main.cc} file work and way they are engineered can be found in the [[Developer Documentation]] Developer Documentation.
-**** 1. Include your header file and provide it's path 
-In the beginning of \code{Makefile}, set the \code{$(TEST_TARGET_FILE)} and \code{$(TEST_TARGET_INC)} variables to point to correct file and path, respectively. For example, the stack class located in \code{examples} directory of the project path would be set as shown on Listing [[makefile user variables]].
+The user is advised to only change the contents of \lstinline{main()} function, and replace the \lstinline{#include} directive. I will explain how to construct the \code{CombinationTester} class instance and all necessary dependencies. More details about how classes used in the \code{main.cc} file work and way they are engineered can be found in Developer documentation.
 #+CAPTION: defining user variables in \code{Makefile}
 #+LABEL: makefile user variables
 #+BEGIN_listing
 \inputminted[firstline=14,lastline=15]{bash}{Makefile}
 #+END_listing
-**** 2. 
 
-**** 3. Construct the 
+#+CAPTION: Contents of \code{src/main.cc}
+#+LABEL: main file
+#+BEGIN_listing
+\inputminted[firstline=28,lastline=52,breaklines]{c++}{src/main.cc}
+#+END_listing
 
-***** Choosing the number of maximum combinations
-Feel free to tweak this number to suit your library's needs. If the functions are relatively small but there is a greater number of them, it is more reasonable to settle for numbers lower than 5. In some cases large size of functions requires a very specific state of the class which can only be achieved by more function calls. Such cases will better be resolved by mutation-based fuzzing.
-**** Choose the output format
+Listing [[main file]] shows how the \code{main.cc} file should look like. You shoud replace all template arguments with your class instead of \code{stack<int>}.
+
+Follow these steps to set up the \code{main.cc} file:
+**** 1. Include your header file and provide it's path 
+In the beginning of \code{Makefile}, set the \code{$(TEST_TARGET_FILE)} and \code{$(TEST_TARGET_INC)} variables to point to correct file and path, respectively. For example, the stack class located in \code{examples} directory of the project path would be set as shown on Listing [[makefile user variables]].
+
+**** 2. Create a function that constructs an instance of your class
+This function will be called in the beginning of testing each function call sequence. \code{int sequenceLength} will be passed and you can use this value if it's applicable.  
+**** 3. Insert pointers to member functions
+Choose which functions you would like to use for testing. Feel free to omit ones that are not crucial to coverage, for example getters. For functions that require arguments, you need to pass pointers (or simply lambda functions) 
+**** 4. Construct the CombinationTester class
+You need to pass the objects that you created in steps 2 and 3. Feel free to tweak the maximum number of combinations to suit your library's needs. If the functions are relatively small but there is a greater number of them, it is more reasonable to settle for numbers lower than 5. In some cases large size of functions requires a very specific state of the class which can only be achieved by more function calls. Such cases will better be resolved by mutation-based fuzzing.
+**** 5. Choose the output format
 After finishing, you can ask the \code{coverageReporter} to show results by simply printing it or writing to a file
-_(functions here)_
+
 *** Compile and run
 If you followed the instructions in the previous section, you are ready to generate test cases for your class using \code{`make run`} command.
 **** Understanding the output
@@ -185,7 +197,7 @@ After the program is done running, it will display the results as you indicated 
 #+BEGIN_listing
 \inputminted{text}{results.txt}
 #+END_listing
-***** memory leaks
+**** memory leaks
 Since the program will be compiled using the \code{`-fsanitize=address`} compiler flag to include the library that is responsible for observing coverage. \code{AddressSanitizer} library detects memory issues that your unit might have. For example, if we were to remove the destructor from the \code{stack} implementation, we would get the message shown on Listing [[Memory leak]].
 #+CAPTION: Memory leak discovered when the destructor is missing
 #+LABEL: Memory leak
@@ -208,11 +220,11 @@ SUMMARY: AddressSanitizer: 10656 byte(s) leaked in 645 allocation(s).
 For more information about interpreting and fixing these messages visit documentation for AddressSanitizer[fn:addresssanitizer docs].
 ** Troubleshooting
 Following issues might arise during different parts of using the program.  
-*** Installation
+*** Problems during installation
 the tests are designed so that all of the underlying infrastructure will be checked. If you start having any problems:
 **** test if clang build works correctly
 If there were problems with the \code{make integration-test-run} command, it will be because \code{AddressSanitizer} is experiencing issues. 
-*** Running
+*** Problems during runtime
 **** Out of Memory error for AddressSanitizer
 This happens if the source code size is too large, resulting in a lot of guards and callbacks. Please refer to the requirements section. This error could be fixed by advanced tweaking of the \code{AdressSanitizer options}, but as for now is not supported in the project. 
 * Developer Documentation 
@@ -247,36 +259,35 @@ Let me illustrate this using an example. First let us introduce a simple class o
 
 As you will observe on Listing [[IntegrationTestClass implementation]], there are 3 different scenarios for \code{f4()}, each one being a simple \code{return} statement. \code{SanitizerCoverage} will insert guards on entry point of each of them. The rest of the functions will simply have guards inserted in the beginning. 
 
+\code{SanitizerCoverage} library offers three different levels for observing the control flow of the program. Instrumentation points can be an edge, basic blocks, and function entry points. For this project, using the default edge one was more appropriate, since the target of fuzzing will be small and we can afford detailed coverage. There are different ways offered for tracing data flow, for example callbacks for comparison operations and switches. These could aid in refining the program for more complex applications later.
+
 #+CAPTION: Implementation of \code{IntegrationTestClass::f2()} provided in \code{test/integrationTestClass.cc}, with inserted guards highlighted _(TODO)_
 #+LABEL: IntegrationTestClass implementation
 #+BEGIN_listing c++
-\inputminted[firstline=12,lastline=22]{c++}{test/integrationTestClass.cc}
+\inputminted[firstline=12,lastline=21]{c++}{test/integrationTestClass.cc}
 #+END_listing
-
-\code{SanitizerCoverage} library offers three different levels for observing the control flow of the program. Instrumentation points can be an edge, basic blocks, and function entry points. For this project, using the default edge one was more appropriate, since the target of fuzzing will be small and we can afford detailed coverage. There are different ways offered for tracing data flow, for example callbacks for comparison operations and switches. These could aid in refining the program for more complex applications later.
 
 In the next section, I will continue the \code{IntegrationTestClass} example. It serves as a good demonstration for showing how the program works, before going into the details about each unit.
 *** Example
-Let us get back to our test class and think about how we would accomplish to cover all three blocks of \code{f4()}. 
+Let us get back to our test class and think about how we would accomplish to cover all three blocks of \code{f4()}. The first two \code{return} statements are reached if \code{setToggle(true)} has been previously called, since the default value of \code{toggle} is false. Calling \code{f4()} without doing that first results in entering the third branch.
 
-#+CAPTION: output of \code{make integration-test-run} shows that the program covered all different cases for \code{IntegrationTestClass}
+#+CAPTION: snippet from output of \code{make integration-test-run} shows that the program covered all different cases for \code{IntegrationTestClass}
 #+LABEL: integration test output
 #+BEGIN_listing
-\inputminted[fontsize=\small,breaklines]{text}{integration-test-results.txt}
+\inputminted[lastline=17,fontsize=\small,breaklines]{text}{integration-test-results.txt}
 #+END_listing
 
-As you see, the program manages to find . _TODO_ Listing [[integration test output]]
+As you see, the program manages to find all of the scenarios that we dicssed, as shown on Listing [[integration test output]].
 
-_TODO_ this should be included in user docs I think
-You will observe that tweaking the number of maximum sequence length will increase the number of covered blocks per unit test (and have larger sequences of function calls) while significantly decreasing the total number of unit tests, until it collapses to very few, maybe even one. It is not reasonable to test the entire logic in a single test, and also not clear _when to stop growing_, and it might also vary from the complexity of the unit. However, it is always guaranteed that a longer sequence will never replace a shorter one if their coverage is the same, as observed when tweaking the number from 6 to 7 for \code{IntegrationTestClass}.
-Right now, it is recommended to start with smaller number of function calls. It is hard to determine the threshold after which having a larger coverage per unit test stops being important. Choosing the right combination of number of function calls with regards to number of covered blocks was not in scope of current project. 
+You will observe that tweaking the number of maximum sequence length will increase the number of covered blocks per unit test (and have larger sequences of function calls) while significantly decreasing the total number of unit tests, until it collapses to very few, maybe even one. It is not reasonable to test the entire logic in a single test, and also not clear when to stop replacing shorter sets of coverage with longer ones (with longer sequences). This also varies depending on the complexity of the unit. However, it is always guaranteed that a longer sequence will never replace a shorter one if their coverage is the same, as observed when tweaking the number from 6 to 7 for \code{IntegrationTestClass}.
+Right now, it is recommended to start with smaller number of function calls. It is an interesting task to determine the threshold after which having a larger coverage per unit test stops being important.
 
-*** documentation
+*** Documentation
 This was a higher-level overview of the core concepts used for the program. The rest of the documentation is provided in the last section of this chapter. All classes are thoroughly documented in header files, and some more detailed explanation and reasoning is sometimes provided in implementation files. For documentation generation, Doxygen library is used with javadoc style. 
 
 If you have \code{doxygen} installed, Run \code{doxygen Doxyfile} to generate documentation in html and latex source. Latex source needs additional compiling which can be done by running the command \code{make} in the \code{latex} directory. If you would like to change doxygen settings, you can copy the Doxyfile and run \code{doxygen Doxyfile}.
 *** code conventions
-Code is formatted according to LLVM coding standard[fn:coding standards]. Clang-format is used and can be added to commit hook, or alternatively use clang-format plugin for IDE of your choice. 
+Code is formatted according to LLVM coding standard[fn:coding standards]. Clang-format[fn:clang format] is used and can be added to commit hook, or alternatively use clang-format plugin for IDE of your choice. 
 ** Makefile and project layout
 As mentioned before, the project is compiled using GNU make, since it was more straightforward to express the different compilation commands and necessary flags for Sanitizer library. Each recipe is self documenting by using @echo to display its purpose when invoked. Since this is the most crucial information, it is highlighted in shell output. After that the compile command is displayed in less bright color, so that the user and developer are not distracted but can still observe which commands are being ran.
 *** Source directory contents 
@@ -292,55 +303,54 @@ Output for binary and object files
 Test directory. Tests are discussed in detail in [[Testing strategy]] Testing strategy, but compilation instructios will be provided here.
 *** Other Makefile variables
 **** $(SRCEXT)
-_...._ \code{.cc} is reserved for special file types, will be discussed later
-**** $(CC)
-Clang++ is used for all compilation commands
+Most files in the project end with \code{.cpp} extension. \code{.cc} is reserved for special file types which requre specific compilation instructions. Having different extensions allow to quickly filter out such files.
+**** Object files for classes
+Located in \code{src} directory, ending with \code{.cpp} file extension. Listing [[Makefile main]] shows how they are compiled.
+**** $(CC) and %(CFLAGS)
+Clang++ is used for all compilation commands, and all possible warnings are turned on and treated as errors in order to ensure good code quality.
 **** $(INC)
 Adds \code{include} and \code{include/lib} (containing the test library) directories to include path. 
-*** Targets
-**** Object files for classes
-Located in \code{src} directory, ending with \code{.cpp} file extension. Listing [[Makefile main]] shows 
-**** Program test target class
-**** Object files for tests
-**** Integration test target class
 *** Compilation commands
 **** main and default command
-#+CAPTION: TODO Makefile main in \code{Makefile}
-#+LABEL: Makefile main
-#+BEGIN_listing
-\inputminted[firstline=47,lastline=63,breaklines]{bash}{Makefile}
-#+END_listing
-\{make run} runs \code{bin/main}, which is compiled by default when running \code{make}, with all necessary parts. These include: _TODO_   Listing [[Makefile main]]
+\code{make run} runs \code{bin/main}, which is compiled by default when running \code{make}, with all necessary parts, shown on Listing [[Makefile main]]. These include: 
+
 ***** Object files from the \code{src} directory
 ***** Program Test target class, compiled with instrumentation
 Steps discussed in Section [[SanitizerCoverage library]]
 ***** Compiler flag for AddressSanitizer
 This flag is responsible for callbacks using the guards instrumented in the test target object file
+
+#+CAPTION: compilation commands for \code{bin/main} in \code{Makefile}
+#+LABEL: Makefile main
+#+BEGIN_listing
+\inputminted[firstline=47,lastline=60,breaklines]{bash}{Makefile}
+#+END_listing
+
 **** docs
 Generates the documentation as described in Section [[documentation]]
 **** clean
-Empties the output directories.
+Empties the output directories and removes all object / target files.
 **** test and integration test
 These commands are discussed more later in Section [[Testing strategy]]. 
 ** Testing strategy
 The project is thoroughly tested using the catch2 framework. Tests are represented with Behavior-driven Given-When-Then style, and described scenarios carefully follow documentation. This library was chosen for its minimalistic setup and ability to describe the test cases with full sentences. 
 
 *** Catch2 library
-Catch is a multi-paradigm test framework for C++, distributed as a single header file. Though that does not mean that it needs to be compiled into every translation unit.  Since it needs to be defined just once and used for any test case, it is possible and more efficient[fn:catch slow compile] to compile it to an object file which is later included in tests, as displayed on Listings [[catch main]] and [[catch compile]].
-
 #+CAPTION: contents of \code{test/catch2-main.cpp} defining the main function for test framework
 #+LABEL: catch main
 #+BEGIN_listing
 \inputminted{c++}{test/catch2-main.cpp}
 #+END_listing
 
-After this, we can compile the test files. Unit tests follow the convention by having the corresponding class name followed by "-test" suffix, and their compilation recipe is shown in Listing [[catch include]]. The exception to this is the integration test, which was discussed in Section [[Example]]. I will provide some more details about it in this section. 
+Catch is a multi-paradigm test framework for C++, distributed as a single header file. Though that does not mean that it needs to be compiled into every translation unit.  Since it needs to be defined just once and used for any test case, it is possible and more efficient[fn:catch slow compile] to compile it to an object file which is later included in tests, as displayed on Listings [[catch main]] and [[catch compile]].
 
 #+CAPTION: compiling contents of \code{test/catch-main.cpp}
 #+LABEL: catch compile
 #+BEGIN_listing
 \inputminted[firstline=70,lastline=75]{bash}{Makefile}
 #+END_listing
+
+After this, we can compile the test files. Unit tests follow the convention by having the corresponding class name followed by "-test" suffix, and their compilation recipe is shown in Listing [[catch include]]. The exception to this is the integration test, which was discussed in Section [[Example]]. I will provide some more details about it in this section. 
 
 #+CAPTION: including compiled \code{catch2-main.cpp} in tests and compiling them
 #+LABEL: catch include
@@ -351,20 +361,39 @@ After this, we can compile the test files. Unit tests follow the convention by h
 The library offers two different ways of structuring test cases, and I chose the GIVEN-WHEN-THEN one because of its behavior driven style syntax, which allowed me to express expectations more concisely.
 
 *** An example test case
-The library was created by test driven development, and all features discussed in documentation have a corresponding test case. I will walk through one example in more detail. Unit with most scenarios was \code{CoverageReporter}, since it needs to decide when the new coverage was meaningful/worth storing. _TODO finish this paragraph_ 
+The library was created by test driven development, and all features discussed in documentation have a corresponding test case. I will walk through one example in more detail. Unit with most scenarios was \code{CoverageReporter}, since it needs to decide when the new coverage was meaningful/worth storing. I will show how I handled one of the scenarios.
 
-First, _TODO_
+Let us discuss what should happen if a new function sequence recorded set of pc blocks that has already been saved earlier. Listing [[coveragereporter test longer]] shows the setup for the scenario and first test when the new coverage is covered by the sequence of same length. 
+
+#+CAPTION: Setup for scenario "coverage for new sequence already exists" in \code{test/coverageReporter-test.cpp}, and case when new coverage is reached with longer sequence compared to what was recorded earlier
+#+LABEL: coveragereporter test longer
+#+BEGIN_listing
+\inputminted[firstline=86,lastline=104]{c++}{test/coverageReporter-test.cpp}
+#+END_listing
+ 
+|
+|
+
+Same should happen if the sequence is the same size, and that is checked as well. However, if the same coverage was achieved by a shorter sequence, we would like to reflect that. Listing [[coveragereporter test shorter]] shows how I check the behavior.
+
+#+CAPTION: Case when new coverage has a shorter sequence in "coverage for new sequence already exists" scenario 
+#+LABEL: coveragereporter test shorter
+#+BEGIN_listing
+\inputminted[firstline=117,lastline=126]{c++}{test/coverageReporter-test.cpp}
+#+END_listing
+
 
 I also paid attention to error handling. Listing [[test exception]] shows the scenario when the user flushes collected coverage but forgets setting a sequence beforehand. This needs to hold true after flushing any number of times, which is why I first start the coverage and flush correctly, but do not call the \code{startCoverage()} function for the second time.
 
 #+CAPTION: Asserting that \code{CoverageReporter} communicates the error in case of developer forgetting to set the sequence.
 #+LABEL: test exception
 #+BEGIN_listing
-\inputminted[firstline=122,lastline=134,breaklines]{c++}{test/coverageReporter-test.cpp}
+\inputminted[firstline=129,lastline=139,breaklines]{c++}{test/coverageReporter-test.cpp}
 #+END_listing
 
 *** Integration test 
-The example discussed in Section [[Example]] is used to test the class \code{combinationTester}. Since this class only combines the functionalities of other ones without adding a lot of logic and scenarios, I use the test case to determine that the Sanitizer Coverage library properly works and at least one pc is reported during runtime. The compilation commands are very similar to the ones used for \code{main.cc}, and they are provided in Listing [[Makefile integration-test]]
+The example discussed in Section [[Example]] is used to test the \code{combinationTester} class. Since this class only combines the functionalities of other ones without adding a lot of logic and scenarios, I use the test case to determine that the Sanitizer Coverage library properly works and at least one pc is reported during runtime. The compilation commands are very similar to the ones used for \code{main.cc}, and they are provided in Listing [[Makefile integration-test]].
+
 #+CAPTION: Compiling the integration test \code{Makefile}
 #+LABEL: Makefile integration-test
 #+BEGIN_listing
@@ -373,14 +402,14 @@ The example discussed in Section [[Example]] is used to test the class \code{com
 
 \chapter*{References}
 # TODO set page number
-
-[fn:presentation libfuzzer] Fuzzing APIs, https://github.com/CppCon/CppCon2017/blob/master/Demos/Fuzz%20Or%20Lose/Fuzz%20Or%20Lose%20-%20Kostya%20Serebryany%20-%20CppCon%202017.pdf
+\setcounter{page}{43}
+[fn:presentation libfuzzer] Kostya Serebryany, Fuzz or lose! https://github.com/CppCon/CppCon2017/blob/master/Demos/Fuzz%20Or%20Lose/Fuzz%20Or%20Lose%20-%20Kostya%20Serebryany%20-%20CppCon%202017.pdf
 
 [fn:libfuzzer docs] Libfuzzer documentation, https://llvm.org/docs/LibFuzzer.html
 
 [fn:sanitizer coverage docs] Clang SanitizerCoverage library Documentation, https://clang.llvm.org/docs/SanitizerCoverage.html
 
-[fn:stack implementation] _TODO_, https://www.techiedelight.com/stack-implementation-in-cpp/
+[fn:stack implementation] Techiedelight, Stack Implementation in C++, https://www.techiedelight.com/stack-implementation-in-cpp/
 
 [fn:addresssanitizer docs] Clang AddressSanitizer documentation, https://clang.llvm.org/docs/AddressSanitizer.html
 
@@ -389,7 +418,5 @@ The example discussed in Section [[Example]] is used to test the class \code{com
 [fn:catch slow compile] Improving catch library compilation, https://github.com/catchorg/Catch2/blob/master/docs/slow-compiles.md#top
 
 [fn:clang format] Clang-Format documentation, https://clang.llvm.org/docs/ClangFormatStyleOptions.html
-
-_TODO maybe just don't have too many references :)_
 
 # \chapter*{}
