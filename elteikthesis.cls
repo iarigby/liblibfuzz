@@ -54,7 +54,7 @@
 
 % Fejléc és lábléc távolsága a tartalomtól
 \topskip = 15pt		% default: 10pt
-\footskip = 10pt	% default: 30pt
+\footskip = 20pt	% default: 30pt
 
 % Lábléc törlése
 \fancyfoot{}
@@ -122,7 +122,7 @@
 
 % ------------------------------
 % Margók
-\RequirePackage[left=35mm, right=25mm, top=25mm, bottom=25mm]{geometry}
+\RequirePackage[left=35mm, right=25mm, top=25mm, bottom=35mm]{geometry}
 %\setlength{\textwidth}{150mm}
 %\setlength{\textheight}{247mm}
 % ------------------------------
