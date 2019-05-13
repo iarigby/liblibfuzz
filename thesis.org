@@ -83,7 +83,7 @@ CLOSED: [2019-05-13 h 14:40]
 **** DOING check Makefile inputminteds
 **** TODO fix page for refman
  added on [2019-05-08 sze 08:36]
-**** TODO listings inlcude line numberings
+**** TODO listings include line numberings
  added on [2019-05-08 sze 09:04]
 **** TODO myrefman compile error for doxygen package
  added on [2019-05-08 sze 08:35]
@@ -101,20 +101,20 @@ Other than that, a lot of times the behavior of the function will depend on inte
 *** Fuzzing
 Dynamic analysis, or fuzzing, is a popular and effective method of finding vulnerabilities in software. Fuzz testing reaches impressive results in exposing interface vulnerabilities in very short amount of time. 
 
-Fuzzing heavily relies on the concept of Fuzz target - a function that accepts an array of bytes and then uses it in user defined way against the API under test. This API usually has a single endpoint that consumes any kind data. Anything that causes an exception, abort, exit, crash, assert failure, timeout is considered a bug[fn:presentation libfuzzer]. That means, discovery of the first instance of any one of them will cause the libfuzzer to halt and inform us about the input that caused the bug, along with some other information. 
+Fuzzing heavily relies on the concept of Fuzz target - a function that accepts an array of bytes and then uses it in user defined way against the API under test. This API usually has a single endpoint that consumes any kind data. Anything that causes an exception, abort, exit, crash, assert failure, timeout is considered a bug[fn:presentation libfuzzer]. That means, discovery of the first instance of any one of them will cause the fuzzer to halt and inform us about the input that caused the bug, along with some other information. 
 
-There are a number of tools available for fuzzing, including AFL and Radamsa. One of the most notable implementations is Libfuzzer, LLVM's tool for coverage guided, evolutionary fuzzing engine[fn:libfuzzer docs]. The code coverage information for libFuzzer is provided by LLVM’s SanitizerCoverage instrumentation, and I will discuss it in the next subsection.
+There are a number of tools available for fuzzing, including AFL and Radamsa. One of the most notable implementations is \code{LibFuzzer}, LLVM's tool for coverage guided, evolutionary fuzzing engine[fn:libfuzzer docs]. The code coverage information for \code{LibFuzzer} is provided by \code{SanitizerCoverage} instrumentation, and I will discuss it in the next subsection.
 *** SanitizerCoverage library
-LLVM has an interface for its built-in code coverage instrumentation[fn:sanitizer coverage docs]. The user is able to gather information about the covereged regions of the program during runtime. There are severeal different levels of depth for coverage, and the library also offers rich ways to trace the data flow. This tool was crucial for the development of my program and in the developer's manual, I discuss the library in more detail.
+LLVM has an interface for its built-in code coverage instrumentation[fn:sanitizer coverage docs]. The user is able to gather information about the covered regions of the program during runtime. There are several different levels of depth for coverage, and the library also offers rich ways to trace the data flow. This tool was crucial for the development of my program and in the developer's manual, I discuss the library in more detail.
 
 ** _using fuzz testing for .._
 Although fuzz testing has been mostly defined to be for exploiting the vulnerabilities of the program, _we decided_ to apply its coverage based philosophy to explore the possible member function call sequences and pinpoint ones which might be most interesting for the developer.
 This also required to change the overall approach with which fuzzing is used. 
 
-In [[Fuzzing]] Background on Fuzzing, I talked about the classical assumptions about the fuzz target. In our scenario, we have different expectations - since we are testing an entire unit and not a single API endpoint, some kind of control flow disruptions might be expected. For example, assertions are common in member functions. Therefore, the previous approach of exiting on first such failure should be modified to allow the program to gather information about all possible combinations that result in things like exceptions, so the user will be informed about them and decide what constitues the normal behavior of their library and what is outside of specifications.
+In [[Fuzzing]] Background on Fuzzing, I talked about the classical assumptions about the fuzz target. In our scenario, we have different expectations - since we are testing an entire unit and not a single API endpoint, some kind of control flow disruptions might be expected. For example, assertions are common in member functions. Therefore, the previous approach of exiting on first such failure should be modified to allow the program to gather information about all possible combinations that result in things like exceptions, so the user will be informed about them and decide what constitutes the normal behavior of their library and what is outside of specifications.
 
 ** Program description
-To acheive the intended results, I created a program that uses LLVM's \code{SanitizerCoverage} library and generation based fuzzing. The test case needs almost minimal setup which consists of the user specifying all the member functions it wants to use in testing, and passing a single function pointer for constructing an instance of the class. Modern c++ tools have aided greatly with this by giving the ability to store pointers to functions with different type signatures. There are still difficulties with regards to determining and passing the function arguments, which is in scope of a larger project. In order for this issue to not interfere with the initial program implementation, I allow users to additionally pass pointers to the functions that will in turn call the specific member function with desired arguments.
+To achieve the intended results, I created a program that uses LLVM's \code{SanitizerCoverage} library and generation based fuzzing. The test case needs almost minimal setup which consists of the user specifying all the member functions it wants to use in testing, and passing a single function pointer for constructing an instance of the class. Modern C++ tools have aided greatly with this by giving the ability to store pointers to functions with different type signatures. There are still difficulties with regards to determining and passing the function arguments, which is in scope of a larger project. In order for this issue to not interfere with the initial program implementation, I allow users to additionally pass pointers to the functions that will in turn call the specific member function with desired arguments.
  
 ** Results
 Although the original intention was to discover new test cases, there were some surprising outcomes that could not have been anticipated. For example, the program is very good in minimizing the total number of test cases, since it only saves the new sequence of function calls if new coverage was discovered, or if it replaces one or more other sequences by combining their result together. This outcome would be crucial for reducing the size of test suites, which leads to reduced runtime and maintenance cost.
@@ -132,7 +132,7 @@ In order to analyze , the object file of the test target needs to be compiled wi
 ** System Requirements
 Following dependencies need to be installed in order to 
 - GNU Make 4.0+
-- Clang 7.0+ with AddressSanitizer (inlcuded with the compiler by default)
+- Clang 7.0+ with AddressSanitizer (included with the compiler by default)
 ** Installation instructions
 run these commands from the directory where you have copied the contents of the project and run commands provided in Listing [[Installation commands]]
 #+CAPTION: Installation commands
@@ -158,9 +158,14 @@ Listing [[stack definition]] shows the definition for the class that the project
 \inputminted[firstline=6,lastline=24]{c++}{examples/stack.h}
 #+END_listing
 *** Structure of the main file
-The user is adviced to only change the contents of \lstinline{main()} function, and replace the \lstinline{#include} directive. I will explain how to construct the \code{CombinationTester} class instance. More details about how classes used in the \code{main.cc} file work and way they are engineered can be found in the [[Developer Documentation]] Developer Documentation.
+The user is advised to only change the contents of \lstinline{main()} function, and replace the \lstinline{#include} directive. I will explain how to construct the \code{CombinationTester} class instance. More details about how classes used in the \code{main.cc} file work and way they are engineered can be found in the [[Developer Documentation]] Developer Documentation.
 **** 1. Include your header file and provide it's path 
-_TODO_
+In the beginning of \code{Makefile}, set the \code{$(TEST_TARGET_FILE)} and \code{$(TEST_TARGET_INC)} variables to point to correct file and path, respectively. For example, the stack class located in \code{examples} directory of the project path would be set as shown on Listing [[makefile user variables]].
+#+CAPTION: defining user variables in \code{Makefile}
+#+LABEL: makefile user variables
+#+BEGIN_listing
+\inputminted[firstline=14,lastline=15]{bash}{Makefile}
+#+END_listing
 **** 2. 
 
 **** 3. Construct the 
@@ -168,7 +173,7 @@ _TODO_
 ***** Choosing the number of maximum combinations
 Feel free to tweak this number to suit your library's needs. If the functions are relatively small but there is a greater number of them, it is more reasonable to settle for numbers lower than 5. In some cases large size of functions requires a very specific state of the class which can only be achieved by more function calls. Such cases will better be resolved by mutation-based fuzzing.
 **** Choose the output format
-After finishing, you can ask the coverageReporter to show results by simply printing it or writing to a file
+After finishing, you can ask the \code{coverageReporter} to show results by simply printing it or writing to a file
 _(functions here)_
 *** Compile and run
 If you followed the instructions in the previous section, you are ready to generate test cases for your class using \code{`make run`} command.
@@ -181,8 +186,8 @@ After the program is done running, it will display the results as you indicated 
 \inputminted{text}{results.txt}
 #+END_listing
 ***** memory leaks
-Since the program will be compiled using the \code{`-fsanitize=address`} compiler flag to include the library that is respobsible for observing coverage. \code{AddressSanitizer} library detects memory issues that your unit might have. For example, if we were to remove the destructor from the \code{stack} implementation, we would get the message shown on Listing [[Memory leak]].
-#+CAPTION: Memory leak discoverd when the destructor is missing
+Since the program will be compiled using the \code{`-fsanitize=address`} compiler flag to include the library that is responsible for observing coverage. \code{AddressSanitizer} library detects memory issues that your unit might have. For example, if we were to remove the destructor from the \code{stack} implementation, we would get the message shown on Listing [[Memory leak]].
+#+CAPTION: Memory leak discovered when the destructor is missing
 #+LABEL: Memory leak
 #+BEGIN_src text
 
@@ -213,13 +218,13 @@ This happens if the source code size is too large, resulting in a lot of guards 
 * Developer Documentation 
 This chapter discusses the structure and contents of the source directory, essential concepts for development and reasoning behind some of the architecture decisions. It also provides overview of the tools necessary for development, along with their usage.
 ** Dependencies and internal architecture
-Before diving into the specifics, I would like to introduce some material that is necessary for understanding why - and how, everything works. First, I will give a brief overview to the Sanitizer Coverage library and introduce the test class which will illustrate core concepts of both the library and my program.
-*** Sanitizer Coverage library
+Before diving into the specifics, I would like to introduce some material that is necessary for understanding why - and how, everything works. First, I will give a brief overview to the \code{SanitizerCoverage} library and introduce the test class which will illustrate core concepts of both the library and my program.
+*** SanitizerCoverage library
 The program relies primarily on LLVM's built in coverage instrumentation to measure coverage of different function cal sequences. Basic understanding of how these functions work is necessary for development. 
 
 With \code{`-fsanitize-coverage=trace-pc-guard`} flag, the clang compiler will insert the following code on every edge of the control flow. Every edge will have its own guard_variable (uint32_t), and in the end the instrumentation will look as given on Listing [[guard example]]. Here, "pc" stands for "program counter", and I used this term in the source code and tests as well to describe the parts of the program. 
 
-#+CAPTION: How SanitizerCoverage instrumentation looks
+#+CAPTION: How \code{SanitizerCoverage} instrumentation looks
 #+LABEL: guard example
 #+BEGIN_src c++
 if(*guard)
@@ -230,7 +235,7 @@ There is another function that will be called at least once per dynamic shared o
 
 \code{__sanitizer_cov_trace_pc_guard_init(uint32_t *start, uint32_t *stop);}
 
-These callbacks are not implemented in the Sanitizer run-time and should be defined by the user. This mechanism is used for fuzzing the Linux kernel, as well as the libfuzzer library mentioned earlier.
+These callbacks are not implemented in the Sanitizer run-time and should be defined by the user. This mechanism is used for fuzzing the Linux kernel, as well as the \code{LibFuzzer} library mentioned earlier.
 
 Let me illustrate this using an example. First let us introduce a simple class on Listing [[integrationTestClass definition]]. Most functions have descriptive names and their implementation does exactly that, so I will explain only what \code{f4()} does, and also note that \code{f4()} returns a simple integer value without any calculations. 
 
@@ -240,7 +245,7 @@ Let me illustrate this using an example. First let us introduce a simple class o
 \inputminted[firstline=3,lastline=16]{c++}{test/integrationTestClass.h}
 #+END_listing
 
-As you will observe on Listing [[IntegrationTestClass implementation]], there are 3 different scenarios for \code{f4()}, each one being a simple \code{return} statement. Sanitizer Coverage will insert guards on entry point of each of them. The rest of the functions will simply have guards inserted in the beginning. 
+As you will observe on Listing [[IntegrationTestClass implementation]], there are 3 different scenarios for \code{f4()}, each one being a simple \code{return} statement. \code{SanitizerCoverage} will insert guards on entry point of each of them. The rest of the functions will simply have guards inserted in the beginning. 
 
 #+CAPTION: Implementation of \code{IntegrationTestClass::f2()} provided in \code{test/integrationTestClass.cc}, with inserted guards highlighted _(TODO)_
 #+LABEL: IntegrationTestClass implementation
@@ -248,7 +253,7 @@ As you will observe on Listing [[IntegrationTestClass implementation]], there ar
 \inputminted[firstline=12,lastline=22]{c++}{test/integrationTestClass.cc}
 #+END_listing
 
-Sanitizer Coverage library offers three different levels for observing the control flow of the program. Instrumentation points can be an edge, basic blocks, and function entry points. For this project, using the default edge one was more appropriate, since the target of fuzzing will be small and we can afford detailed coverage.  Sanitizer coverage also has different ways to trace data flow, for example callbacks for comparison operations and switches. These could aid in refining the program for more complex applications later.
+\code{SanitizerCoverage} library offers three different levels for observing the control flow of the program. Instrumentation points can be an edge, basic blocks, and function entry points. For this project, using the default edge one was more appropriate, since the target of fuzzing will be small and we can afford detailed coverage. There are different ways offered for tracing data flow, for example callbacks for comparison operations and switches. These could aid in refining the program for more complex applications later.
 
 In the next section, I will continue the \code{IntegrationTestClass} example. It serves as a good demonstration for showing how the program works, before going into the details about each unit.
 *** Example
@@ -263,7 +268,7 @@ Let us get back to our test class and think about how we would accomplish to cov
 As you see, the program manages to find . _TODO_ Listing [[integration test output]]
 
 _TODO_ this should be included in user docs I think
-You will observe that tweaking the number of maximum sequence length will increase the number of covered blocks per unit test (and have larger sequences of function calls) while significantly decreasing the total number of unit tests, until it collapses to very few, maybe even one. It is not reasonable to test the entire logic in a single test, and also not clear _when to stop growing_, and it might also vary from the complexity of the unit. However, it is always guaranteed that a longer sequence will never replace a shorter one if their coverage is the same, as observed when tweaking the number from 6 to 7 for IntegrationTestClass.
+You will observe that tweaking the number of maximum sequence length will increase the number of covered blocks per unit test (and have larger sequences of function calls) while significantly decreasing the total number of unit tests, until it collapses to very few, maybe even one. It is not reasonable to test the entire logic in a single test, and also not clear _when to stop growing_, and it might also vary from the complexity of the unit. However, it is always guaranteed that a longer sequence will never replace a shorter one if their coverage is the same, as observed when tweaking the number from 6 to 7 for \code{IntegrationTestClass}.
 Right now, it is recommended to start with smaller number of function calls. It is hard to determine the threshold after which having a larger coverage per unit test stops being important. Choosing the right combination of number of function calls with regards to number of covered blocks was not in scope of current project. 
 
 *** documentation
@@ -278,7 +283,7 @@ As mentioned before, the project is compiled using GNU make, since it was more s
 Here is a brief overview of the source directory. Each of the subdirectories is displayed alongside corresponding variable in the Makefile.
 
 **** $(INC) - include
-Header files. Definitions for all classes of the project. It also contains definition of the template classes along with ther implementation. The \lstinline{lib} subdirectory holds the header file of the testing framework.
+Header files. Definitions for all classes of the project. It also contains definition of the template classes along with their implementation. The \lstinline{lib} subdirectory holds the header file of the testing framework.
 **** $(SRCDIR) - src
 Implementations of non-template classes from \lstinline{include} directory and a sample for the main file, which should be replaced by user for its own test target unit.
 **** $(BUILDDIR), $(TARGETDIR) - build, bin
@@ -352,14 +357,14 @@ First, _TODO_
 
 I also paid attention to error handling. Listing [[test exception]] shows the scenario when the user flushes collected coverage but forgets setting a sequence beforehand. This needs to hold true after flushing any number of times, which is why I first start the coverage and flush correctly, but do not call the \code{startCoverage()} function for the second time.
 
-#+CAPTION: Asserting that CoverageReporter communicates the error in case of developer forgetting to set the sequence.
+#+CAPTION: Asserting that \code{CoverageReporter} communicates the error in case of developer forgetting to set the sequence.
 #+LABEL: test exception
 #+BEGIN_listing
 \inputminted[firstline=122,lastline=134,breaklines]{c++}{test/coverageReporter-test.cpp}
 #+END_listing
 
 *** Integration test 
-The example discussed in Section [[Example]] is used to test the class \code{combinationTeste}. Since this class only combines the functionalities of other ones without adding a lot of logic and scenarios, I use the test case to determine that the Sanitizer Coverage library properly works and at least one pc is reported during runtime. The compilation commands are very similar to the ones used for \code{main.cc}, and they are provided in Listing [[Makefile integration-test]]
+The example discussed in Section [[Example]] is used to test the class \code{combinationTester}. Since this class only combines the functionalities of other ones without adding a lot of logic and scenarios, I use the test case to determine that the Sanitizer Coverage library properly works and at least one pc is reported during runtime. The compilation commands are very similar to the ones used for \code{main.cc}, and they are provided in Listing [[Makefile integration-test]]
 #+CAPTION: Compiling the integration test \code{Makefile}
 #+LABEL: Makefile integration-test
 #+BEGIN_listing
@@ -367,7 +372,7 @@ The example discussed in Section [[Example]] is used to test the class \code{com
 #+END_listing
 
 \chapter*{References}
-
+# TODO set page number
 
 [fn:presentation libfuzzer] Fuzzing APIs, https://github.com/CppCon/CppCon2017/blob/master/Demos/Fuzz%20Or%20Lose/Fuzz%20Or%20Lose%20-%20Kostya%20Serebryany%20-%20CppCon%202017.pdf
 

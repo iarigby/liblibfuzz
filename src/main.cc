@@ -25,7 +25,7 @@ CoverageReporter coverageReporter;
 // verbose, report each block that is found if 
 bool outputMessages = false;
 
-// extern int i;
+
 
 int main(int argc, char **argv) {
   /* Function pointers
@@ -55,9 +55,6 @@ int main(int argc, char **argv) {
   combinationTester.run();
   coverageReporter.printResults();
   coverageReporter.printResultsToFile();
-  // cr.printResultsToFile();
-  // comment this line if not compiling with guards
-  // std::cout << i;
   std::cout << "done\n";
   return 0;
 }

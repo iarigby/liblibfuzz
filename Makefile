@@ -7,7 +7,7 @@
 
 
 
-# The user should replace th
+# The user should replace these
 # with the name of the class and its location
 # and the include directory for the header file
 # The rest of the file is relevant only for developers
