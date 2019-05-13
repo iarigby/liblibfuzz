@@ -20,6 +20,7 @@
 #+LATEX_HEADER: \documentlang{english}
 #+LATEX_HEADER: \newcommand*{\code}{\lstinline[keywordstyle=\color{violet}, basicstyle=\color{violet}]}
 
+#+LATEX_HEADER: \lstset{numbers=left, stepnumber=1}
 \setcounter{page}{1}
 #+TOC: headlines 0
 
@@ -119,8 +120,8 @@ Current version can not analyze multiple classes or ones with a lot of complex d
 In order to analyze , the object file of the test target needs to be compiled with special flags separately from the rest of the project. This means the implementation of the class can not be spread in multiple files, and those files should not contain anything else
 ** System Requirements
 Following dependencies need to be installed in order to 
-*** GNU Make 4.0+
-*** Clang 7.0+ with AddressSanitizer (inlcuded by default)
+- GNU Make 4.0+
+- Clang 7.0+ with AddressSanitizer (inlcuded with the compiler by default)
 ** Installation instructions
 run these commands from the directory where you have copied the contents of the project and run commands provided in Listing [[Installation commands]]
 #+CAPTION: Installation commands
@@ -197,18 +198,30 @@ Before diving into the specifics, I would like to introduce some material that i
 *** Sanitizer Coverage library
 The program relies primarily on LLVM's built in coverage instrumentation to measure coverage of different function cal sequences. Basic understanding of how these functions work is necessary for development.
 
-_(paragraph about guards,)_
+With \code{`-fsanitize-coverage=trace-pc-guard`} flag, the clang compiler will insert the following code on every edge of the control flow. Every edge will have its own guard_variable (uint32_t), and in the end the instrumentation will look as given on Listing [[guard example]]. Here, "pc" stands for "program counter", and I used this term in the source code and tests as well to describe the parts of the program. 
 
+#+CAPTION: How SanitizerCoverage instrumentation looks
+#+LABEL: guard example
+#+BEGIN_src c++
+if(*guard)
+    __sanitizer_cov_trace_pc_guard(guard); 
+#+END_src
+
+There is another function that will be called at least once per dynamic shared object (it may be called more than once with the same values of start/stop).
+
+\code{__sanitizer_cov_trace_pc_guard_init(uint32_t *start, uint32_t *stop);}
+
+These callbacks are not implemented in the Sanitizer run-time and should be defined by the user. This mechanism is used for fuzzing the Linux kernel, as well as the libfuzzer library mentioned earlier.
 
 Let me illustrate this using an example. First let us introduce a simple class on Listing [[integrationTestClass definition]]. Most functions have descriptive names and their implementation does exactly that, so I will explain only what \code{f4()} does, and also note that \code{f4()} returns a simple integer value without any calculations. 
+
 #+CAPTION: Definition of the class used in integration tests
 #+LABEL: integrationTestClass definition
 #+BEGIN_listing
 \inputminted[firstline=3,lastline=16]{c++}{test/integrationTestClass.h}
-
 #+END_listing
 
-As you will observe on Listing integrationTestClass implementation]], there are 3 different scenarios for \code{f4()}, and Sanitizer Coverage will insert guards on entry point of each of them. The rest of the functions will simply have guards inserted in the beginning.
+As you will observe on Listing [[integrationTestClass implementation]], there are 3 different scenarios for \code{f4()}, and Sanitizer Coverage will insert guards on entry point of each of them. The rest of the functions will simply have guards inserted in the beginning. Let us defined the callbacks mentioned earlier. _TODO maybe walk through .cc file_
 
 #+CAPTION: Implementation of \code{IntegrationTestClass::f2()} provided in \code{test/integrationTestClass.cc}, with inserted guards highlighted _(TODO)_
 #+LABEL: integrationTestClass implementation
@@ -218,6 +231,9 @@ As you will observe on Listing integrationTestClass implementation]], there are 
 
 Sanitizer Coverage library offers numerous ways to observe the control flow of the program, three default ones being _(.... edge, block, explain differences)_. It also includes _(... for switches and )_. These could aid in refining the program for more complex applications but will not be covered here since only edge case is used currently.
 # documentation
+
+_TODO transition_
+ It serves as a good demonstration for showing how the library works, before going into the details about each unit. _TODO :(
 *** Example
 Let us get back to our test class and think about _(TODO talk about expectations)_
 
@@ -229,9 +245,9 @@ Let us get back to our test class and think about _(TODO talk about expectations
 
 As you see, the program manages to find . _TODO_ Listing [[integration test output]]
 
-You will observe that tweaking the number of maximum sequence length will increase the number of covered blocks per unit test (and have larger sequences of function calls) while significantly decreasing the total number of unit tests, until it collapses to very few, maybe even one. It is not reasonable to test the entire logic in a single test, and also not clear _(when to stop growing)_, and it might also vary from the complexity of the unit. However, it will never replace _..._, as observed when tweaking the number from 6 to 7 for IntegrationTestClass.
-Right now, it is recommended to start with smaller number of function calls. It is hard to determine the threshold after which having a larger coverage per unit test stops being important. If we restrict the program to only save the function call sequence if it covers a new block, the number of unit tests will _(TODO? I think this is actually a reasonable approach, and should be the default and I could say that other alternatives could be found, at the same time, I don't think I have time to implement, test and document even such a small feature, since I did added other ones recently)._ 
-Choosing the right combination of number of function calls with regards to number of covered blocks is for another project. 
+_TODO_ this should be included in user docs I think
+You will observe that tweaking the number of maximum sequence length will increase the number of covered blocks per unit test (and have larger sequences of function calls) while significantly decreasing the total number of unit tests, until it collapses to very few, maybe even one. It is not reasonable to test the entire logic in a single test, and also not clear _when to stop growing_, and it might also vary from the complexity of the unit. However, it is always guaranteed that a longer sequence will never replace a shorter one if their coverage is the same, as observed when tweaking the number from 6 to 7 for IntegrationTestClass.
+Right now, it is recommended to start with smaller number of function calls. It is hard to determine the threshold after which having a larger coverage per unit test stops being important. Choosing the right combination of number of function calls with regards to number of covered blocks was not in scope of current project. 
 
 *** documentation
 This was a higher-level overview of the core concepts used for the program. The rest of the documentation is provided in the last section of this chapter. All classes are thoroughly documented in header files, and some more detailed explanation and reasoning is sometimes provided in implementation files. For documentation generation, Doxygen library is used with javadoc style. 
@@ -261,64 +277,75 @@ Clang++ is used for all compilation commands
 Adds \code{include} and \code{include/lib} (containing the test library) directories to include path. 
 *** Targets
 **** Object files for classes
-Located in \code{src} directory, ending with \code{.cpp} file extension. _Listing TODO_ shows 
+Located in \code{src} directory, ending with \code{.cpp} file extension. Listing [[Makefile main]] shows 
 **** Program test target class
 **** Object files for tests
 **** Integration test target class
 *** Compilation commands
 **** main and default command
-#+CAPTION: TODO in \code{Makefile}
+#+CAPTION: TODO Makefile main in \code{Makefile}
 #+LABEL: Makefile main
 #+BEGIN_listing
-\inputminted[firsline=47,lastline=63]{bash}{Makefile}
+\inputminted[firstline=47,lastline=63,breaklines]{bash}{Makefile}
 #+END_listing
-\{make run} runs \code{bin/main}, which is compiled by default when running \code{make}, with all necessary parts. These include: _TODO_ Listing [[Makefile main]]
+\{make run} runs \code{bin/main}, which is compiled by default when running \code{make}, with all necessary parts. These include: _TODO_   Listing [[Makefile main]]
 ***** Object files from the \code{src} directory
 ***** Program Test target class 
 ***** Compiler flag for _..._
-**** test
-#+CAPTION: TODO in \code{Makefile}
-#+LABEL: Makefile test
-#+BEGIN_listing
-\inputminted[firstline=70,lastline=95]{bash}{Makefile}
-#+END_listing
-_(TODO)_ runs \code{bin/test} _TODO_ Listing [[Makefile test]]
-**** integration-test-run
-#+CAPTION: TODO \code{Makefile}
-#+LABEL: Makefile integration-test
-#+BEGIN_listing
-\inputminted[firstline=97,lastline=118]{bash}{Makefile}
-#+END_listing
-_TODO_ runs \code{bin/integration-test} _TODO_ [[Makefile integration-test]]
 **** docs
-_TODO_
+Generates the documentation as described in Section [[documentation]]
 **** clean
 Empties the output directories.
+**** test and integration test
+These commands are discussed more later in Section [[Testing strategy]]. 
 ** Testing strategy
 The project is thoroughly tested using the catch2 framework. Tests are represented with Behavior-driven Given-When-Then style, and described scenarios carefully follow documentation. This library was chosen for its minimalistic setup and ability to describe the test cases with full sentences. 
 
 *** Catch2 library
-Catch is a multi-paradigm test framework for C++, distributed as a single header file. Though that does not mean that it needs to be compiled into every translation unit.  Since it needs to be defined just once and used for any test case, it is possible and more efficient to compile it to an object file which is later included in tests, as displayed on _listing (TODO and other)_
+Catch is a multi-paradigm test framework for C++, distributed as a single header file. Though that does not mean that it needs to be compiled into every translation unit.  Since it needs to be defined just once and used for any test case, it is possible and more efficient to compile it to an object file which is later included in tests, as displayed on Listings [[catch main]] and [[catch compile]]. _(TODO reference)_
 
-#+CAPTION: contents of \code{test/catch2-main.cpp}
+#+CAPTION: contents of \code{test/catch2-main.cpp} defining the main function for test framework
 #+LABEL: catch main
 #+BEGIN_listing
 \inputminted{c++}{test/catch2-main.cpp}
 #+END_listing
 
-Unit tests follow the convention by having the corresponding class name followed by "-test" suffix, and their compilation recipe is shown in listing [[catch main]]. The exception to this is the integration test, which was discussed in the section _(TODO [Example])_. It serves as a good demonstration for showing how the library works, before going into the details about each unit. _TODO :(_
+After this, we can compile the test files. Unit tests follow the convention by having the corresponding class name followed by "-test" suffix, and their compilation recipe is shown in Listing [[catch include]]. The exception to this is the integration test, which was discussed in Section [[Example]]. I will provide some more details about it in this section. 
 
-#+CAPTION: including compiled \code{catch2-main.cpp} in tests
-#+LABEL: _TODO_ and also mention
+#+CAPTION: compiling contents of \code{test/catch-main.cpp}
+#+LABEL: catch compile
 #+BEGIN_listing
-\inputminted[firstline=74,lastline=90]{bash}{Makefile}
+\inputminted[firstline=70,lastline=75]{bash}{Makefile}
 #+END_listing
 
-_(TODO reference)_
+#+CAPTION: including compiled \code{catch2-main.cpp} in tests and compiling them
+#+LABEL: catch include
+#+BEGIN_listing
+\inputminted[firstline=77,lastline=91,breaklines]{bash}{Makefile}
+#+END_listing
 
-*** Example 
-The library was created mostly by test driven development. Before listing all of the test cases, I will walk through one example in more detail. Unit with most scenarios was \code{CoverageReporter}, since it needs to decide when the new coverage was meaningful/worth storing.
+The library offers two different ways of structuring test cases, and I chose the GIVEN-WHEN-THEN one because of its behavior driven style syntax, which allowed me to express expectations more concisely.
 
+*** An example test case
+The library was created by test driven development. Before listing all of the test cases, I will walk through one example in more detail. Unit with most scenarios was \code{CoverageReporter}, since it needs to decide when the new coverage was meaningful/worth storing. _TODO finish this paragraph_ 
+
+First, _TODO_
+
+I also paid attention to error handling. Listing [[test exception]] shows the scenario when the user flushes collected coverage but forgets setting a sequence beforehand. This needs to hold true after flushing any number of times, which is why I first start the coverage and flush correctly, but do not call the \code{startCoverage()} function for the second time.
+
+#+CAPTION: Asserting that CoverageReporter communicates the error in case of developer forgetting to set the sequence.
+#+LABEL: test exception
+#+BEGIN_listing
+\inputminted[firstline=122,lastline=134,breaklines]{c++}{test/coverageReporter-test.cpp}
+#+END_listing
+
+*** Integration test 
+The example discussed in Section [[Example]] is used to test the class \code{combinationTeste}. Since this class only combines the functionalities of other ones without adding a lot of logic and scenarios, I use the test case to determine that the Sanitizer Coverage library properly works and at least one pc is reported during runtime. The compilation commands are very similar to the ones used for \code{main.cc}, and they are provided in Listing [[Makefile integration-test]]
+#+CAPTION: Compiling the integration test \code{Makefile}
+#+LABEL: Makefile integration-test
+#+BEGIN_listing
+\inputminted[firstline=97,lastline=118,breaklines]{bash}{Makefile}
+#+END_listing
 *** List of test case scenarios 
 
 

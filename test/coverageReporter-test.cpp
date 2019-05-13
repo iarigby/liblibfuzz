@@ -75,7 +75,7 @@ SCENARIO("expected behavior of coverageReporter", "[coveragereporter]") {
   }
 }
 
-SCENARIO("new sequence already exists in the set") {
+SCENARIO("new sequence already exists in the set", "[coveragereporter]") {
   TestData testData;
   CoverageReporter cr;
   cr.startCoverage(testData.sequence1);
@@ -127,6 +127,8 @@ SCENARIO("user forgot to set current sequence", "[coveragereporter]") {
   cr.flush();
   cr.addPCForSequence("pc2");
   GIVEN("coverage reporter without current sequence") {
-    THEN("flushing would cause an exception") { REQUIRE_THROWS(cr.flush()); }
+    THEN("flushing would cause an exception") {
+      REQUIRE_THROWS(cr.flush());
+    }
   }
 }
