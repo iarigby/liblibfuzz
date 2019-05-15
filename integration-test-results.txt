@@ -1,0 +1,23 @@
+sequence: increaseCounter toggleTrue f2 increaseCounter f2 
+	in IntegrationTestClass::counterIs2() test/integrationTestClass.cc:24
+	in IntegrationTestClass::f2() test/integrationTestClass.cc:12
+	in IntegrationTestClass::f2() test/integrationTestClass.cc:15:14
+	in IntegrationTestClass::f2() test/integrationTestClass.cc:17:7
+	in IntegrationTestClass::f4() test/integrationTestClass.cc:28
+	in IntegrationTestClass::increaseCounter() test/integrationTestClass.cc:4
+	in IntegrationTestClass::setToggle(bool) test/integrationTestClass.cc:8
+sequence: increaseCounter increaseCounter f2 toggleTrue f2 
+	in IntegrationTestClass::counterIs2() test/integrationTestClass.cc:24
+	in IntegrationTestClass::f2() test/integrationTestClass.cc:12
+	in IntegrationTestClass::f2() test/integrationTestClass.cc:15:14
+	in IntegrationTestClass::f2() test/integrationTestClass.cc:20:5
+	in IntegrationTestClass::f4() test/integrationTestClass.cc:28
+	in IntegrationTestClass::increaseCounter() test/integrationTestClass.cc:4
+	in IntegrationTestClass::setToggle(bool) test/integrationTestClass.cc:8
+sequence: increaseCounter f2 toggleTrue f2 
+	in IntegrationTestClass::counterIs2() test/integrationTestClass.cc:24
+	in IntegrationTestClass::f2() test/integrationTestClass.cc:12
+	in IntegrationTestClass::f2() test/integrationTestClass.cc:17:7
+	in IntegrationTestClass::f2() test/integrationTestClass.cc:20:5
+	in IntegrationTestClass::increaseCounter() test/integrationTestClass.cc:4
+	in IntegrationTestClass::setToggle(bool) test/integrationTestClass.cc:8
