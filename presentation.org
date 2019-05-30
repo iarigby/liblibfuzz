@@ -1,0 +1,10 @@
+#+TITLE: presentation
+* How do we verify software?
+** Unit Testing
+1.
+2.
+** Static Analysis
+** Dynamic Analysis
+
+* Combining ...
+*
