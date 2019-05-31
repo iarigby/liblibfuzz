@@ -3,8 +3,31 @@
 ** Unit Testing
 1.
 2.
-** Static Analysis
-** Dynamic Analysis
+# Let's illustrate this problem by the simplest example
+*** Introduce the integratonTestClass
+
+** Static & Dynamic Analysis
+*** Fuzzing
+# 2-3 slides for explanation
 
 * Combining ...
-*
+# fuzzing hasn't been used for this purpose before
+** We need something that will
+# independent functionalities
+# TODO see how much time is left for explanations
+1. store pointers to member functions
+   # we will need different type signatures, managing arguments, etc
+2. generate sequences of calls
+   # this is a fuzz related problem.
+3. observe coverage
+   # introduce SanitizerCoverage library here
+4. compare the results and determine most efficient
+
+* Demo
+** Installation
+only build and test
+mention unit tests
+# ? how much in detail about this
+** Set up the main file
+# metnion that users are developers and editing is expected
+** Run and discuss results
