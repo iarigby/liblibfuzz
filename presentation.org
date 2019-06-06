@@ -1,17 +1,36 @@
-#+TITLE: presentation
+#+TITLE: Test Case Generation Using Fuzzing In C++
+#+OPTIONS: toc:nil num:nil date:nil org-reveal-title-slide:%t%a
 * How do we verify software?
 ** Unit Testing
-1.
-2.
-# Let's illustrate this problem by the simplest example
-*** Introduce the integratonTestClass
+**** Advantages
+1. Essential for writing quality software
+2. Most straightforward to reason about compared to static & dynamic analysis
+# TODO also faster to implement and run
+**** Disadvantages
+1. Not trivial to choose meaningful combinations
+2. Hard to determine edge cases
+3. Relies entirely on the developer to determine
+#+BEGIN_NOTES
+Let's illustrate this problem by the simplest example
+#+END_NOTES
+*** Example
+This class has few primitive members, and already requires _TODO_
 
+#+BEGIN_NOTES
+As a result, other means have been developed
+#+END_NOTES
 ** Static & Dynamic Analysis
+Used for finding vulnerabilities
+# can be seen as edge cases
 *** Fuzzing
 # 2-3 slides for explanation
 
 * Combining ...
-# fuzzing hasn't been used for this purpose before
+#+BEGIN_NOTES
+fuzzing hasn't been used for this purpose before
+#+END_NOTES
+** What is different from fuzzing
+
 ** We need something that will
 # independent functionalities
 # TODO see how much time is left for explanations
