@@ -16,7 +16,7 @@ My arguments:
 is that for combinations, there is a finite amount of sets we could test, which will be a subset of a much larger input set that libfuzz might provide us with (ie useless filtering of garbage)
 ***** better coverage info
 libfuzz will filter out code coverage information that is irrelevant for APIs but might be crucial in terms of function combinations 
-****** TODO examples
+****** CANCELLED examples
 ***** extracting information
 More control over combination hierarchy, no need to go through trouble of extracting it manually from libfuzz corpus (don't even know if it's possible in full form)
 ** <2019-02-26 Tue 15:08> 
@@ -72,7 +72,7 @@ there is one main function that has the map with all the functions
 *** next steps
 **** 
 *** notes from meeting
-**** TODO ...
+**** ...
 ***** having an additional argument
 make some measurements
 ***** take std::vector
@@ -80,7 +80,7 @@ and ignore some of the functions, for example insert, erase etc, and just use pu
 ***** maybe deck too
 compare what was the behavior of the stuff
 ***** user manual, developer manual, test cases
-*** TODO ...
+*** ...
 **** grammar induction
 exhaustive search on relatively small input to infer the grammar. 
 **** generational algorithm

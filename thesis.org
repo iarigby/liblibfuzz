@@ -55,7 +55,7 @@ CLOSED: [2019-05-08 sze 13:14]
 *** DONE change colors for the printresults output (main and integration test)
 CLOSED: [2019-05-13 h 14:47]
  added on [2019-05-08 sze 01:15]
-*** TODO in functionPointerMap talk about all the cool features I'm using
+*** CANCELLED in functionPointerMap talk about all the cool features I'm using
  added on [2019-04-13 szo 13:23]
 *** CANCELLED try out testing an hpp file
 CLOSED: [2019-05-13 h 14:46]
@@ -80,15 +80,15 @@ CLOSED: [2019-05-13 h 14:40]
 **** DONE references chapter
 CLOSED: [2019-05-13 h 14:40]
 *** technical
-**** DOING check Makefile inputminteds
-**** TODO fix page for refman
+**** DONE check Makefile inputminteds
+**** DONE fix page for refman
  added on [2019-05-08 sze 08:36]
 **** CANCELLED listings include line numberings
 CLOSED: [2019-05-13 h 16:33]
  added on [2019-05-08 sze 09:04]
-**** TODO myrefman compile error for doxygen package
+**** CANCELLED myrefman compile error for doxygen package
  added on [2019-05-08 sze 08:35]
-**** TODO thesis margins check and fix for myrefman too
+**** DONE thesis margins check and fix for myrefman too
 *** DONE add a separate section for tests and describe test scenarios. 
 CLOSED: [2019-05-11 Sat 14:16]
 ** DONE add filenames to listing captions

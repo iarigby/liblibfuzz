@@ -37,19 +37,19 @@ Any kind of crash/abort/assert failure/timeout is considered a bug in an API, wh
 there might be new code coverage anywhere, and since it is a finite set...
 ** Process description
 *** Analyze the library
-**** TODO what information can be inferred automatically?
+**** what information can be inferred automatically?
 What will be the manual tasks that the programmer will need to do and specify for the library to work
 ***** Type information
 should be able to do with clang
 *** Generate 
 
 *** Run coverage tests
-**** TODO how will the function inputs be handled?
+**** how will the function inputs be handled?
 - my idea is to test each of the functions using libfuzz (would need to somehow get the output still)
 - it might be best for the programmer to provide 
 *** Analyze and communicate the results
-**** TODO give the smallest possible subset of function combinations
-**** TODO extra information
+**** give the smallest possible subset of function combinations
+**** extra information
 - What else does the interaction of functions tell us?
 - Can we predict possible problems with the function based on code coverage
 * Research / Learning
@@ -61,7 +61,7 @@ general knowledge of language since I don't have a lot of experience currently
 *** DOING get familiar with libfuzz source code
 understand how libfuzz works since a lot of mechanisms are similar
 
-*** TODO AST
+*** AST
 will be needed for extracting type information
 ** c++ reference
 *** typeinfo
@@ -191,11 +191,11 @@ ease of implementing
 **** code
 ***** combinationTester
 ****** .h run
-// TODO: should this automatically start? what could be some actions that the
+// : should this automatically start? what could be some actions that the
 // user might want to take
 ****** .cpp run
-******* TODO: is this also better for performance?
-******* // TODO: remove this :D
+******* : is this also better for performance?
+******* // : remove this :D
 // ha?
 //  https://stackoverflow.com/questions/3786360/confusing-template-error
 ***** coveragereporter

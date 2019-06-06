@@ -54,7 +54,7 @@ private:
    * functions with correct arguments
    */
   std::map<std::string, voidFunction<A>> map;
-  // TODO: probably remove this
+  // revisit this
   bool outputMessages = false;
   std::vector<std::string> functions;
 };
