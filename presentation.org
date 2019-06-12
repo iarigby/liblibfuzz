@@ -1,52 +1,60 @@
 #+TITLE: Test Case Generation Using Fuzzing In C++
-#+OPTIONS: toc:nil num:nil date:nil org-reveal-title-slide:%t%a
+#+STARTUP: beamer
+#+LATEX_CLASS: beamer
+#+BEAMER_THEME: metropolis
+#+LaTeX_CLASS_OPTIONS: [bigger]
+#+OPTIONS: H:2 num:nil toc:nil
+#+LATEX_HEADER: \usepackage{graphicx}
+#+LATEX_HEADER: \usepackage{listings}
+#+LATEX_HEADER: \lstset{language=c++,keywordstyle=\color{violet},basicstyle=\ttfamily}
 * How do we verify software?
 ** Unit Testing
 **** Advantages
 1. Essential for writing quality software
-2. Most straightforward to reason about compared to static & dynamic analysis
-# TODO also faster to implement and run
+2. Most straightforward to reason about compared to other methods
+3. Faster to implement and run
 **** Disadvantages
 1. Not trivial to choose meaningful combinations
 2. Hard to determine edge cases
-3. Relies entirely on the developer to determine
-#+BEGIN_NOTES
-Let's illustrate this problem by the simplest example
-#+END_NOTES
-*** Example
-This class has few primitive members, and already requires _TODO_
-
-#+BEGIN_NOTES
-As a result, other means have been developed
-#+END_NOTES
+3. Relies entirely on the developer to determine _TODO_
+\note{Let's illustrate this problem by the simplest example}
+** Example
+\lstinputlisting[language=C++,firstline=3]{test/integrationTestClass.h}
+\note{This class has few primitive members, and already requires _TODO_As a result, other means have been developed}
+** Example
+\lstinputlisting[language=C++,firstline=12,lastline=22]{test/integrationTestClass.cc}
 ** Static & Dynamic Analysis
 Used for finding vulnerabilities
-# can be seen as edge cases
-*** Fuzzing
-# 2-3 slides for explanation
-
-* Combining ...
-#+BEGIN_NOTES
-fuzzing hasn't been used for this purpose before
-#+END_NOTES
+*** TODO can be seen as edge cases
+\note{Most relevant for this project was}
+* Fuzzing
+** About
+** Fuzz target
+** How libfuzzer works
+\note{use the same library but instead of ... measure ....}
+* Coverage based fuzzing for generating test cases
+\note{fuzzing hasn't been used for this purpose before}
 ** What is different from fuzzing
 
-** We need something that will
-# independent functionalities
-# TODO see how much time is left for explanations
-1. store pointers to member functions
-   # we will need different type signatures, managing arguments, etc
-2. generate sequences of calls
-   # this is a fuzz related problem.
-3. observe coverage
-   # introduce SanitizerCoverage library here
-4. compare the results and determine most efficient
+** Overall description of the solved problems
+We need something that will
+\note{independent functionalities}
+
+TODO see how much time is left for explanations
+1. Store pointers to member functions
+   \note{we will need different type signatures, managing arguments, etc}
+2. Generate sequences of calls
+   \note{this is a fuzz related problem.}
+3. Observe coverage resulting from these calls
+   \note{introduce SanitizerCoverage library here}
+4. Compare the results and determine most efficient
 
 * Demo
+
+* Demo :noexport:
 ** Installation
 only build and test
 mention unit tests
-# ? how much in detail about this
 ** Set up the main file
-# metnion that users are developers and editing is expected
+\note{metnion that users are developers and editing is expected}
 ** Run and discuss results
