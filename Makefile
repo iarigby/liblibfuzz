@@ -123,7 +123,9 @@ docs: 	Doxyfile myrefman.tex
 	doxygen Doxyfile
 #	compile my latex file that includes doxygen ones and create pdf file
 	pdflatex myrefman.tex
-
+presentation: presentation.org
+	emacs $^ -f org-beamer-export-to-pdf --kill
+	evince presentation.pdf &
 clean:
 	@echo -e "\t \e[96mCleaning...\e[90m"
 	$(RM) -r $(BUILDDIR) $(TARGETDIR)
