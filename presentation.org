@@ -17,30 +17,53 @@
 1. Not trivial to choose meaningful combinations
 2. Hard to determine edge cases
 3. Relies entirely on the developer to determine _TODO_
-\note{Let's illustrate this problem by the simplest example}
+\note{Let's illustrate this problem by the simplest example. And I will use this
+class later to show how the program works}
 ** Example
 \lstinputlisting[language=C++,firstline=3]{test/integrationTestClass.h}
 \note{This class has few primitive members, and already requires _TODO_As a result, other means have been developed}
 ** Example
 \lstinputlisting[language=C++,firstline=12,lastline=22]{test/integrationTestClass.cc}
-** Static & Dynamic Analysis
+** TODO Static & Dynamic Analysis
 Used for finding vulnerabilities
 *** TODO can be seen as edge cases
 \note{Most relevant for this project was}
 * Fuzzing
 ** About
-** Fuzz target
-** How libfuzzer works
-\note{use the same library but instead of ... measure ....}
-* Coverage based fuzzing for generating test cases
-\note{fuzzing hasn't been used for this purpose before}
-** What is different from fuzzing
+*** Exposes Interface vulnerabilities
+- Ones that are hard to detect manually
+- Achieves results in very short time
+*** In order to produce input, it uses
+- Generational and mutation-based methods
+- Coverage-guided engine
+** LibFuzzer
+- Library in clang
+- Coverage guided, evolutionary fuzzing engine by LLVM
+- _TODO_ heartbleed bug
+** How LibFuzzer Works
+User simply has to implement a function that
+- accepts an array of bytes
+- (possibly) manipulates these bytes and passes it to API
 
+API is usually expected to
+- Have single endpoint that consumes any kind of data \note{because otherwise there will be too many complexities and variabilities}
+- No exceptions, aborts, exits, crashes, timeouts
+- Very first instance of any of it will cause termination
+\note{and the user will recieve info on which input caused the crash and where}
+\note{I decided to see the internals and how it works. use the same library but instead of ... measure ....}
+* Coverage based fuzzing for generating test cases
+
+\note{As I mentioned, traditionally fuzzing hasn't been used for this purpose before since it makes some different assumptions about its target. These are}
+** What is different from fuzzing
+- Instead of an API endpoint, have a collection of member functions
+- User will need to pass more information to the program \note{so it's a little
+  bit more verbose}
+- Expect control flow disruptions and save which ones caused it
 ** Overall description of the solved problems
 We need something that will
 \note{independent functionalities}
 
-TODO see how much time is left for explanations
+\note{TODO see how much time is left for explanations}
 1. Store pointers to member functions
    \note{we will need different type signatures, managing arguments, etc}
 2. Generate sequences of calls
@@ -58,3 +81,4 @@ mention unit tests
 ** Set up the main file
 \note{metnion that users are developers and editing is expected}
 ** Run and discuss results
+** Show memory errors
