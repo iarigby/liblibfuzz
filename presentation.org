@@ -26,7 +26,7 @@ class later to show how the program works}
 \lstinputlisting[language=C++,firstline=12,lastline=22]{test/integrationTestClass.cc}
 ** TODO Static & Dynamic Analysis
 Used for finding vulnerabilities
-*** TODO can be seen as edge cases
+# *** TODO can be seen as edge cases
 \note{Most relevant for this project was}
 * Fuzzing
 ** About
@@ -74,7 +74,7 @@ We need something that will
 
 * Demo
 
-* Demo :noexport:
+* Demo
 ** Installation
 only build and test
 mention unit tests

@@ -51,7 +51,7 @@ $(BUILDDIR)/%.o: $(SRCDIR)/%.$(SRCEXT)
 
 $(INSERTED_GUARDS): $(TEST_TARGET_FILE)
 	@echo -e "\t \e[96mCompiling the test target class with guards\e[90m"
-	clang++ -c -g -o $@ $^ -fsanitize-coverage=trace-pc-guard 
+	clang++ -c -g -o $@ $^ -fsanitize-coverage=trace-pc-guard
 
 $(TARGET): $(OBJECTS) $(INSERTED_GUARDS) $(MAINFILE)
 	@echo -e "\t \e[96m Linking with sanitizer coverage\e[90m"
@@ -59,7 +59,7 @@ $(TARGET): $(OBJECTS) $(INSERTED_GUARDS) $(MAINFILE)
 	$(CC) $(INC) $(TEST_TARGET_INC) $(SANITIZERFLAGS) $^ -o $@
 
 run: $(TARGET)
-	@echo -e "\t \e[96m Testing combinations for $(TEST_TARGET_FILE)\e[90m"
+	@echo -e "\t \e[96m Testing combinations for $(TEST_TARGET_FILE)"
 	ASAN_OPTIONS=strip_path_prefix=`pwd`/ ./$(TARGET)
 
 ### TEST ###
@@ -114,7 +114,7 @@ $(OBJECTS) $(INTEGRATION_TEST_FILE)
 	$(CC) $(INC) $(SANITIZERFLAGS) $^ -o $@
 
 integration-test-run: $(INTEGRATION_TEST_TARGET)
-	@echo -e "\t \e[96mRunning the integration test with $(INTEGRATION_TEST_CLASS)\e[90m"
+	@echo -e "\t \e[96mRunning the integration test with $(INTEGRATION_TEST_CLASS)"
 	ASAN_OPTIONS=strip_path_prefix=`pwd`/ ./bin/integration-test
 
 # 	generate pdf documentation
