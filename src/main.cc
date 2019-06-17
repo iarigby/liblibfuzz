@@ -29,7 +29,7 @@ int main(int argc, char **argv) {
   // Function that does all the initialization
   InstanceFunctionPointer<stack<int>> getStackInstance =
       [](int sequenceLength) {
-        stack<int> s(sequenceLength);
+        stack<int> s(3);
         return s;
       };
   // Function pointers
