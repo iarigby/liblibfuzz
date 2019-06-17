@@ -129,7 +129,7 @@ slides = defense notes cefp
 $(slides): presentation.org
 	cat $^ presentation-$@.org > $@-slides.org
 	emacs $@-slides.org -f org-beamer-export-to-pdf --kill
-	evince $@-slides.pdf &
+	evince $@-slides.pdf
 
 slides: $(slides)
 
