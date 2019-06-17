@@ -2,7 +2,7 @@
 #+OPTIONS: num:nil toc:nil
 #+LATEX_HEADER: \usepackage{graphicx}
 #+LATEX_HEADER: \usepackage{listings}
-#+LATEX_HEADER: \lstset{language=c++,keywordstyle=\color{violet},basicstyle=\ttfamily}
+#+LATEX_HEADER: \lstset{language=c++,basicstyle=\ttfamily}
 * Inbox :noexport:
 ** efop logo / elte logo
 ** content
@@ -108,7 +108,11 @@ This program could enable developers to
 ** Installation
 only build and test
 mention unit tests
-** Set up the main file
+** go through the main file
 \note{metnion that users are developers and editing is expected}
 ** Run and discuss results
-** Show memory errors
+*** cases
+**** ---
+**** on each iteration, stack of size 3 is returned, and it discovered the case where you push more times
+
+** ? Show memory errors

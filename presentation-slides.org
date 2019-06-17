@@ -4,3 +4,4 @@
 #+LaTeX_CLASS_OPTIONS: [bigger]
 #+OPTIONS: H:2
 #+EXCLUDE_TAGS: noslides noexport
+#+LATEX_HEADER: \lstset{keywordstyle=\color{violet}}
