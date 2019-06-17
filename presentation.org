@@ -34,49 +34,46 @@
 ** Static & Dynamic Analysis
 - Used for finding vulnerabilities
 - Concentrates on edge cases, not on general logic of the application
-- As opposed to unit testing, it is *independent* from the developer \note{so it's
-  general, foolproof}
+- As opposed to unit testing, it is *independent* from the developer
+  \note{so it's general, foolproof}
 # *** TODO can be seen as edge cases
 \note{Most relevant for this project was}
 * Fuzzing
-** About
-*** Exposes Interface vulnerabilities
-- Ones that are hard to detect manually
-- Achieves results in very short time
-*** In order to produce input, it uses
-- Generational and mutation-based methods
-- Coverage-guided engine
-** LibFuzzer
-- Coverage guided, evolutionary fuzzing engine by LLVM
-- Part of LLVM infrastructure, included in clang compiler
-- Very powerful: Heartbleed bug was discovered in a matter of minutes
-  \note{was a critical security bug in the OpenSSL cryptography library}
-  \note{one of the most well-known and dangerous security bugs of all time, was there for years}
-** How LibFuzzer Works
-*** User simply has to implement a function that
-- accepts an array of bytes (which libfuzzer will generate)
-- passes it to API (in valid format)
-  \note{for example, if you have a text editor, you would convert it to a string.}
-  \note{You could even treat it as an input for a compiler}
-
-- libfuzzer will observe coverage from a specific input and use it to generate
-  next input
-\note{and the user will recieve info on which input caused the crash and where}
-\note{I decided to see the internals and how it works. use the same library but instead of ... measure ....}
+** How fuzzing works
+- gives the program some input (array of bytes)
+\note{for example, if you have a text editor, you would convert it to a string.}
+\note{You could even treat it as an input for a compiler}
+- measures coverage that the bytes triggerred
+- saves successful inputs and mutates them to generate new ones
 *** API is usually expected to :noexport:
 - Have single endpoint that consumes any kind of data \note{because otherwise there will be too many complexities and variabilities}
 - No exceptions, aborts, exits, crashes, timeouts
 - Very first instance of any of it will cause termination
+\note{and the user will recieve info on which input caused the crash and where}
+** What is accomplished
+*** Exposes Interface vulnerabilities
+- Ones that are hard to detect manually
+- Achieves *powerful* results in very short time
+ \note{Heartbleed bug was discovered in a matter of minutes}
+  \note{was a critical security bug in the OpenSSL cryptography library}
+  \note{one of the most well-known and dangerous security bugs of all time, was there for years}
+*** In order to produce input, it uses
+- Generational and mutation-based methods
+- Coverage-guided engine
+  \note{and these two ideas could be applied in other direction of software ver.}
 * Coverage based fuzzing for generating test cases
-
-\note{As I mentioned, traditionally fuzzing hasn't been used for this purpose before since it makes some different assumptions about its target. These are}
+\note{and now we move to my project}
+\note{we would need to formulate the problem encountered in unit tests}
+\note{in a way which would give us the opportunity of using dynamic analysis}
 ** Motivation
 - Unit tests verify that *functions* have behave as expected for a particular
   *internal state*
-- Ideally, internal state is the result of other function calls
+- Ideally, proper encapsulation is used so internal state is the result of other function calls
 - Therefore, we could treat a single test case as a sequence of function calls
+  on the member
 ** What is different from fuzzing
 Instead of using *sequence of bytes* as input, we will generate *sequence of member function calls*
+\note{fuzzing hasn't been used for this purpose before}
 ** What is different from fuzzing :cefp:
 \note{just short remark}
 *** Some changes
