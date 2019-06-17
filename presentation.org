@@ -1,12 +1,16 @@
 #+TITLE: Test Case Generation Using Fuzzing In C++
-#+STARTUP: beamer
-#+LATEX_CLASS: beamer
-#+BEAMER_THEME: metropolis
-#+LaTeX_CLASS_OPTIONS: [bigger]
-#+OPTIONS: H:2 num:nil toc:nil
+#+OPTIONS: num:nil toc:nil
 #+LATEX_HEADER: \usepackage{graphicx}
 #+LATEX_HEADER: \usepackage{listings}
 #+LATEX_HEADER: \lstset{language=c++,keywordstyle=\color{violet},basicstyle=\ttfamily}
+* Inbox :noslides:
+** efop logo / elte logo
+** content
+*** reduce introduction
+*** shorter demo for cefp
+** code
+*** output sanitizercoverage flags
+*** fix output colors
 * How do we verify software?
 ** Unit Testing
 **** Advantages
@@ -16,16 +20,19 @@
 **** Disadvantages
 1. Not trivial to choose meaningful combinations
 2. Hard to determine edge cases
-3. Relies entirely on the developer to determine _TODO_
-\note{Let's illustrate this problem by the simplest example. And I will use this
-class later to show how the program works}
+3. Relies too much on the developer
+
+\note{Let's illustrate this problem by the simplest example. And I will use this class later to show how the program works}
 ** Example
 \lstinputlisting[language=C++,firstline=3]{test/integrationTestClass.h}
-\note{This class has few primitive members, and already requires _TODO_As a result, other means have been developed}
+\note{This class has few primitive members, and already requires /TODO/As a result, other means have been developed}
 ** Example
 \lstinputlisting[language=C++,firstline=12,lastline=22]{test/integrationTestClass.cc}
-** TODO Static & Dynamic Analysis
-Used for finding vulnerabilities
+** Static & Dynamic Analysis
+- Used for finding vulnerabilities
+- Concentrates on edge cases, not on general logic of the application
+- As opposed to unit testing, it is *independent* from the developer \note{so it's
+  general, foolproof}
 # *** TODO can be seen as edge cases
 \note{Most relevant for this project was}
 * Fuzzing
@@ -39,7 +46,7 @@ Used for finding vulnerabilities
 ** LibFuzzer
 - Library in clang
 - Coverage guided, evolutionary fuzzing engine by LLVM
-- _TODO_ heartbleed bug
+- /TODO/ heartbleed bug
 ** How LibFuzzer Works
 User simply has to implement a function that
 - accepts an array of bytes
@@ -54,16 +61,23 @@ API is usually expected to
 * Coverage based fuzzing for generating test cases
 
 \note{As I mentioned, traditionally fuzzing hasn't been used for this purpose before since it makes some different assumptions about its target. These are}
+** Motivation
+- Unit tests verify that *functions* have behave as expected for a particular
+  *internal state*
+- Ideally, internal state is the result of other function calls
+- Therefore, we could treat a single test case as a sequence of function calls
 ** What is different from fuzzing
-- Instead of an API endpoint, have a collection of member functions
-- User will need to pass more information to the program \note{so it's a little
-  bit more verbose}
+Instead of using *sequence of bytes* as input, we will generate *sequence of member function calls*
+** What is different from fuzzing :cefp:
+\note{just short remark}
+*** Some changes
+- User will need to pass more information to the program, compared to
+  \note{so it's a little bit more verbose}
 - Expect control flow disruptions and save which ones caused it
 ** Overall description of the solved problems
 We need something that will
 \note{independent functionalities}
 
-\note{TODO see how much time is left for explanations}
 1. Store pointers to member functions
    \note{we will need different type signatures, managing arguments, etc}
 2. Generate sequences of calls
@@ -73,8 +87,15 @@ We need something that will
 4. Compare the results and determine most efficient
 
 * Demo
-
-* Demo
+** Summary
+This program could enable developers to
+- automatically generate *minimal* test cases with *high coverage* for their
+  libraries
+  \note{and therefore,}
+- have a *generic* helper for testing the *logic* of the application, just like
+  static&dynamic analysis for vulnerabilities
+* Thank you for attention
+* Demo :noslides:
 ** Installation
 only build and test
 mention unit tests

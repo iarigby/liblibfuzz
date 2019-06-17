@@ -1,0 +1,6 @@
+#+STARTUP: beamer
+#+LATEX_CLASS: beamer
+#+BEAMER_THEME: metropolis
+#+LaTeX_CLASS_OPTIONS: [bigger]
+#+OPTIONS: H:2
+#+EXCLUDE_TAGS: noslides

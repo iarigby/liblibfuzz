@@ -1,0 +1,2 @@
+#+LATEX_CLASS: article
+#+OPTIONS: H:5
