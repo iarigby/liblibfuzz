@@ -3,14 +3,14 @@
 #+LATEX_HEADER: \usepackage{graphicx}
 #+LATEX_HEADER: \usepackage{listings}
 #+LATEX_HEADER: \lstset{language=c++,keywordstyle=\color{violet},basicstyle=\ttfamily}
-* Inbox :noslides:
+* Inbox :noexport:
 ** efop logo / elte logo
 ** content
 *** reduce introduction
 *** shorter demo for cefp
 ** code
-*** output sanitizercoverage flags
-*** fix output colors
+*** DONE output sanitizercoverage flags
+*** DONE fix output colors
 * How do we verify software?
 ** Unit Testing
 **** Advantages
@@ -24,9 +24,12 @@
 
 \note{Let's illustrate this problem by the simplest example. And I will use this class later to show how the program works}
 ** Example
-\lstinputlisting[language=C++,firstline=3]{test/integrationTestClass.h}
-\note{This class has few primitive members, and already requires /TODO/As a result, other means have been developed}
-** Example
+\lstinputlisting[language=C++,firstline=5,lastline=9]{examples/stack.h}
+\lstinputlisting[language=C++,firstline=11,lastline=15]{examples/stack.h}
+*** ...
+# \lstinputlisting[language=C++,firstline=3]{test/integrationTestClass.h}
+# \note{This class has few primitive members, and already requires /TODO/As a result, other means have been developed}
+** Example :noexport:
 \lstinputlisting[language=C++,firstline=12,lastline=22]{test/integrationTestClass.cc}
 ** Static & Dynamic Analysis
 - Used for finding vulnerabilities
@@ -44,20 +47,26 @@
 - Generational and mutation-based methods
 - Coverage-guided engine
 ** LibFuzzer
-- Library in clang
 - Coverage guided, evolutionary fuzzing engine by LLVM
-- /TODO/ heartbleed bug
+- Part of LLVM infrastructure, included in clang compiler
+- Very powerful: Heartbleed bug was discovered in a matter of minutes
+  \note{was a critical security bug in the OpenSSL cryptography library}
+  \note{one of the most well-known and dangerous security bugs of all time, was there for years}
 ** How LibFuzzer Works
-User simply has to implement a function that
-- accepts an array of bytes
-- (possibly) manipulates these bytes and passes it to API
+*** User simply has to implement a function that
+- accepts an array of bytes (which libfuzzer will generate)
+- passes it to API (in valid format)
+  \note{for example, if you have a text editor, you would convert it to a string.}
+  \note{You could even treat it as an input for a compiler}
 
-API is usually expected to
+- libfuzzer will observe coverage from a specific input and use it to generate
+  next input
+\note{and the user will recieve info on which input caused the crash and where}
+\note{I decided to see the internals and how it works. use the same library but instead of ... measure ....}
+*** API is usually expected to :noexport:
 - Have single endpoint that consumes any kind of data \note{because otherwise there will be too many complexities and variabilities}
 - No exceptions, aborts, exits, crashes, timeouts
 - Very first instance of any of it will cause termination
-\note{and the user will recieve info on which input caused the crash and where}
-\note{I decided to see the internals and how it works. use the same library but instead of ... measure ....}
 * Coverage based fuzzing for generating test cases
 
 \note{As I mentioned, traditionally fuzzing hasn't been used for this purpose before since it makes some different assumptions about its target. These are}

@@ -1,2 +1,3 @@
 #+LATEX_CLASS: article
 #+OPTIONS: H:5
+#+LATEX_HEADER: \renewcommand\maketitle{}

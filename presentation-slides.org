@@ -3,4 +3,4 @@
 #+BEAMER_THEME: metropolis
 #+LaTeX_CLASS_OPTIONS: [bigger]
 #+OPTIONS: H:2
-#+EXCLUDE_TAGS: noslides
+#+EXCLUDE_TAGS: noslides noexport

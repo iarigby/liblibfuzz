@@ -6,7 +6,7 @@
 
 CoverageReporter coverageReporter;
 bool started;
-bool outputMessages = false;
+bool outputMessages = true;
 
 SCENARIO("integration test", "[integrationtest]") {
   GIVEN("All necessary classes and data for the combinationTester") {

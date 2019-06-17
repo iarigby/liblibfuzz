@@ -131,6 +131,8 @@ $(slides): presentation.org
 	emacs $@-slides.org -f org-beamer-export-to-pdf --kill
 	evince $@-slides.pdf &
 
+slides: $(slides)
+
 clean:
 	@echo -e "\t \e[96mCleaning...\e[90m"
 	$(RM) -r $(BUILDDIR) $(TARGETDIR)

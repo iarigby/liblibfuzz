@@ -23,7 +23,7 @@
 CoverageReporter coverageReporter;
 
 // verbose, report each block that is found, every time
-bool outputMessages = false;
+bool outputMessages = true;
 
 int main(int argc, char **argv) {
   // Function that does all the initialization
