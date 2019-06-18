@@ -2,6 +2,9 @@
 #+LATEX_CLASS: beamer
 #+BEAMER_THEME: metropolis
 #+LaTeX_CLASS_OPTIONS: [bigger]
+#+AUTHOR: Ia Mgvdliashvili
+#+DATE: July 19, 2019
 #+OPTIONS: H:2
 #+EXCLUDE_TAGS: noslides noexport
 #+LATEX_HEADER: \lstset{keywordstyle=\color{violet}}
+#+LATEX_HEADER: \titlegraphic{\includegraphics[width=\linewidth, trim=-6cm 0 0 -4cm]{images/elte_plus_ik.png}}
